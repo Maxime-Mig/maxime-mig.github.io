@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Maxime Miguet | Étudiant en BUT Informatique</title>
+    <meta name="description" content="Portfolio de Maxime Miguet.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="home-page">
+
+    <main>
+        <!-- SECTION ACCUEIL -->
+        <section id="home" class="hero">
+            <div class="container hero-content">
+                <h1>Maxime Miguet</h1>
+                <p class="hero-subtitle">Étudiant en BUT Informatique</p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">Me contacter</a>
+                    <a href="CV_sans_photo.pdf" class="btn btn-secondary" download>
+                        Télécharger CV
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <a href="#home">Maxime Miguet</a>
+                </div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#home" class="nav-link active">Accueil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#about" class="nav-link">À propos</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="Projet/projects.html" class="nav-link">Projets <span class="dropdown-arrow">▼</span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="Projet/projects.html">Tous les projets</a></li>
+                            <li><a href="Projet/project-pauvocodeur.html">Pauvocodeur</a></li>
+                            <li><a href="Projet/project-e-commerce.html">Site e-commerce</a></li>
+                            <li><a href="Projet/project-puissancex.html">Jeu du Puissance X</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#skills" class="nav-link">Compétences</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link">Contact</a>
+                    </li>
+                </ul>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- SECTION À PROPOS -->
+        <section id="about" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>À propos de moi</h2>
+                    <p>Découvrez mon parcours et mes motivations</p>
+                </div>
+                
+                <div class="about-grid">
+                    <div class="about-text">
+                        <h3>Mon parcours</h3>
+                        <p>
+                            Actuellement en 1ère année de BUT Informatique à l'IUT Nord Franche-Comté sur le site de Belfort.
+                            Ma passion pour l'informatique a commencé au lycée et n'a cessé de grandir.
+                        </p>
+                        <p>
+                            J'ai choisi cette formation pour acquérir des compétences solides 
+                            en programmation et en travail d'équipe. 
+                        </p>
+                        
+                        <h3>Mon objectif</h3>
+                        <p>
+                            Je recherche activement une alternance en informatique
+                            pour ma 2ème année de BUT pour une durée de 2 ans. 
+                            Cette expérience me permettra d'appliquer mes connaissances théoriques 
+                            dans un contexte professionnel et d'apprendre auprès d'équipes expérimentées.
+                        </p>
+                    </div>
+                    
+                    <div class="about-info">
+                        <div class="info-card">
+                            <h3>Formation actuelle</h3>
+                            <p><strong>BUT Informatique</strong></p>
+                            <p>IUT de Belfort - 1ère année</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>Recherche</h3>
+                            <p><strong>Alternance</strong></p>
+                            <p>Développeur</p>
+                            <p>Disponible dès août 2025</p>
+                        </div>
+
+                        <div class="info-card">
+                            <h3>Centres d'intérêt</h3>
+                            <ul>
+                                <li>Jeux vidéos</li>
+                                <li>Technologies émergentes</li>
+                                <li>Veille informatique et technologique</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION PROJETS -->
+        <section class="projects-preview">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Mes derniers projets</h2>
+                    <p>Découvrez quelques-unes de mes réalisations</p>
+                </div>
+                <div class="preview-grid">
+                    <div class="preview-card">
+                        <div class="preview-image">
+                            <img src="/placeholder.svg?height=150&width=250" alt="Application de gestion de tâches">
+                        </div>
+                        <h3>Application de gestion de tâches</h3>
+                        <p>Interface intuitive avec système de priorités</p>
+                        <a href="project-task-manager.html" class="card-link">Voir le projet →</a>
+                    </div>
+                    <div class="preview-card">
+                        <div class="preview-image">
+                            <img src="/placeholder.svg?height=150&width=250" alt="Site vitrine restaurant">
+                        </div>
+                        <h3>Site vitrine restaurant</h3>
+                        <p>Site responsive avec menu interactif</p>
+                        <a href="project-restaurant.html" class="card-link">Voir le projet →</a>
+                    </div>
+                    <div class="preview-card">
+                        <div class="preview-image">
+                            <img src="/placeholder.svg?height=150&width=250" alt="Jeu de Memory">
+                        </div>
+                        <h3>Jeu de Memory</h3>
+                        <p>Jeu interactif avec animations CSS</p>
+                        <a href="project-memory-game.html" class="card-link">Voir le projet →</a>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="projects.html" class="btn btn-primary">Voir tous les projets</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION COMPÉTENCES -->
+        <section id="skills" class="section section-alt">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Mes compétences</h2>
+                </div>
+
+                <div class="skills-grid">
+                    <div class="skills-category">
+                        <h3>Langages de programmation</h3>
+                        <div class="skills-list">
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">C</span>
+                                    <span class="skill-level">Débutant</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-level="25"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">HTML/CSS</span>
+                                    <span class="skill-level">Intermédiaire</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-level="50"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">Java</span>
+                                    <span class="skill-level">Avancé</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-level="75"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">JavaScript</span>
+                                    <span class="skill-level">Intermédiaire</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-level="50"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">SQL</span>
+                                    <span class="skill-level">Intermédiaire</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-level="50"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">PHP</span>
+                                    <span class="skill-level">Débutant</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-level="25"></div>
+                                </div>
+                            </div>
+                            <div class="skill-item">
+                                <div class="skill-header">
+                                    <span class="skill-name">Python</span>
+                                    <span class="skill-level">Avancé</span>
+                                </div>
+                                <div class="skill-bar">
+                                    <div class="skill-progress" data-level="75"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+        <!-- SECTION CONTACT -->
+        <section id="contact" class="section section-alt">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Contact</h2>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <h3>Mes coordonnées</h3>
+                        <ul class="contact-list">
+                            <li>
+                                <span class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm320-280L160-640v400h640v-400L480-440Zm0-80 320-200H160l320 200ZM160-640v-80 480-400Z"/></svg>
+                                </span>
+                                <a href="mailto:maxime.miguet@edu.univ-fcomte.fr">maxime.miguet@edu.univ-fcomte.fr</a>
+                            </li>
+                            <li>
+                                <span class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M798-120q-125 0-247-54.5T329-329Q229-429 174.5-551T120-798q0-18 12-30t30-12h162q14 0 25 9.5t13 22.5l26 140q2 16-1 27t-11 19l-97 98q20 37 47.5 71.5T387-386q31 31 65 57.5t72 48.5l94-94q9-9 23.5-13.5T670-390l138 28q14 4 23 14.5t9 23.5v162q0 18-12 30t-30 12ZM241-600l66-66-17-94h-89q5 41 14 81t26 79Zm358 358q39 17 79.5 27t81.5 13v-88l-94-19-67 67ZM241-600Zm358 358Z"/></svg>
+                                </span>
+                                <a href="tel:+33602737239">06 02 73 72 39</a>
+                            </li>
+                            <li>
+                                <span class="icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#000000"><path d="M480-301q99-80 149.5-154T680-594q0-90-56-148t-144-58q-88 0-144 58t-56 148q0 65 50.5 139T480-301Zm0 101Q339-304 269.5-402T200-594q0-125 78-205.5T480-880q124 0 202 80.5T760-594q0 94-69.5 192T480-200Zm0-320q33 0 56.5-23.5T560-600q0-33-23.5-56.5T480-680q-33 0-56.5 23.5T400-600q0 33 23.5 56.5T480-520ZM200-80v-80h560v80H200Zm280-520Z"/></svg>
+                                </span>
+                                <span>Exincourt, France</span>
+                            </li>
+                            <li>
+                                <span class="icon">
+                                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="Logo GitHub" width="25px">
+                                </span>
+                                <a href="https://github.com/">Maxime_Mig</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 - Maxime Miguet</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
