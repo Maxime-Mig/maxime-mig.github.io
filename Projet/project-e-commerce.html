@@ -65,16 +65,182 @@
 
         <section class="project-content">
             <div class="container">
-                <div class="project-grid">
-                    <div class="project-main">
-                        <div class="project-image-large">
-                            <img src="/placeholder.svg?height=400&width=700" alt="Interface principale de l'application de gestion de tâches">
-                        </div>
 
-                        <h2>Présentation du projet</h2>
+                <h2>Présentation du projet</h2>
+                <p>
+                    Pauvocodeur est une application développée dans le cadre de mes études, 
+                    permettant de modifier la tonalité d'un fichier audio. 
+                    On peut le rendre plus aigu ou plus grave, mais aussi ajouter un écho.
+                    Cependant il n'y a pas d'interface graphique pour gérer les paramètres.
+                    Pour ce faire on a du utiliser des bibliothèques Java (StdAudio et StdDraw)
+                    pour gérer les fichiers audio et dessiner les sons.
+                </p>
+
+                <br>
+                <!-- Premier bloc -->
+                <h2>Interface </h2>
+                
+                <div class="project-section">
+                    <div class="project-text-top">
                         <p>
-                            tkt
+                            La figure 1 représente l'interface visuelle de l'application Pauvocodeur. 
+                            Cette image affiche le signal audio d’un fichier son après traitement, 
+                            sous la forme d’un spectre temporel en noir, 
+                            avec une ligne rouge indiquant la position actuelle dans la lecture. 
+                            L’interface repose uniquement sur une fenêtre générée avec la bibliothèque graphique StdDraw, 
+                            sans interface utilisateur interactive par boutons ou menus.
                         </p>
+                    </div>
+                    
+
+                    <div class="project-content-wrapper">
+                        <div class="project-main">
+                            <figure class="project-figure">
+                                <div class="project-image-large">
+                                    <img src="../Image/Pauvocodeur_representation_son.png" alt="Interface visuelle de l'application Pauvocodeur">
+                                </div>
+                                <figcaption>Figure 1 : Interface visuelle de l'application</figcaption>
+                            </figure>
+                        </div>
+                        <div class="project-text-side">
+                            <p>
+                                Cette représentation est le fruit du traitement d'un fichier .wav 
+                                chargé à l’aide de la bibliothèque StdAudio, 
+                                puis manipulé pour en modifier la tonalité ou y ajouter un écho. 
+                                Le rendu visuel du son, qui est ici une courbe d’amplitude dans le temps,
+                                a été produit en analysant les données numériques du signal audio, 
+                                puis en les dessinant ligne par ligne.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="project-text-bottom">
+                        <p>
+                            Le trait rouge sert de curseur de lecture, 
+                            mis à jour dynamiquement pendant l’exécution. 
+                            Cela a nécessité l’utilisation de structures de contrôle (for, while) 
+                            et d’une gestion des temps (Thread.sleep()) 
+                            pour synchroniser l’affichage avec le son joué en arrière-plan. 
+                            Ce travail illustre la mobilisation de savoir-faire en traitement de signal, 
+                            en manipulation de données numériques, et en rendu graphique via une API bas niveau.
+
+                            <br><br>
+
+                            Même si le projet ne dispose pas d’interface utilisateur ergonomique 
+                            (pas de boutons, sliders ou menus), 
+                            il montre que l’on peut concevoir une application fonctionnelle avec 
+                            des bibliothèques simples, à condition de structurer correctement son code, 
+                            de bien comprendre le modèle audio numérique, 
+                            et de gérer efficacement les boucles d'affichage.
+
+                            <br><br>
+
+                            Cette figure témoigne donc de ma capacité à intégrer des bibliothèques externes, 
+                            à traiter et visualiser des données, et à coordonner différents composants 
+                            logiciels (audio et graphique) dans un projet structuré.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Deuxième bloc -->
+                <h2>Structuration et code</h2>
+
+                <div class="project-section">
+                    <div class="project-text-top">
+                        <p>
+                            La figure 2 représente l'éditeur de code Visual Studio Code 
+                            avec le fichier Pauvocoder.java ouvert, au sein du projet Pauvocoder.
+                        </p>
+                    </div>
+
+                    <div class="project-content-wrapper reverse">
+                        <div class="project-text-side">
+                            <p>
+                                Nous pouvons voir à gauche l'arborescence du projet,
+                                qui contient les fichiers nécessaires au fonctionnement de l'application.
+                                Il n'y a pas de dossier pour les trier, ce qui fait qu'il est compact et donc moins compréhensible.
+                                Mais cela reste un projet simple,
+                                donc il n'est pas nécessaire de le structurer en plusieurs dossiers.
+                                De plus, s'il y a plusieurs fichiers, 
+                                cela veut dire qu'il y a des intégrations de classes entre eux.
+
+                            <br><br>
+
+                                À droite, nous avons le code source de l'application, qui est écrit en Java.   
+                                Nous pouvons également voir les commentaires qui expliquent le fonctionnement de l'application.
+                                Dans l’extrait de code affiché, on observe la méthode vocodesSimpleOverCross, 
+                                chargée d’effectuer un changement sur un signal audio. 
+                                Cela signifie qu’elle modifie la durée du son tout en essayant de conserver ses caractéristiques acoustiques. 
+                                L’algorithme utilise un mécanisme d’overlap-add avec recherche de corrélation croisée pour améliorer la qualité du rendu.
+                            </p>
+                        </div>
+                        <div class="project-main">
+                            <figure class="project-figure">
+                                <div class="project-image-large">
+                                    <img src="../Image/Pauvocodeur_code.png" alt="Code de l'application Pauvocodeur">
+                                </div>
+                                <figcaption>Figure 2 : Code de l'application</figcaption>
+                            </figure>
+                        </div>
+                    </div>
+                    
+                    <div class="project-text-bottom">
+                        <p>
+                            Ce projet m’a permis de mieux comprendre le traitement du signal audio, 
+                            la manipulation de tableaux de données numériques, 
+                            et l’importance de la précision dans les calculs liés aux transformations temporelles. 
+                            Il m’a également familiarisé avec la structuration de projets Java multi-fichiers 
+                            et l’utilisation de bibliothèques externes.
+                        </p>
+                    </div>
+                </div>
+                
+                <br>
+                <!-- Troisième bloc -->
+                <h2>Console</h2>
+                
+                <div class="project-section">
+                    <div class="project-text-top">
+                        <p>
+                            La figure 3 illustre le contenu affiché dans le terminal lors de l’exécution 
+                            de l’application Pauvocodeur. 
+                            Ces lignes de texte, générées par le programme Java, 
+                            permettent d’informer l’utilisateur en temps réel sur les différentes
+                            étapes du traitement du fichier audio.
+                        </p>
+                    </div>
+                    
+
+                    <div class="project-content-wrapper">
+                        <div class="project-main">
+                            <figure class="project-figure">
+                                <div class="project-image-large">
+                                    <img src="../Image/Pauvocodeur_console.png" alt="Affichage sur le terminal">
+                                </div>
+                                <figcaption>Figure 3 : Affichage sur le terminal</figcaption>
+                            </figure>
+                        </div>
+                        <div class="project-text-side">
+                            <p>
+                                Chaque bloc de texte correspond à l’appel d’une méthode spécifique 
+                                (comme resample, vocodeSimple, ou vocodeSimpleOverCross), 
+                                avec l'affichage des paramètres utilisés (facteurs de dilatation, 
+                                tailles des signaux, durée, etc.) 
+                                ainsi qu’un résumé descriptif de l’opération en cours. 
+                                Cette sortie textuelle est essentielle pour suivre l’évolution du traitement 
+                                et comprendre comment le signal audio est transformé.
+
+                                <br><br>
+
+                                Ce retour console constitue un outil précieux de suivi, 
+                                notamment en phase de développement ou d’analyse. 
+                                Il met en évidence les modifications successives apportées au fichier audio — 
+                                telles que le changement de taille, la durée recalculée, ou encore 
+                                l’ajustement des séquences et chevauchements. 
+                                On observe ainsi que l’algorithme s’adapte dynamiquement aux paramètres fournis, 
+                                garantissant un traitement audio cohérent et précis.
+                            </p>
+                        </div>
                     </div>
                 </div>
 
