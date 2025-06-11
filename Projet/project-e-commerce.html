@@ -68,27 +68,24 @@
 
                 <h2>Présentation du projet</h2>
                 <p>
-                    Pauvocodeur est une application développée dans le cadre de mes études, 
-                    permettant de modifier la tonalité d'un fichier audio. 
-                    On peut le rendre plus aigu ou plus grave, mais aussi ajouter un écho.
-                    Cependant il n'y a pas d'interface graphique pour gérer les paramètres.
-                    Pour ce faire on a du utiliser des bibliothèques Java (StdAudio et StdDraw)
-                    pour gérer les fichiers audio et dessiner les sons.
+                    CSGOAT est un site e-commerce fictif créé dans le cadre d'un projet universitaire.
+                    Il permet aux utilisateurs de parcourir et d'acheter des skins pour le jeu Counter-Strike 2.
+                    Le site est conçu pour simuler une expérience d'achat en ligne,
+                    mais les transactions ne sont pas réelles et servent uniquement à des fins pédagogiques.
+                    Le projet a été réalisé en utilisant HTML, Python / Flask et MySQL.
+                    L'objectif principal était de mettre en pratique les compétences en développement web,
+                    en intégrant des fonctionnalités de base telles que la navigation, la recherche de produits,
+                    et la gestion des utilisateurs.
                 </p>
 
                 <br>
                 <!-- Premier bloc -->
-                <h2>Interface </h2>
+                <h2>Interface filtre et boutique</h2>
                 
                 <div class="project-section">
                     <div class="project-text-top">
                         <p>
-                            La figure 1 représente l'interface visuelle de l'application Pauvocodeur. 
-                            Cette image affiche le signal audio d’un fichier son après traitement, 
-                            sous la forme d’un spectre temporel en noir, 
-                            avec une ligne rouge indiquant la position actuelle dans la lecture. 
-                            L’interface repose uniquement sur une fenêtre générée avec la bibliothèque graphique StdDraw, 
-                            sans interface utilisateur interactive par boutons ou menus.
+                            
                         </p>
                     </div>
                     
@@ -97,151 +94,170 @@
                         <div class="project-main">
                             <figure class="project-figure">
                                 <div class="project-image-large">
-                                    <img src="../Image/Pauvocodeur_representation_son.png" alt="Interface visuelle de l'application Pauvocodeur">
+                                    <img src="../Image/CSGOAT_filtre_market.png" alt="Visuelle du filtre et de la boutique">
                                 </div>
-                                <figcaption>Figure 1 : Interface visuelle de l'application</figcaption>
+                                <figcaption>Figure 1 : Visuelle du filtre et de la boutique</figcaption>
+                            </figure>
+                            <br>
+                            <figure class="project-figure">
+                                <div class="project-image-large">
+                                    <img src="../Image/CSGOAT_declinaison.png" alt="Visuelle du choix de declinaison">
+                                </div>
+                                <figcaption>Figure 2 : Visuelle du choix de déclinaison</figcaption>
                             </figure>
                         </div>
                         <div class="project-text-side">
                             <p>
-                                Cette représentation est le fruit du traitement d'un fichier .wav 
-                                chargé à l’aide de la bibliothèque StdAudio, 
-                                puis manipulé pour en modifier la tonalité ou y ajouter un écho. 
-                                Le rendu visuel du son, qui est ici une courbe d’amplitude dans le temps,
-                                a été produit en analysant les données numériques du signal audio, 
-                                puis en les dessinant ligne par ligne.
+                                La figure 1 représente l'interface utilisateur du site CSGOAT,
+                                mettant en avant le filtre de recherche et la boutique.
+                                Le filtre permet aux utilisateurs de sélectionner des skins en fonction de différents critères,
+                                tels que le type d'arme, et le prix et le nom.
+                                La boutique affiche les skins disponibles à l'achat,
+                                avec des images et des informations détaillées sur chaque skin.
+                                Les skins peuvent avoir plusieurs déclinaisons.
+
+                                <br><br>
+
+                                J’ai conçu toute l’interface de la figure 1, 2, 3 et 4, en HTML,
+                                en veillant à structurer proprement chaque carte de produit et chaque section de filtre. 
+                                Les boutons d’action comme Ajouter au panier ou Filtrer sont 
+                                fonctionnels grâce à la liaison avec le backend Flask.
+
+                                <br><br>
+
+                                Nous pouvons voir sur la figure 1 que le filtre est situé en haut de la page,
+                                permettant aux utilisateurs de sélectionner les critères de recherche.
+                                En dessous, la boutique affiche les skins disponibles,
+                                avec des images et des informations détaillées sur chaque skin.
+                                Les utilisateurs peuvent parcourir les différents skins,
+                                et cliquer sur "Ajouter au panier" sur un skin pour l'ajouter à leur panier d'achat.
+                                Cependant, s'il existe plusieurs déclinaisons d'un skin, 
+                                le bouton est remplacé par un bouton "Choisir une version",
+                                qui ouvre une fenêtre pour sélectionner la version souhaitée, 
+                                comme indiqué par la figure 2.
+
+                                <br><br>
+
+                                Bien que les transactions soient fictives, 
+                                cette interface met en œuvre les principaux mécanismes du commerce électronique, 
+                                tels que la recherche multi-critères, 
+                                la gestion du panier et l’interaction utilisateur. 
+                                Le projet a été développé à l’aide de HTML, Flask (Python) pour le backend, 
+                                et MySQL pour la gestion de base de données, 
+                                offrant une mise en pratique complète des compétences web acquises.
+
+                                <br><br>
+
+                                Ce travail illustre une approche pédagogique centrée sur l’apprentissage par projet, 
+                                en combinant design, logique métier et gestion de données dans un environnement simulé mais réaliste.
                             </p>
                         </div>
-                    </div>
-                    
-                    <div class="project-text-bottom">
-                        <p>
-                            Le trait rouge sert de curseur de lecture, 
-                            mis à jour dynamiquement pendant l’exécution. 
-                            Cela a nécessité l’utilisation de structures de contrôle (for, while) 
-                            et d’une gestion des temps (Thread.sleep()) 
-                            pour synchroniser l’affichage avec le son joué en arrière-plan. 
-                            Ce travail illustre la mobilisation de savoir-faire en traitement de signal, 
-                            en manipulation de données numériques, et en rendu graphique via une API bas niveau.
-
-                            <br><br>
-
-                            Même si le projet ne dispose pas d’interface utilisateur ergonomique 
-                            (pas de boutons, sliders ou menus), 
-                            il montre que l’on peut concevoir une application fonctionnelle avec 
-                            des bibliothèques simples, à condition de structurer correctement son code, 
-                            de bien comprendre le modèle audio numérique, 
-                            et de gérer efficacement les boucles d'affichage.
-
-                            <br><br>
-
-                            Cette figure témoigne donc de ma capacité à intégrer des bibliothèques externes, 
-                            à traiter et visualiser des données, et à coordonner différents composants 
-                            logiciels (audio et graphique) dans un projet structuré.
-                        </p>
                     </div>
                 </div>
 
                 <!-- Deuxième bloc -->
-                <h2>Structuration et code</h2>
+                <h2>Interface des commandes côté admin</h2>
 
                 <div class="project-section">
-                    <div class="project-text-top">
-                        <p>
-                            La figure 2 représente l'éditeur de code Visual Studio Code 
-                            avec le fichier Pauvocoder.java ouvert, au sein du projet Pauvocoder.
-                        </p>
-                    </div>
-
                     <div class="project-content-wrapper reverse">
                         <div class="project-text-side">
                             <p>
-                                Nous pouvons voir à gauche l'arborescence du projet,
-                                qui contient les fichiers nécessaires au fonctionnement de l'application.
-                                Il n'y a pas de dossier pour les trier, ce qui fait qu'il est compact et donc moins compréhensible.
-                                Mais cela reste un projet simple,
-                                donc il n'est pas nécessaire de le structurer en plusieurs dossiers.
-                                De plus, s'il y a plusieurs fichiers, 
-                                cela veut dire qu'il y a des intégrations de classes entre eux.
+                                La figure 3 illustre la page d’administration des commandes du site CSGOAT. 
+                                Cette interface permet aux administrateurs de visualiser en temps réel 
+                                l’ensemble des commandes passées sur le site, 
+                                simulant un tableau de gestion des ventes dans un environnement professionnel.
 
-                            <br><br>
+                                <br><br>
 
-                                À droite, nous avons le code source de l'application, qui est écrit en Java.   
-                                Nous pouvons également voir les commentaires qui expliquent le fonctionnement de l'application.
-                                Dans l’extrait de code affiché, on observe la méthode vocodesSimpleOverCross, 
-                                chargée d’effectuer un changement sur un signal audio. 
-                                Cela signifie qu’elle modifie la durée du son tout en essayant de conserver ses caractéristiques acoustiques. 
-                                L’algorithme utilise un mécanisme d’overlap-add avec recherche de corrélation croisée pour améliorer la qualité du rendu.
+                                Chaque carte présentée correspond à une commande passée par un utilisateur, 
+                                avec des détails essentiels que nous pouvons observer dans la figure 4 
+                                tels que le nom du produit commandé, la quantité, le prix unitaire de chaque produit, 
+                                le prix total de chaque produit, le prix total de la commande, 
+                                ainsi que des informations sur le client de la commande. 
+                                Ces éléments permettent à l’administrateur de suivre l’activité du site, 
+                                de repérer les produits populaires, et d’anticiper les besoins de gestion des stocks.
+
+                                <br><br>
+
+                                J'ai conçu cette interface en HTML,
+                                en veillant à ce qu'elle soit claire et intuitive pour les administrateurs.
+                                Chaque carte de commande est structurée pour afficher les informations de manière concise,
+                                facilitant ainsi la gestion des commandes.
+                                
+                                <br><br>
+
+                                Ce que j'ai donc appris lors de la conception de ces interfaces,
+                                c'est l'importance de la clarté et de la simplicité dans la présentation des données,
+                                et l'importance de la réactivité de l'interface,
+                                surtout dans un contexte administratif où la rapidité d'accès à l'information est cruciale.
+                                Et les problèmes que j'ai rencontrés étaient principalement liés à la mise en forme des données,
+                                pour s'assurer que chaque carte de commande était lisible et bien structurée.
+                                J'ai également dû m'assurer que les informations étaient correctement extraites de la base de données MySQL,
+                                et affichées de manière cohérente dans l'interface.
+                                
                             </p>
                         </div>
                         <div class="project-main">
                             <figure class="project-figure">
                                 <div class="project-image-large">
-                                    <img src="../Image/Pauvocodeur_code.png" alt="Code de l'application Pauvocodeur">
+                                    <img src="../Image/CSGOAT_all_command.png" alt="Visuelle de toute les commande cote admin">
                                 </div>
-                                <figcaption>Figure 2 : Code de l'application</figcaption>
+                                <figcaption>Figure 3 : Visuelle de toute les commande côté admin</figcaption>
                             </figure>
+                            <br>
+                            <figure class="project-figure">
+                                <div class="project-image-large">
+                                    <img src="../Image/CSGOAT_recap_commande_admin.png" alt="Visuel d'un détail d'une commande côté admin">
+                                </div>
+                                <figcaption>Figure 4 : Visuel d'un détail d'une commande côté admin</figcaption>
+                            </figure>
+
                         </div>
-                    </div>
-                    
-                    <div class="project-text-bottom">
-                        <p>
-                            Ce projet m’a permis de mieux comprendre le traitement du signal audio, 
-                            la manipulation de tableaux de données numériques, 
-                            et l’importance de la précision dans les calculs liés aux transformations temporelles. 
-                            Il m’a également familiarisé avec la structuration de projets Java multi-fichiers 
-                            et l’utilisation de bibliothèques externes.
-                        </p>
                     </div>
                 </div>
                 
                 <br>
                 <!-- Troisième bloc -->
-                <h2>Console</h2>
+                <h2>Structuration et code</h2>
                 
                 <div class="project-section">
-                    <div class="project-text-top">
-                        <p>
-                            La figure 3 illustre le contenu affiché dans le terminal lors de l’exécution 
-                            de l’application Pauvocodeur. 
-                            Ces lignes de texte, générées par le programme Java, 
-                            permettent d’informer l’utilisateur en temps réel sur les différentes
-                            étapes du traitement du fichier audio.
-                        </p>
-                    </div>
-                    
-
                     <div class="project-content-wrapper">
                         <div class="project-main">
                             <figure class="project-figure">
                                 <div class="project-image-large">
-                                    <img src="../Image/Pauvocodeur_console.png" alt="Affichage sur le terminal">
+                                    <img src="../Image/CSGOAT_code.png" alt="Code du projet">
                                 </div>
-                                <figcaption>Figure 3 : Affichage sur le terminal</figcaption>
+                                <figcaption>Figure 5 : Code du projet</figcaption>
                             </figure>
                         </div>
                         <div class="project-text-side">
                             <p>
-                                Chaque bloc de texte correspond à l’appel d’une méthode spécifique 
-                                (comme resample, vocodeSimple, ou vocodeSimpleOverCross), 
-                                avec l'affichage des paramètres utilisés (facteurs de dilatation, 
-                                tailles des signaux, durée, etc.) 
-                                ainsi qu’un résumé descriptif de l’opération en cours. 
-                                Cette sortie textuelle est essentielle pour suivre l’évolution du traitement 
-                                et comprendre comment le signal audio est transformé.
-
-                                <br><br>
-
-                                Ce retour console constitue un outil précieux de suivi, 
-                                notamment en phase de développement ou d’analyse. 
-                                Il met en évidence les modifications successives apportées au fichier audio — 
-                                telles que le changement de taille, la durée recalculée, ou encore 
-                                l’ajustement des séquences et chevauchements. 
-                                On observe ainsi que l’algorithme s’adapte dynamiquement aux paramètres fournis, 
-                                garantissant un traitement audio cohérent et précis.
+                                La figure 5 présente, à droite un extrait du code source du projet CSGOAT,
+                                et, à gauche, la structure et l'organisation du code HTML, Python et MySQL.
+                                Le projet est organisé de manière modulaire.
+                                Le dossier controller contient les fichiers Python qui gèrent le backend de l'application,
+                                tandis que le dossier templates contient les fichiers HTML qui définissent l'interface utilisateur.
+                                Le dossier static contient les fichiers nécessaires pour le style et l'interactivité du site.
+                                Et le dossier docs pour toutes les documentations du projet.
                             </p>
+
+                                
                         </div>
                     </div>
+                    <div class="project-text-side">
+                            <p>
+                                J'ai structuré le projet de manière à séparer clairement les différentes couches de l'application,
+                                en suivant les bonnes pratiques de développement web.
+                                Le code à droite montre comment j'ai utilisé Flask pour gérer les routes et les requêtes MySQL,
+                                il n'est pas necessaire de comprendre chaque ligne de code,
+                                c'est un extrait de code basique qui permet au administrateur de supprimer des articles. 
+                                Cet extrait contient des éléments essentiels,
+                                comme des conditions, de la définition de fonctions, et des requêtes SQL.
+                                Cependant il illustre bien comment j'ai pu codé mon application.
+                                Même si j'ai pu avoir des difficultés à coder certaines fonctionnalités,
+                                mais j'ai réussi à les surmonter en cherchant des solutions en ligne.
+                            </p>
+                        </div>
                 </div>
 
                 <div class="project-navigation">
