@@ -71,59 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(skillsSection);
     }
 
-    // Gestion du formulaire de contact
-    const contactForm = document.getElementById('contactForm');
-    const formMessage = document.getElementById('formMessage');
-
-    if (contactForm && formMessage) {
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Simulation d'envoi de formulaire
-            const formData = new FormData(contactForm);
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const subject = formData.get('subject');
-            const message = formData.get('message');
-
-            // Validation simple
-            if (!name || !email || !subject || !message) {
-                showMessage('Veuillez remplir tous les champs obligatoires.', 'error');
-                return;
-            }
-
-            if (!isValidEmail(email)) {
-                showMessage('Veuillez entrer une adresse email valide.', 'error');
-                return;
-            }
-
-            // Simulation d'envoi réussi
-            showMessage('Votre message a été envoyé avec succès ! Je vous répondrai dans les plus brefs délais.', 'success');
-            contactForm.reset();
-        });
-    }
-
-    function showMessage(text, type) {
-        formMessage.textContent = text;
-        formMessage.className = `form-message ${type}`;
-        formMessage.style.display = 'block';
-        
-        // Faire défiler vers le message
-        formMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        
-        // Masquer le message après 5 secondes pour les messages de succès
-        if (type === 'success') {
-            setTimeout(() => {
-                formMessage.style.display = 'none';
-            }, 5000);
-        }
-    }
-
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
     // Smooth scroll pour les liens internes
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -249,23 +196,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Console log pour confirmer que le script est chargé
     console.log('Portfolio JavaScript chargé avec succès !');
 });
-
-// Fonction utilitaire pour débouncer les événements
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
-
-// Optimisation des performances pour le scroll
-const optimizedScrollHandler = debounce(() => {
-    // Logique de scroll optimisée
-}, 100);
-
-window.addEventListener('scroll', optimizedScrollHandler);
