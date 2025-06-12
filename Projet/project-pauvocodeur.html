@@ -121,8 +121,9 @@
                             Cela a nécessité l’utilisation de structures de contrôle (for, while) 
                             et d’une gestion des temps (Thread.sleep()) 
                             pour synchroniser l’affichage avec le son joué en arrière-plan. 
-                            Ce travail illustre la mobilisation de savoir-faire en traitement de signal, 
-                            en manipulation de données numériques, et en rendu graphique via une API bas niveau.
+                            J'ai choisi de faire ce trait comme ceci car 
+                            il permet de visualiser la progression de la lecture du son,
+                            ce qui facilite la compréhension de l'effet du traitement appliqué.
 
                             <br><br>
 
@@ -158,11 +159,10 @@
                             <p>
                                 Nous pouvons voir à gauche l'arborescence du projet,
                                 qui contient les fichiers nécessaires au fonctionnement de l'application.
-                                Il n'y a pas de dossier pour les trier, ce qui fait qu'il est compact et donc moins compréhensible.
-                                Mais cela reste un projet simple,
-                                donc il n'est pas nécessaire de le structurer en plusieurs dossiers.
-                                De plus, s'il y a plusieurs fichiers, 
-                                cela veut dire qu'il y a des intégrations de classes entre eux.
+                                J'ai choisi de ne pas utiliser de dossier pour les trier,
+                                car cela rend le projet plus compact et plus facile à lire pour moi.
+                                Puisque cela reste un projet simple,
+                                il n'est pas nécessaire de le structurer en plusieurs dossiers.
 
                             <br><br>
 
@@ -170,8 +170,14 @@
                                 Nous pouvons également voir les commentaires qui expliquent le fonctionnement de l'application.
                                 Dans l’extrait de code affiché, on observe la méthode vocodesSimpleOverCross, 
                                 chargée d’effectuer un changement sur un signal audio. 
-                                Cela signifie qu’elle modifie la durée du son tout en essayant de conserver ses caractéristiques acoustiques. 
-                                L’algorithme utilise un mécanisme d’overlap-add avec recherche de corrélation croisée pour améliorer la qualité du rendu.
+                                Cela signifie qu’elle modifie la durée du son tout en essayant de 
+                                conserver ses caractéristiques acoustiques. 
+                                L’algorithme utilise un mécanisme d’overlap-add avec recherche de 
+                                corrélation croisée pour améliorer la qualité du rendu.
+                                J'ai choisi de mettre en avant cette méthode car elle est centrale
+                                dans le fonctionnement de l'application. 
+                                Elle illustre bien la complexité du traitement audio,
+                                en combinant des techniques de traitement du signal et de manipulation de données.
                             </p>
                         </div>
                         <div class="project-main">
@@ -239,6 +245,12 @@
                                 l’ajustement des séquences et chevauchements. 
                                 On observe ainsi que l’algorithme s’adapte dynamiquement aux paramètres fournis, 
                                 garantissant un traitement audio cohérent et précis.
+
+                                <br><br>
+
+                                J'ai choisi de conserver cette fonctionnalité de console
+                                car elle permet de visualiser en temps réel les transformations appliquées
+                                au fichier audio, ce qui est crucial pour le débogage et la validation des résultats.
                             </p>
                         </div>
                     </div>

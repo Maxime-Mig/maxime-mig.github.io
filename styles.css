@@ -1207,12 +1207,13 @@ textarea:focus {
 .project-section {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    margin-bottom: 4rem;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
 .project-text-top {
     width: 100%;
+    margin-bottom: 1rem;
 }
 
 .project-content-wrapper {
@@ -1222,49 +1223,11 @@ textarea:focus {
     align-items: start;
 }
 
-.project-text-side {
-    padding: 1rem 0;
-}
-
 .project-text-bottom {
     width: 100%;
-    margin-top: 2rem;
+    margin-top: 1rem; /* Réduit de 2rem à 1rem */
 }
 
-.project-content-wrapper.reverse {
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-}
-
-.project-content-wrapper.reverse .project-text-side {
-    order: 1;
-}
-
-.project-content-wrapper.reverse .project-main {
-    order: 2;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .project-content-wrapper {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-    }
-
-    .project-content-wrapper .project-main {
-        order: 1;
-    }
-
-    .project-content-wrapper .project-text-side {
-        order: 2;
-    }
-
-    .project-content-wrapper.reverse {
-        grid-template-columns: 1fr;
-    }
-
-    .project-content-wrapper.reverse .project-main,
-    .project-content-wrapper.reverse .project-text-side {
-        order: unset;
-    }
+.project-text-side {
+    padding: 0.5rem 0; /* Réduit de 1rem à 0.5rem */
 }
