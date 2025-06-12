@@ -1225,9 +1225,21 @@ textarea:focus {
 
 .project-text-bottom {
     width: 100%;
-    margin-top: 1rem; /* Réduit de 2rem à 1rem */
+    margin-top: 1rem;
 }
 
 .project-text-side {
-    padding: 0.5rem 0; /* Réduit de 1rem à 0.5rem */
+    padding: 0.5rem 0; 
+}
+
+.project-text-side ul {
+    padding-left: 2rem;
+    list-style-position: outside;
+    margin: 1rem 0;
+}
+
+.project-text-side li {
+    color: #64748b;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
 }

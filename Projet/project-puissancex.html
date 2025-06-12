@@ -69,27 +69,24 @@
 
                 <h2>Présentation du projet</h2>
                 <p>
-                    Pauvocodeur est une application développée dans le cadre de mes études, 
-                    permettant de modifier la tonalité d'un fichier audio. 
-                    On peut le rendre plus aigu ou plus grave, mais aussi ajouter un écho.
-                    Cependant il n'y a pas d'interface graphique pour gérer les paramètres.
-                    Pour ce faire on a du utiliser des bibliothèques Java (StdAudio et StdDraw)
-                    pour gérer les fichiers audio et dessiner les sons.
+                    Puissance X est un jeu de société classique où deux joueurs s'affrontent pour aligner 
+                    un nombre choisi de jetons (de 3 à 6) de leur couleur dans une grille.
+                    Le projet a été réalisé en groupe de cinq personnes dans le cadre d'un projet universitaire,
+                    et a été développé en Java avec l'IDE IntelliJ IDEA et partager grâce à git.
+                    Le jeu permet de régler la taille de la grille (nombre de lignes et de colonnes)
+                    ainsi que le nombre de jetons à aligner pour gagner.
+                    Il est possible de jouer contre un bot ou contre un autre joueur.
                 </p>
 
                 <br>
                 <!-- Premier bloc -->
-                <h2>Interface </h2>
+                <h2>Structuration et code </h2>
                 
                 <div class="project-section">
                     <div class="project-text-top">
                         <p>
-                            La figure 1 représente l'interface visuelle de l'application Pauvocodeur. 
-                            Cette image affiche le signal audio d’un fichier son après traitement, 
-                            sous la forme d’un spectre temporel en noir, 
-                            avec une ligne rouge indiquant la position actuelle dans la lecture. 
-                            L’interface repose uniquement sur une fenêtre générée avec la bibliothèque graphique StdDraw, 
-                            sans interface utilisateur interactive par boutons ou menus.
+                            La figure 1 représente l'éditeur de code Visual Studio Code
+                            avec le fichier d'un bot ouvert, le conditionIA, au sein du projet PuissanceX.
                         </p>
                     </div>
                     
@@ -98,116 +95,120 @@
                         <div class="project-main">
                             <figure class="project-figure">
                                 <div class="project-image-large">
-                                    <img src="../Image/Pauvocodeur_representation_son.png" alt="Interface visuelle de l'application Pauvocodeur">
+                                    <img src="../Image/PuissanceX_code.png" alt="Structuration du projet Pauvocodeur">
                                 </div>
-                                <figcaption>Figure 1 : Interface visuelle de l'application</figcaption>
+                                <figcaption>Figure 1 : Structuration et code du projet</figcaption>
                             </figure>
                         </div>
                         <div class="project-text-side">
                             <p>
-                                Cette représentation est le fruit du traitement d'un fichier .wav 
-                                chargé à l’aide de la bibliothèque StdAudio, 
-                                puis manipulé pour en modifier la tonalité ou y ajouter un écho. 
-                                Le rendu visuel du son, qui est ici une courbe d’amplitude dans le temps,
-                                a été produit en analysant les données numériques du signal audio, 
-                                puis en les dessinant ligne par ligne.
+                                À gauche, nous avons l'arborescence du projet,
+                                qui contient les fichiers nécessaires au fonctionnement de l'application.
+                                Pour trier les fichiers, j'ai choisi de les regrouper par dossier,
+                                en respectant le paradime MVC.
+                                Le paradigme MVC (Modèle-Vue-Contrôleur) est une architecture logicielle 
+                                qui sépare les préoccupations d'une application en trois composants principaux : 
+                                le Modèle (qui gère les données et la logique métier), 
+                                la Vue (qui gère l'affichage et l'interface utilisateur) et 
+                                le Contrôleur (qui gère les interactions entre le Modèle et la Vue).
+                                Cela permet de mieux organiser le code et de le rendre plus lisible.
                             </p>
                         </div>
                     </div>
                     
                     <div class="project-text-bottom">
                         <p>
-                            Le trait rouge sert de curseur de lecture, 
-                            mis à jour dynamiquement pendant l’exécution. 
-                            Cela a nécessité l’utilisation de structures de contrôle (for, while) 
-                            et d’une gestion des temps (Thread.sleep()) 
-                            pour synchroniser l’affichage avec le son joué en arrière-plan. 
-                            Ce travail illustre la mobilisation de savoir-faire en traitement de signal, 
-                            en manipulation de données numériques, et en rendu graphique via une API bas niveau.
-
+                            À droite, nous avons un extrait du code source de l'application, qui est écrit en Java.
+                            Il y a également une bibliothèque nommé Boardifier qui permet de manipuler la grille de jeu.
+                            Nous pouvons également voir les commentaires qui expliquent le fonctionnement de l'IA.
+                            Dans l’extrait de code affiché, on observe la class ConditionIA,
+                            qui est une IA pour le jeu Puissance X.
+                            J'ai créé cette classe qui implémente une stratégie de jeu basée 
+                            sur des conditions spécifiques pour déterminer le meilleur coup à jouer.
+                            Elle analyse la grille de jeu et évalue la meilleure position
+                            pour placer un jeton, en tenant compte des règles du jeu et des positions
+                            des jetons adverses.
+                            Cette approche permet à l'IA de prendre des décisions stratégiques
+                            et de jouer des coups efficaces pour gagner, tout en minimisant le risque de perdre.
+                            <br>
+                            Cependant cette IA n'est pas très intelligente,
+                            car elle regarde les coups possible lors de ce tour, et du prochain tour.
+                            Elle ne regarde pas les coups possibles dans le futur, 
+                            ce qui la rend vulnérable à des stratégies plus avancées.
+                            
                             <br><br>
 
-                            Même si le projet ne dispose pas d’interface utilisateur ergonomique 
-                            (pas de boutons, sliders ou menus), 
-                            il montre que l’on peut concevoir une application fonctionnelle avec 
-                            des bibliothèques simples, à condition de structurer correctement son code, 
-                            de bien comprendre le modèle audio numérique, 
-                            et de gérer efficacement les boucles d'affichage.
-
-                            <br><br>
-
-                            Cette figure témoigne donc de ma capacité à intégrer des bibliothèques externes, 
-                            à traiter et visualiser des données, et à coordonner différents composants 
-                            logiciels (audio et graphique) dans un projet structuré.
+                            Ce projet m’a permis de mieux comprendre la programmation orientée objet,
+                            la structuration de projets Java,
+                            et l’utilisation de bibliothèques externes.
+                            Il m’a également familiarisé avec la création d’interfaces utilisateur simples
+                            et la gestion des interactions entre les composants du jeu.
+                            Cependant, il reste encore des améliorations à apporter,
+                            notamment en ce qui concerne l'intelligence de l'IA.
+                            De plus j'ai pu avoir des problèmes sur le faite que l'IA ne place pas
+                            le jeton au bon endroit,
+                            ce qui a nécessité de revoir la logique de placement des jetons.
                         </p>
                     </div>
                 </div>
 
                 <!-- Deuxième bloc -->
-                <h2>Structuration et code</h2>
+                <h2>Configuration</h2>
 
                 <div class="project-section">
                     <div class="project-text-top">
                         <p>
-                            La figure 2 représente l'éditeur de code Visual Studio Code 
-                            avec le fichier Pauvocoder.java ouvert, au sein du projet Pauvocoder.
+                            La figure 2 représente ce qui est affiché sur la console 
+                            lors de l'exécution de l'application PuissanceX.
                         </p>
                     </div>
 
                     <div class="project-content-wrapper reverse">
                         <div class="project-text-side">
                             <p>
-                                Nous pouvons voir à gauche l'arborescence du projet,
-                                qui contient les fichiers nécessaires au fonctionnement de l'application.
-                                Il n'y a pas de dossier pour les trier, ce qui fait qu'il est compact et donc moins compréhensible.
-                                Mais cela reste un projet simple,
-                                donc il n'est pas nécessaire de le structurer en plusieurs dossiers.
-                                De plus, s'il y a plusieurs fichiers, 
-                                cela veut dire qu'il y a des intégrations de classes entre eux.
+                                En haut, nous avons les lignes de texte qui sont affichées
+                                pour informer l'utilisateur sur les paramètres du jeu.
+                                Et en bas, nous avons les options de configuration du jeu.
+                                Ces lignes de texte, générées par le programme Java,
+                                permettent de configurer le jeu avant de commencer à jouer.<br>
+                                Le choix 1 permet de lancer le jeu avec la configuration écrit au dessus.<br>
+                                Le choix 2 permet de modifier le type de jeu 
+                                (contre un bot ou contre un autre joueur ou encore faire un match entre deux bots).<br>
+                                Le choix 3 permet de modifier le nombre de lignes et de colonnes de la grille (de 3 à 6 ).<br>
+                                Le choix 4 permet de modifier le nombre de jetons à aligner pour gagner (de 3 à 6).<br>
+                                Le choix 5 permet de quitter le jeu.<br>
 
                             <br><br>
 
-                                À droite, nous avons le code source de l'application, qui est écrit en Java.   
-                                Nous pouvons également voir les commentaires qui expliquent le fonctionnement de l'application.
-                                Dans l’extrait de code affiché, on observe la méthode vocodesSimpleOverCross, 
-                                chargée d’effectuer un changement sur un signal audio. 
-                                Cela signifie qu’elle modifie la durée du son tout en essayant de conserver ses caractéristiques acoustiques. 
-                                L’algorithme utilise un mécanisme d’overlap-add avec recherche de corrélation croisée pour améliorer la qualité du rendu.
+                                Nous avons choisi de faire une interface en console
+                                pour simplifier le développement et nous concentrer sur la logique du jeu.
+                                Nous avons utilisé des boucles et des conditions pour gérer les choix de l'utilisateur
+                                et afficher les informations nécessaires.
+                                Cela m'a permis de mieux comprendre la gestion des entrées/sorties en Java
+                                et la création d'interfaces utilisateur simples.
                             </p>
                         </div>
                         <div class="project-main">
                             <figure class="project-figure">
                                 <div class="project-image-large">
-                                    <img src="../Image/Pauvocodeur_code.png" alt="Code de l'application Pauvocodeur">
+                                    <img src="../Image/PuissanceX_settings.png" alt="Visuel de la configuration de l'application">
                                 </div>
-                                <figcaption>Figure 2 : Code de l'application</figcaption>
+                                <figcaption>Figure 2 : Visuel de la configuration de l'application</figcaption>
                             </figure>
                         </div>
-                    </div>
-                    
-                    <div class="project-text-bottom">
-                        <p>
-                            Ce projet m’a permis de mieux comprendre le traitement du signal audio, 
-                            la manipulation de tableaux de données numériques, 
-                            et l’importance de la précision dans les calculs liés aux transformations temporelles. 
-                            Il m’a également familiarisé avec la structuration de projets Java multi-fichiers 
-                            et l’utilisation de bibliothèques externes.
-                        </p>
                     </div>
                 </div>
                 
                 <br>
                 <!-- Troisième bloc -->
-                <h2>Console</h2>
+                <h2>Jeu</h2>
                 
                 <div class="project-section">
                     <div class="project-text-top">
                         <p>
                             La figure 3 illustre le contenu affiché dans le terminal lors de l’exécution 
-                            de l’application Pauvocodeur. 
-                            Ces lignes de texte, générées par le programme Java, 
-                            permettent d’informer l’utilisateur en temps réel sur les différentes
-                            étapes du traitement du fichier audio.
+                            de l’application PuissanceX.
+                            Elle montre le jeu de plateau, avec les jetons des joueurs et le plateau.
                         </p>
                     </div>
                     
@@ -216,32 +217,49 @@
                         <div class="project-main">
                             <figure class="project-figure">
                                 <div class="project-image-large">
-                                    <img src="../Image/Pauvocodeur_console.png" alt="Affichage sur le terminal">
+                                    <img src="../Image/PuissanceX_jeu.png" alt="Visuel du jeu">
                                 </div>
-                                <figcaption>Figure 3 : Affichage sur le terminal</figcaption>
+                                <figcaption>Figure 3 : Visuel du jeu</figcaption>
                             </figure>
                         </div>
                         <div class="project-text-side">
                             <p>
-                                Chaque bloc de texte correspond à l’appel d’une méthode spécifique 
-                                (comme resample, vocodeSimple, ou vocodeSimpleOverCross), 
-                                avec l'affichage des paramètres utilisés (facteurs de dilatation, 
-                                tailles des signaux, durée, etc.) 
-                                ainsi qu’un résumé descriptif de l’opération en cours. 
-                                Cette sortie textuelle est essentielle pour suivre l’évolution du traitement 
-                                et comprendre comment le signal audio est transformé.
-
+                                Dans la figure 3, nous pouvons voir le jeu en cours,
+                                avec comme configuration :
+                                <ul>
+                                    <li>Nombre de lignes : 5</li>
+                                    <li>Nombre de colonnes : 10</li>
+                                    <li>Jetons à aligner pour gagner : 6</li>
+                                    <li>Type de jeu : contre un bot</li>
+                                </ul>
+                                La partie est en cours,
+                                nous pouvons voir, en haut, le numéro des colonnes,
+                                ainsi que la personne qui doit jouer.<br>
+                                Au centre, nous avons le plateau de jeu.<br>
+                                En bas, nous avons un message qui indique à l'utilisateur
+                                de choisir une colonne pour placer son jeton.
+                                Et le bot joue automatiquement après le joueur.
+                                
                                 <br><br>
 
-                                Ce retour console constitue un outil précieux de suivi, 
-                                notamment en phase de développement ou d’analyse. 
-                                Il met en évidence les modifications successives apportées au fichier audio — 
-                                telles que le changement de taille, la durée recalculée, ou encore 
-                                l’ajustement des séquences et chevauchements. 
-                                On observe ainsi que l’algorithme s’adapte dynamiquement aux paramètres fournis, 
-                                garantissant un traitement audio cohérent et précis.
+                                Nous avons utilisé des boucles pour vérifier les entrées de l'utilisateur
+                                et gérer les tours des joueurs.
+                                Nous avons aussi utilisé des conditions pour gérer les choix de l'utilisateur
+                                et afficher les informations nécessaires.
+                                Cela a pu nous posé des problèmes,
+                                notamment contre les bots, qui afficher des jetons supplémentaires
+                                dans la grille, ce qui a nécessité de revoir le code des bots à plusieurs reprises.
                             </p>
                         </div>
+                    </div>
+                    <div class="project-text-bottom">
+                        <p>
+                            Ce projet m’a permis de mieux comprendre la gestion des entrées/sorties en Java,
+                            la création d'interfaces utilisateur simples,
+                            et la gestion des interactions entre les joueurs.
+                            Il m’a également familiarisé avec la création de jeux en console
+                            et la gestion des règles du jeu.
+                        </p>
                     </div>
                 </div>
 
