@@ -24,6 +24,11 @@ export default function App() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
+    if (!import.meta.env.DEV) {
+      setLoading(false);
+      return undefined;
+    }
+
     let cancelled = false;
 
     fetch('/api/portfolio')
