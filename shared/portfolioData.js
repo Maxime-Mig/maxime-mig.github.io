@@ -76,8 +76,8 @@
         {
           title: 'Parties développées',
           points: [
-            "Toutes les pages du site ont été créées ou travaillées : accueil, actualités, événements, multimédia, réseaux et articles.",
-            "La partie multimédia a été la plus complexe, car il fallait trouver une logique claire pour répartir et présenter les articles.",
+            "Toutes les pages du site ont été créées ou travaillées : accueil, actualités, événements, réseaux et blog.",
+            "La partie multimédia / blog a été la plus complexe, car il fallait trouver une logique claire pour répartir et présenter les articles.",
             "Une API ou logique de détection live a été mise en place pour savoir automatiquement si Good Geek est en live sur Twitch ou YouTube.",
           ],
         },
@@ -135,15 +135,9 @@
         {
           number: 1,
           title: "Création d'un thème WordPress complet",
-          image: '/images/traces/trace-react-components.svg',
+          image: '/images/traces/trace-react-components.jpg',
           caption:
             "Trace 1 : schéma de l'organisation générale du site de communication Good Geek créé avec WordPress.",
-          schemaItems: [
-            "Un bloc WordPress au centre.",
-            "Des blocs Accueil, Actualités, Articles, Événements, Multimédia et Réseaux.",
-            "Un bloc Administration WordPress pour montrer que certaines pages sont modifiables.",
-            "Une flèche vers Templates PHP, CSS et JavaScript pour représenter le thème créé.",
-          ],
           skills: ['creer-theme-wordpress', 'organiser-contenus'],
           elementarySkills: [
             'Savoir créer des templates WordPress',
@@ -180,16 +174,10 @@
         },
         {
           number: 2,
-          title: 'Organisation de la partie multimédia',
-          image: '/images/traces/trace-data-model.svg',
+          title: 'Organisation des articles du blog et de leur affichage',
+          image: '/images/traces/trace-data-model.jpg',
           caption:
-            "Trace 2 : schéma de la logique utilisée pour répartir et afficher les articles dans la partie multimédia.",
-          schemaItems: [
-            "Un bloc Articles WordPress.",
-            "Un bloc Données utilisées : catégorie, image, extrait, date, média.",
-            "Un bloc Logique de répartition des articles.",
-            "Un bloc Affichage multimédia avec cartes, tailles et contenus visibles.",
-          ],
+            "Trace 2 : organisation des données d'un article, puis utilisation de ces informations pour filtrer, trier et optimiser leur affichage dans le blog.",
           skills: ['organiser-contenus', 'creer-theme-wordpress'],
           elementarySkills: [
             'Savoir récupérer des articles avec WordPress',
@@ -198,49 +186,37 @@
             'Savoir filtrer et trier une liste de contenus',
             'Savoir choisir une répartition visuelle lisible',
             'Savoir gérer plusieurs médias dans une carte',
-            'Savoir prévoir les données manquantes',
           ],
           skillPassages: [
-            "j'ai utilisé les requêtes et les fonctions de WordPress pour récupérer les contenus publiés ainsi que leurs titres, catégories, dates, extraits, images et informations multimédias. Les données obtenues ont été regroupées dans une structure commune afin que le template puisse traiter de manière cohérente des articles qui ne possèdent pas tous exactement les mêmes médias",
+            "depuis le blog, j'ai utilisé les requêtes et les fonctions de WordPress pour récupérer les articles publiés avec leur catégorie, leur date, leur description, leur image ou vidéo et leur titre",
             [
-              "j'ai relié la grille multimédia aux publications WordPress afin que les nouvelles entrées apparaissent sans devoir modifier manuellement le template",
-              "j'ai fait dépendre les cartes des données réellement enregistrées, notamment leur titre, leur date, leur résumé, leur catégorie et les médias disponibles",
+              "j'ai relié le blog aux publications WordPress afin que chaque nouvel article puisse apparaître sans modifier manuellement le template",
+              "j'ai construit l'affichage à partir des informations réellement enregistrées dans chaque article",
             ],
             [
-              "j'ai regroupé le titre, la date, le résumé, le type de publication, le lien et les médias dans une structure commune utilisable par toutes les cartes",
-              "j'ai converti les différentes sources d'images et de vidéos vers une présentation cohérente afin que le template n'ait pas à traiter chaque publication comme un cas entièrement séparé",
+              "le bloc Article regroupe dans une structure commune la catégorie, la date, la description, le média et le titre nécessaires à la création d'une carte",
+              "j'ai préparé les images et les vidéos sous une forme commune afin de conserver une présentation cohérente entre les publications",
             ],
-            "j'ai ajouté des choix de filtre et de tri, conservé la sélection active et affiché le nombre de résultats pour que l'utilisateur comprenne immédiatement l'effet de son action",
+            "la catégorie et la date alimentent le filtre et le tri afin d'aider le visiteur à retrouver les publications qui l'intéressent",
             [
-              "j'ai défini la largeur des cartes, la place du média, la longueur visible du résumé et le nombre de colonnes selon l'écran",
-              "j'ai réalisé plusieurs essais de répartition afin d'éviter une grille répétitive tout en conservant des alignements compréhensibles",
+              "la description et le média participent à la répartition de l'espace disponible dans chaque carte",
+              "j'ai ajusté la largeur des cartes, la place réservée au visuel, la longueur du texte et le nombre de colonnes pour obtenir une lecture claire",
             ],
-            "j'ai affiché les images et les vidéos dans une zone commune et ajouté une navigation uniquement lorsqu'une publication possède plusieurs médias",
-            [
-              "j'ai produit un résumé à partir du contenu lorsqu'aucun extrait manuel n'était disponible",
-              "j'ai masqué les médias, les contrôles ou les résultats qui n'existaient pas afin qu'une information absente ne laisse pas une zone cassée dans la page",
-            ],
+            "l'étape d'optimisation m'a permis d'améliorer progressivement la répartition de l'espace et de revenir sur la mise en page lorsqu'un essai restait déséquilibré",
           ],
           description:
-            "La trace 2 ci-contre présente l'organisation de la page multimédia, qui a été l'une des parties les plus complexes du stage. L'objectif n'était pas uniquement de récupérer des publications WordPress et de les placer les unes sous les autres. Les contenus pouvaient comporter une image, plusieurs images, une vidéo, un extrait plus ou moins long ou parfois certaines informations manquantes. Il fallait donc définir une structure capable de présenter ces cas différents sans rendre la page irrégulière ou difficile à comprendre. J'ai commencé par identifier les données nécessaires à une carte : le titre, la date, le type de contenu, le résumé, le lien et les médias disponibles. J'ai ensuite travaillé sur une logique commune permettant de préparer ces informations avant leur affichage. La page propose aussi des possibilités de filtrage et de tri pour aider l'utilisateur à retrouver un contenu. Pour la partie visuelle, j'ai dû réfléchir à la largeur des cartes, à la proportion réservée au média et au comportement de la grille selon la taille de l'écran. Lorsqu'un contenu comporte plusieurs médias, un système de navigation permet de passer de l'un à l'autre. J'ai également prévu les cas sans résultat et les données absentes afin que l'interface reste propre. Cette partie m'a demandé plusieurs essais, car la difficulté était à la fois technique, avec la récupération des données WordPress, et visuelle, avec la recherche d'une répartition claire.",
+            "La trace 2 ci-dessus représente la logique utilisée pour organiser les publications du blog avant leur affichage. Le premier bloc indique que le blog rassemble plusieurs articles enregistrés dans WordPress. Chaque article est ensuite décrit par cinq informations principales visibles dans le schéma : sa catégorie, sa date, sa description, son image ou sa vidéo et son titre. Ces données ne jouent pas toutes le même rôle dans la page. La catégorie et la date sont utilisées par le système de filtre et de tri. Elles permettent au visiteur de réduire la liste des publications et de modifier leur ordre sans parcourir l'ensemble du blog. Le titre identifie immédiatement le sujet de l'article, tandis que la description apporte un résumé de son contenu. L'image ou la vidéo forme la partie visuelle de la carte. La description et le média influencent directement la répartition de l'espace, car leur taille et leur proportion peuvent varier d'une publication à l'autre. J'ai donc préparé une structure commune avant l'affichage afin que le template puisse construire les cartes de manière cohérente à partir des données récupérées dans WordPress. Le bloc Répartition de l'espace correspond au travail réalisé sur la largeur des cartes, la place accordée au visuel, la quantité de texte visible et le nombre de colonnes. Le filtre et le tri influencent également cette répartition, puisque la grille doit rester lisible lorsque le nombre de résultats change. Enfin, la flèche entre Répartition de l'espace et Optimisation représente les différents essais effectués pendant le développement. Après avoir observé le résultat dans le navigateur, je revenais sur la mise en page pour corriger un déséquilibre, améliorer les alignements ou mieux adapter les cartes aux différentes tailles d'écran. Ce fonctionnement progressif m'a permis d'associer la récupération des articles WordPress, l'organisation de leurs données et la recherche d'une présentation visuelle claire.",
           remarkablePoints: [
-            "La difficulté principale était de comprendre comment répartir les articles sans obtenir une page désordonnée.",
-            "Cette partie a demandé de manipuler des données WordPress et de réfléchir à la présentation visuelle en même temps.",
+            "Le filtrage repose principalement sur la catégorie et la date enregistrées avec chaque article.",
+            "La présentation a demandé plusieurs essais pour équilibrer la description, les médias et l'espace disponible.",
           ],
         },
         {
           number: 3,
           title: 'Détection automatique des lives Twitch et YouTube',
-          image: '/images/traces/trace-node-api.svg',
+          image: '/images/traces/trace-node-api.jpg',
           caption:
-            "Trace 3 : schéma de la logique permettant de détecter automatiquement si Good Geek est en live sur Twitch ou YouTube.",
-          schemaItems: [
-            "Un bloc Site WordPress.",
-            "Un bloc Twitch et un bloc YouTube.",
-            "Un bloc Requête API ou vérification du live.",
-            "Un bloc Résultat : en live ou hors ligne.",
-            "Une flèche vers le bouton ou lien affiché sur le site.",
-          ],
+            "Trace 3 : circulation des requêtes entre le site WordPress, Twitch et YouTube pour déterminer si un direct doit être mis en avant.",
           skills: ['connecter-services', 'creer-theme-wordpress'],
           elementarySkills: [
             "Savoir configurer les accès à une interface de programmation",
@@ -257,21 +233,21 @@
               "j'ai conservé ce jeton temporairement et tenu compte de sa durée de validité avant de le redemander",
             ],
             [
-              "j'ai utilisé les fonctions HTTP de WordPress pour contacter Twitch et YouTube avec un délai maximal afin de ne pas bloquer indéfiniment le chargement du site",
+              "depuis le bloc Site, j'ai utilisé les fonctions HTTP de WordPress pour envoyer une requête vers Twitch et YouTube avec un délai maximal",
               "j'ai construit les paramètres propres à chaque plateforme, notamment le nom de la chaîne Twitch et l'identifiant de chaîne YouTube",
             ],
             [
-              "j'ai décodé les réponses JSON et recherché les données indiquant qu'un stream ou une vidéo en direct était disponible",
-              "j'ai transformé les résultats de plusieurs plateformes en une structure commune contenant l'état, le nom de la plateforme et le lien à afficher",
+              "dans le bloc Réponse API, j'ai décodé les données JSON afin de déterminer si une diffusion était réellement en cours",
+              "lorsque la réponse indique oui, le site récupère la plateforme et le lien du direct afin de les mettre en avant",
             ],
             "j'ai stocké temporairement le statut général et les autorisations obtenues afin de réduire les requêtes externes, d'accélérer les pages et de limiter l'utilisation des services",
             [
               "j'ai contrôlé les erreurs WordPress, les réponses vides, les identifiants absents et les cas où aucun direct n'était en cours",
-              "j'ai retourné un état hors ligne stable plutôt qu'une erreur visible afin que l'en-tête et le reste du site restent utilisables lorsque Twitch ou YouTube ne répondent pas",
+              "lorsque la réponse indique non ou qu'un service ne répond pas correctement, le site conserve l'état pas de live sans afficher d'erreur au visiteur",
             ],
           ],
           description:
-            "La trace 3 ci-contre présente la fonctionnalité qui indique automatiquement si Good Geek diffuse actuellement un direct sur Twitch ou YouTube. Le besoin était d'éviter une information saisie manuellement, qui risquait de rester affichée après la fin d'un live ou de ne pas être activée au bon moment. J'ai donc créé une logique côté WordPress capable de contacter les services externes et d'en déduire un état utilisable dans l'en-tête du site. Pour Twitch, une première requête sert à obtenir un jeton d'application. Ce jeton est ensuite utilisé avec l'identifiant du client pour interroger la chaîne de Good Geek. Pour YouTube, le site utilise la clé de l'interface de programmation afin d'identifier la chaîne et de rechercher une vidéo en cours de diffusion. Une vérification supplémentaire de la page de direct est prévue lorsque la première méthode ne retourne pas de résultat. Les réponses sont décodées puis transformées en informations simples : plateforme active, adresse du direct et état général. L'en-tête affiche alors un indicateur hors ligne ou un menu contenant les plateformes disponibles. J'ai aussi dû penser aux erreurs possibles, car le fonctionnement du site ne doit pas dépendre entièrement d'un service extérieur. En cas de clé absente, de délai dépassé ou de réponse invalide, le code retourne un état hors ligne sans provoquer d'erreur visible. Un cache temporaire réduit enfin le nombre de requêtes et améliore les performances.",
+            "La trace 3 ci-dessus représente le parcours suivi pour détecter automatiquement un direct. Le bloc Site, placé à gauche, correspond au thème WordPress : c'est lui qui déclenche la vérification au moment où le statut doit être affiché. Il envoie une requête par l'intermédiaire des interfaces de programmation vers YouTube et Twitch ; les plateformes ne transmettent donc pas spontanément l'information au site. Pour Twitch, WordPress commence par obtenir un jeton d'accès à partir des identifiants de l'application, puis utilise ce jeton pour interroger la chaîne de Good Geek. Pour YouTube, il emploie la clé configurée et l'identifiant de la chaîne afin de rechercher une vidéo actuellement diffusée en direct. Les deux chemins rejoignent ensuite le bloc Réponse API. Le code décode les données reçues et les transforme en un résultat commun, quelle que soit la plateforme interrogée. Si la réponse confirme qu'un direct est disponible, le chemin Si oui conduit à la mise en avant : le site affiche alors la plateforme concernée et un lien permettant d'accéder à la diffusion. Si aucun direct n'est trouvé, le chemin Si non ramène vers le site avec l'état Pas de live, sans afficher d'information incorrecte au visiteur. Ce même résultat hors ligne est utilisé lorsqu'un identifiant manque, qu'une requête dépasse le délai prévu ou qu'une réponse est invalide, afin que le reste du site continue de fonctionner. Le schéma simplifie volontairement un dernier mécanisme : après la vérification, WordPress conserve le statut obtenu pendant 30 secondes. Ce cache évite de contacter Twitch et YouTube à chaque affichage de page tout en actualisant rapidement l'information lorsqu'un direct commence ou se termine.",
           remarkablePoints: [
             "La fonctionnalité ne dépend pas seulement du thème : elle doit aussi gérer des réponses venant de plateformes externes.",
             "Il faut prévoir les cas où la plateforme ne répond pas, où les identifiants ne sont pas configurés ou où aucun live n'est en cours.",
@@ -283,13 +259,6 @@
           image: '/images/traces/trace-wordpress-administration.svg',
           caption:
             "Trace 4 : schéma des réglages créés pour modifier les pages d'articles, les cartes de l'accueil et les boosters depuis WordPress.",
-          schemaItems: [
-            "Un bloc Administration WordPress au centre.",
-            "Une branche Pages d'articles avec profils visuels, couleurs, typographies, médias et affectation par catégorie.",
-            "Une branche Page d'accueil avec choix des articles, ordre des cartes, styles et contenus affichés.",
-            "Une branche Boosters avec activation, titre, thème, couleurs, image, textes et sélection des cartes.",
-            "Des flèches vers le site public pour montrer que les réglages enregistrés modifient automatiquement l'affichage.",
-          ],
           skills: ['creer-theme-wordpress', 'organiser-contenus'],
           elementarySkills: [
             "Savoir créer des interfaces de réglage dans l'administration",
@@ -433,12 +402,6 @@
           image: '/images/traces/trace-project-board.svg',
           caption:
             "Trace 5 : schéma de la liste de tâches construite après le débrief initial avec les attentes de l'entreprise.",
-          schemaItems: [
-            "Un bloc Débrief initial.",
-            "Un bloc Notes prises pendant la réunion.",
-            "Un tableau de tâches : pages, articles, événements, multimédia, réseaux, live.",
-            "Des colonnes À faire, En cours, À montrer, Validé.",
-          ],
           skills: ['recueillir-besoin', 'prioriser-taches', 'suivre-projet'],
           elementarySkills: [
             'Savoir prendre des notes pendant un débrief',
@@ -475,12 +438,6 @@
           image: '/images/traces/trace-validation-note.svg',
           caption:
             "Trace 6 : schéma des validations ponctuelles réalisées quand je montrais l'avancement du site à l'équipe.",
-          schemaItems: [
-            "Un bloc Travail réalisé.",
-            "Un bloc Présentation à l'équipe.",
-            "Un bloc Retour des membres de l'entreprise.",
-            "Un bloc Correction ou validation.",
-          ],
           skills: ['recueillir-besoin', 'suivre-projet'],
           elementarySkills: [
             'Savoir préparer une démonstration compréhensible',
@@ -610,13 +567,6 @@
           image: '/images/traces/trace-communication-flow.jpg',
           caption:
             "Trace 7 : schéma des échanges entre mon travail seul, les retours de l'équipe et les validations ponctuelles.",
-          schemaItems: [
-            "Un bloc Travail seul.",
-            "Un bloc Question ou présentation à la référente informatique.",
-            "Un bloc Retour de l'équipe.",
-            "Un bloc Correction ou validation.",
-            "Une flèche de retour si une modification est demandée.",
-          ],
           skills: ['communiquer-equipe', 'integration-cadre'],
           elementarySkills: [
             'Savoir adapter son vocabulaire à son interlocuteur',
@@ -656,11 +606,6 @@
           image: '/images/traces/trace-work-environment.png',
           caption:
             "Trace 8 : vue de l'administration WordPress, de l'environnement local XAMPP et de l'organisation des fichiers du thème dans Visual Studio Code.",
-          schemaItems: [
-            "À l'arrière-plan : le tableau de bord WordPress utilisé pour administrer les contenus du site.",
-            "Dans l'encadré vert : XAMPP avec Apache et MySQL actifs pour exécuter WordPress localement.",
-            "Dans l'encadré rouge : Visual Studio Code et l'arborescence des fichiers PHP, CSS et JavaScript du thème.",
-          ],
           skills: ['utiliser-outils', 'integration-cadre'],
           elementarySkills: [
             'Savoir utiliser un environnement WordPress local',
@@ -750,5 +695,6 @@
     },
   ],
 };
+
 
 
