@@ -1,4 +1,4 @@
-export const portfolioData = {
+﻿export const portfolioData = {
   profile: {
     firstName: 'Maxime',
     lastName: 'Miguet',
@@ -364,7 +364,7 @@ export const portfolioData = {
           difficulties:
             "La partie multimédia a été la plus difficile, car il fallait réunir des contenus différents dans une présentation commune. Le problème n'était pas seulement d'obtenir les données, mais de décider comment les trier, les filtrer et les répartir sans créer une page désordonnée. Les images, les vidéos et les résumés variables demandaient également plusieurs comportements de secours.",
           before: 'fragile',
-          after: 'bon',
+          after: 'moyen',
           justification:
             "La progression est visible dans le passage d'une structure vide à plusieurs pages capables d'afficher des contenus variés et administrables. Le site sait désormais traiter des images, des vidéos, des catégories, des extraits, des dates et des métadonnées propres aux événements. Cette expérience m'a appris à ne pas mélanger directement toute la logique de récupération avec le code visuel et à anticiper les contenus incomplets.",
           traceRefs: [1, 2, 4],
@@ -555,8 +555,8 @@ export const portfolioData = {
             "J'ai appris à m'adapter à une nouvelle demande sans rester bloqué sur le sujet prévu avant mon arrivée. J'ai construit une liste de tâches à partir du débrief, puis j'ai suivi la réalisation des pages et des fonctionnalités. Le travail autonome était complété par des présentations permettant de confirmer que le projet restait aligné avec les attentes.",
           difficulties:
             "La difficulté était de conserver une organisation claire sur un projet très large, avec toutes les pages à créer et un outil que je ne connaissais pas encore. Certaines tâches se sont révélées plus longues que prévu, ce qui m'a obligé à ajuster mes priorités sans perdre la vision globale du site.",
-          before: 'moyen',
-          after: 'bon',
+          before: 'fragile',
+          after: 'moyen',
           justification:
             "Je suis plus capable de repartir d'un nouveau besoin, de le découper et de garder une trace de l'avancement. Le changement de mission n'a pas empêché la création du site et m'a conduit à développer des compétences plus larges. Je sais toutefois que mon suivi gagnerait à inclure dès le départ une estimation de la difficulté et des étapes de contrôle prévues pour les fonctions les plus risquées.",
           traceRefs: [5, 6],
@@ -607,7 +607,7 @@ export const portfolioData = {
         {
           number: 7,
           title: "Circuit d'échange avec l'équipe",
-          image: '/images/traces/trace-communication-flow.svg',
+          image: '/images/traces/trace-communication-flow.jpg',
           caption:
             "Trace 7 : schéma des échanges entre mon travail seul, les retours de l'équipe et les validations ponctuelles.",
           schemaItems: [
@@ -653,15 +653,13 @@ export const portfolioData = {
         {
           number: 8,
           title: 'Environnement WordPress local',
-          image: '/images/traces/trace-work-environment.svg',
+          image: '/images/traces/trace-work-environment.png',
           caption:
-            'Trace 8 : environnement utilisé pour créer, tester et administrer le site WordPress de communication.',
+            "Trace 8 : vue de l'administration WordPress, de l'environnement local XAMPP et de l'organisation des fichiers du thème dans Visual Studio Code.",
           schemaItems: [
-            "Un bloc XAMPP.",
-            "Un bloc WordPress local.",
-            "Un bloc Fichiers du thème : PHP, CSS, JavaScript.",
-            "Un bloc Administration WordPress avec champs personnalisés.",
-            "Un bloc Navigateur pour les tests responsive.",
+            "À l'arrière-plan : le tableau de bord WordPress utilisé pour administrer les contenus du site.",
+            "Dans l'encadré vert : XAMPP avec Apache et MySQL actifs pour exécuter WordPress localement.",
+            "Dans l'encadré rouge : Visual Studio Code et l'arborescence des fichiers PHP, CSS et JavaScript du thème.",
           ],
           skills: ['utiliser-outils', 'integration-cadre'],
           elementarySkills: [
@@ -675,12 +673,12 @@ export const portfolioData = {
           ],
           skillPassages: [
             [
-              "j'ai utilisé XAMPP pour lancer le serveur web, PHP et la base de données nécessaires au fonctionnement de WordPress sur mon poste",
-              "j'ai développé et testé localement afin de pouvoir provoquer des erreurs et recommencer des essais sans modifier un site public",
+              "dans l'encadré vert, XAMPP montre qu'Apache et MySQL sont actifs pour faire fonctionner WordPress localement",
+              "cet environnement local me permettait de tester mes modifications sans intervenir sur un site public",
             ],
-            "j'ai utilisé PHP pour les données et les templates, CSS pour la présentation et le responsive, puis JavaScript pour les interactions qui devaient réagir dans le navigateur",
+            "dans l'encadré rouge, l'arborescence de Visual Studio Code distingue les fichiers PHP, les feuilles CSS et les scripts JavaScript du thème",
             [
-              "j'ai créé des champs dans l'administration pour rendre certaines informations modifiables sans intervenir dans les fichiers du thème",
+              "à l'arrière-plan, l'administration WordPress permet de créer les contenus et de renseigner les champs personnalisés sans modifier les fichiers du thème",
               "j'ai récupéré les métadonnées enregistrées et adapté leur affichage selon leur type, par exemple une date, une image, un texte ou un lien",
             ],
             "j'ai vérifié les autorisations et les jetons de sécurité, nettoyé les valeurs reçues puis utilisé la fonction d'enregistrement adaptée avant de conserver les métadonnées",
@@ -695,7 +693,7 @@ export const portfolioData = {
             ],
           ],
           description:
-            "La trace 8 ci-contre présente l'environnement de développement utilisé pour construire et tester le site. Comme WordPress a besoin d'un serveur web, de PHP et d'une base de données, j'ai utilisé XAMPP pour reproduire cet environnement sur mon poste. Le projet pouvait ainsi fonctionner localement, sans que mes essais soient visibles sur un site public. J'intervenais principalement dans les fichiers PHP, CSS et JavaScript du thème. Le PHP servait à organiser les templates, à récupérer les contenus et à appliquer la logique d'affichage. Le CSS permettait de construire l'identité visuelle et les mises en page responsives. Le JavaScript gérait les interactions qui ne pouvaient pas être réalisées uniquement lors du chargement de la page. En parallèle, j'utilisais l'administration WordPress pour créer des articles, ajouter des médias, modifier des pages et tester les champs personnalisés. Ces champs ont été conçus pour rendre plusieurs informations administrables par l'entreprise. Leur traitement demande de vérifier les autorisations, de protéger l'enregistrement et de nettoyer les valeurs reçues avant de les conserver. Après chaque modification importante, je contrôlais le résultat dans le navigateur avec différents contenus. Je vérifiais également les situations moins idéales, par exemple une image absente, une date incomplète, aucun article disponible ou une réponse externe indisponible. Cet environnement m'a permis de comprendre le lien entre les données enregistrées dans WordPress, le code du thème et le résultat finalement affiché à l'utilisateur.",
+            "La trace 8 ci-dessus rassemble les trois outils principaux que j'utilisais pour développer et tester le site de communication. À l'arrière-plan, le tableau de bord WordPress montre l'interface depuis laquelle je créais les articles et les événements, ajoutais les médias, modifiais les pages et renseignais les champs personnalisés. Cette partie me permettait de vérifier que les contenus enregistrés par un utilisateur pouvaient ensuite être récupérés et affichés correctement par le thème. Dans l'encadré vert, le panneau de contrôle XAMPP indique qu'Apache et MySQL sont actifs. Apache exécutait localement WordPress et les fichiers PHP, tandis que MySQL permettait de conserver les pages, les publications, les réglages et les métadonnées. Grâce à cet environnement local, je pouvais effectuer des essais, provoquer des erreurs et recommencer mes tests sans intervenir sur un site public. Dans l'encadré rouge, Visual Studio Code présente l'arborescence du thème développé pendant le stage. On y distingue notamment le dossier assets, qui regroupe les feuilles de style CSS et les scripts JavaScript, ainsi que le dossier inc, composé de plusieurs fichiers PHP consacrés à des fonctionnalités précises. Cette organisation séparait la présentation, les interactions et la logique WordPress afin de rendre le code plus lisible et de faciliter sa réutilisation. Les fichiers PHP servaient à construire les templates, récupérer les contenus et traiter les champs personnalisés. Les feuilles CSS définissaient l'identité visuelle et l'adaptation des pages aux différentes tailles d'écran, tandis que JavaScript gérait les interactions réalisées directement dans le navigateur. La réunion de ces trois zones illustre mon fonctionnement quotidien : je modifiais le code dans Visual Studio Code, je gérais les données depuis WordPress, puis j'utilisais XAMPP pour exécuter et contrôler l'ensemble sur mon poste. Après chaque modification importante, je testais plusieurs contenus et situations, comme une image absente, un titre long, une date incomplète ou l'absence de résultat. Cette méthode m'a aidé à comprendre la circulation complète d'une information, depuis son enregistrement dans l'administration jusqu'à son affichage final sur le site.",
           remarkablePoints: [
             "Le travail en local permettait de tester sans impacter un site public.",
             "L'administration WordPress était importante car plusieurs pages devaient être modifiables sans passer par le code.",
@@ -712,8 +710,8 @@ export const portfolioData = {
             "J'ai appris à expliquer mon travail simplement, en partant de l'objectif et de l'utilisation plutôt que des détails du code. Je devais montrer ce qu'un visiteur verrait, ce que l'entreprise pourrait modifier et pourquoi certains choix avaient été faits. J'ai aussi appris à écouter une remarque jusqu'au bout avant de chercher immédiatement une solution technique.",
           difficulties:
             "La difficulté était de choisir le bon moment pour montrer l'avancement. Une version trop incomplète pouvait détourner la discussion vers des détails temporaires, tandis qu'une présentation trop tardive pouvait entraîner des corrections plus longues. Je devais également adapter mes explications au niveau technique de chaque interlocuteur.",
-          before: 'moyen',
-          after: 'bon',
+          before: 'fragile',
+          after: 'moyen',
           justification:
             "Je suis plus capable de présenter une fonctionnalité de manière structurée, de recevoir un retour et de le traduire en modification concrète. Les validations progressives m'ont aidé à corriger certaines pages avant la fin du projet. Je peux encore améliorer la préparation de mes démonstrations, mais je sais désormais distinguer les informations utiles à l'équipe des détails techniques qui n'apportent rien à la décision.",
           traceRefs: [7],
@@ -752,3 +750,5 @@ export const portfolioData = {
     },
   ],
 };
+
+

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { formatEvidenceText } from '../evidenceText.js';
 import { getSkillCssVariables } from '../skillColors.js';
 
@@ -115,16 +115,6 @@ export function TraceDetail({ trace, skillColorIndexes }) {
             </span>
           </figcaption>
 
-          {trace.schemaItems?.length > 0 ? (
-            <section className="schema-guide" aria-labelledby={`trace-${trace.number}-schema`}>
-              <h3 id={`trace-${trace.number}-schema`}>À mettre sur le schéma</h3>
-              <ul>
-                {trace.schemaItems.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
         </figure>
 
         <div className="trace-detail__text">
@@ -186,3 +176,4 @@ export function TraceDetail({ trace, skillColorIndexes }) {
     </article>
   );
 }
+

@@ -128,7 +128,7 @@ export function SectionPage({ page, loading }) {
               </p>
               <p>
                 Échelle utilisée : niveau 1, débutant ; niveau 2, fragile ;
-                niveau 3, moyen ; niveau 4, bon.
+                niveau 3, moyen ; niveau 4, bon ; niveau 5, expert.
               </p>
             </div>
             {page.analyses.map((analysis) => (
