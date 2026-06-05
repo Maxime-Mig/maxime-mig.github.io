@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Trace détection live Twitch YouTube</title>
+  <desc id="desc">Schéma simple de la détection automatique des lives Twitch et YouTube.</desc>
+  <rect width="960" height="640" fill="#f4f7fb"/>
+  <rect x="70" y="72" width="260" height="160" rx="18" fill="#e9f0ff" stroke="#2563eb" stroke-width="4"/>
+  <text x="110" y="134" fill="#174a9c" font-family="Arial, sans-serif" font-size="27" font-weight="700">Site WordPress</text>
+  <text x="110" y="178" fill="#253044" font-family="Arial, sans-serif" font-size="20">affichage du live</text>
+  <rect x="430" y="54" width="246" height="118" rx="18" fill="#f7eafa" stroke="#6d28d9" stroke-width="4"/>
+  <text x="500" y="112" fill="#5b35ad" font-family="Arial, sans-serif" font-size="27" font-weight="700">Twitch</text>
+  <rect x="430" y="218" width="246" height="118" rx="18" fill="#fff4df" stroke="#c2410c" stroke-width="4"/>
+  <text x="486" y="276" fill="#8a3a05" font-family="Arial, sans-serif" font-size="27" font-weight="700">YouTube</text>
+  <rect x="430" y="402" width="300" height="118" rx="18" fill="#e6f5ee" stroke="#15803d" stroke-width="4"/>
+  <text x="462" y="456" fill="#0f6d3b" font-family="Arial, sans-serif" font-size="25" font-weight="700">Résultat</text>
+  <text x="462" y="494" fill="#253044" font-family="Arial, sans-serif" font-size="20">en live / hors ligne</text>
+  <rect x="770" y="402" width="170" height="118" rx="18" fill="#ffffff" stroke="#334155" stroke-width="3"/>
+  <text x="812" y="456" fill="#253044" font-family="Arial, sans-serif" font-size="24" font-weight="700">Bouton</text>
+  <text x="810" y="492" fill="#253044" font-family="Arial, sans-serif" font-size="18">visible</text>
+  <g fill="none" stroke="#253044" stroke-width="6" stroke-linecap="round">
+    <path d="M330 152h100"/>
+    <path d="M330 170C390 250 390 270 430 278"/>
+    <path d="M552 172v46"/>
+    <path d="M552 336v66"/>
+    <path d="M730 462h40"/>
+  </g>
+</svg>
