@@ -1,4 +1,4 @@
-import { navigateTo } from '../navigation.js';
+import { getRouteHref, navigateTo } from '../navigation.js';
 
 export function SideDrawer({ pages, currentSlug, open, onClose }) {
   return (
@@ -16,7 +16,7 @@ export function SideDrawer({ pages, currentSlug, open, onClose }) {
           {pages.map((page) => (
             <a
               key={page.slug}
-              href={page.path}
+              href={getRouteHref(page.path)}
               className={page.slug === currentSlug ? 'is-active' : ''}
               aria-current={page.slug === currentSlug ? 'page' : undefined}
               onClick={(event) => navigateTo(event, page.path)}

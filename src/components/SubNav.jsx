@@ -1,4 +1,4 @@
-import { navigateTo } from '../navigation.js';
+import { getRouteHref, navigateTo } from '../navigation.js';
 
 export function SubNav({ page, items, activeTab }) {
   const navItems = items || page.tabs;
@@ -11,7 +11,7 @@ export function SubNav({ page, items, activeTab }) {
         return (
           <a
             key={tab.id}
-            href={target}
+            href={getRouteHref(target)}
             className={tab.id === activeTab ? 'is-active' : ''}
             aria-current={tab.id === activeTab ? 'page' : undefined}
             onClick={(event) => navigateTo(event, target)}

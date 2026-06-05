@@ -1,6 +1,7 @@
 import { AnalysisBlock } from '../components/AnalysisBlock.jsx';
 import { SubNav } from '../components/SubNav.jsx';
 import { TraceDetail } from '../components/TraceDetail.jsx';
+import { getRouteLocation } from '../navigation.js';
 
 function getSubPages(page) {
   return [
@@ -17,7 +18,7 @@ function getSubPages(page) {
 }
 
 function getActiveTab(page, subPages) {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(getRouteLocation().search);
   const requested = params.get('vue') || subPages[0].id;
   return subPages.some((tab) => tab.id === requested) ? requested : subPages[0].id;
 }

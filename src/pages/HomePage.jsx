@@ -1,4 +1,4 @@
-import { navigateTo } from '../navigation.js';
+import { getRouteHref, navigateTo } from '../navigation.js';
 
 export function HomePage({ page, pages, loading }) {
   const getSkillTarget = (skill) => {
@@ -56,7 +56,7 @@ export function HomePage({ page, pages, loading }) {
             {page.highlightedSkills.map((skill) => (
               <a
                 key={skill.id}
-                href={getSkillTarget(skill)}
+                href={getRouteHref(getSkillTarget(skill))}
                 className="skill-link"
                 style={{ '--skill-color': skill.color }}
                 onClick={(event) => navigateTo(event, getSkillTarget(skill))}

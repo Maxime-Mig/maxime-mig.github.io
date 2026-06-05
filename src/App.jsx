@@ -4,9 +4,11 @@ import { AppHeader } from './components/AppHeader.jsx';
 import { SideDrawer } from './components/SideDrawer.jsx';
 import { HomePage } from './pages/HomePage.jsx';
 import { SectionPage } from './pages/SectionPage.jsx';
+import { getRouteLocation } from './navigation.js';
 
 function getLocationKey() {
-  return `${window.location.pathname}${window.location.search}`;
+  const location = getRouteLocation();
+  return `${location.pathname}${location.search}`;
 }
 
 function normalizePath(pathname) {
@@ -66,16 +68,16 @@ export default function App() {
       setIsDrawerOpen(false);
     };
 
-    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
     window.addEventListener('portfolio:navigation', handleLocationChange);
 
     return () => {
-      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
       window.removeEventListener('portfolio:navigation', handleLocationChange);
     };
   }, []);
 
-  const currentPath = normalizePath(window.location.pathname);
+  const currentPath = normalizePath(getRouteLocation().pathname);
   const currentPage = useMemo(() => {
     return portfolio.pages.find((page) => normalizePath(page.path) === currentPath) || portfolio.pages[0];
   }, [portfolio.pages, currentPath, locationKey]);
