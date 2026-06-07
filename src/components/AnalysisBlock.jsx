@@ -22,80 +22,81 @@ function getRepresentativeEvidence(evidence, limit = 8) {
   });
 }
 
-function getEvidenceLead(index) {
-  const leads = [
-    'Une première preuve montre que ',
-    'Le travail réalisé montre aussi que ',
-    'Un autre passage indique que ',
-    'Les traces font également apparaître que ',
-    'Enfin, elles démontrent que ',
-  ];
+const SYNTHESIS_LEADS = [
+  'Concrètement, ',
+  'Les traces montrent notamment que ',
+  'Dans ce cadre, ',
+  'Par ailleurs, ',
+  'Cette progression repose aussi sur le fait que ',
+  'Enfin, ',
+];
 
-  return leads[index % leads.length];
+function capitalize(text) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-function getShortEvidenceLead(index) {
-  const leads = [
-    'Cette démarche montre que ',
-    'Elle indique aussi que ',
-    'Une autre preuve montre que ',
-    'Ce travail fait également apparaître que ',
-    'La dernière preuve indique que ',
-  ];
+function IntegratedAnalysisParagraph({
+  text,
+  evidence,
+  paragraphIndex,
+  skillColorIndexes,
+}) {
+  const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g)
+    ?.map((sentence) => sentence.trim())
+    .filter(Boolean) || [];
+  const slots = Array.from({ length: sentences.length + 1 }, () => []);
 
-  return leads[index % leads.length];
-}
+  evidence.forEach((item, evidenceIndex) => {
+    const progress = (evidenceIndex + 1) / (evidence.length + 1);
+    let slot = Math.round(progress * sentences.length);
 
-function getPassageParts(passage) {
-  const sentence = getFirstSentences(passage, 1);
-  const boundaries = [
-    ',',
-    ';',
-    ' afin de ',
-    ' afin que ',
-    ' pour que ',
-    ' pour ',
-    ' lorsque ',
-    ' tout en ',
-    ' sans ',
-  ];
-  const possibleEnds = boundaries
-    .map((boundary) => sentence.indexOf(boundary))
-    .filter((position) => position >= 35);
-  const excerptEnd = possibleEnds.length > 0
-    ? Math.min(...possibleEnds)
-    : sentence.length;
+    if (paragraphIndex === 1 && evidenceIndex === 0) {
+      slot = 0;
+    } else if (
+      paragraphIndex === 3
+      && evidenceIndex === evidence.length - 1
+    ) {
+      slot = sentences.length;
+    }
 
-  return {
-    highlighted: sentence.slice(0, excerptEnd).trim(),
-    remainder: sentence.slice(excerptEnd).trimStart(),
+    slots[slot].push({ ...item, evidenceIndex });
+  });
+
+  const renderEvidence = (item, slotIndex) => {
+    const atBeginning = slotIndex === 0;
+    const passage = atBeginning ? capitalize(item.passage) : item.passage;
+    const leadIndex = (paragraphIndex * 2) + item.evidenceIndex;
+
+    return (
+      <span key={`${item.skill}-${slotIndex}-${item.evidenceIndex}`}>
+        {atBeginning ? null : ` ${SYNTHESIS_LEADS[leadIndex % SYNTHESIS_LEADS.length]}`}
+        <mark
+          className="skill-passage"
+          style={getSkillCssVariables(
+            item.skill,
+            skillColorIndexes.get(item.skill) ?? item.evidenceIndex,
+          )}
+          title={`${item.skill} - trace ${item.traceNumber}`}
+        >
+          {passage}
+        </mark>
+        {'. '}
+      </span>
+    );
   };
-}
-
-function EvidenceReference({ evidence, index, skillColorIndexes, detailed = false }) {
-  if (!evidence) {
-    return null;
-  }
-
-  const passageParts = getPassageParts(evidence.passage);
 
   return (
-    <span>
-      {' '}
-      {detailed ? getEvidenceLead(index) : getShortEvidenceLead(index)}
-      <mark
-        className="skill-passage"
-        style={getSkillCssVariables(
-          evidence.skill,
-          skillColorIndexes.get(evidence.skill) ?? index,
-        )}
-        title={`${evidence.skill} - trace ${evidence.traceNumber}`}
-      >
-        {passageParts.highlighted}
-      </mark>
-      {passageParts.remainder ? ` ${passageParts.remainder}` : ''}
-      .
-    </span>
+    <>
+      {slots[0].map((item) => renderEvidence(item, 0))}
+      {sentences.map((sentence, sentenceIndex) => (
+        <span key={`${paragraphIndex}-sentence-${sentenceIndex}`}>
+          {sentence}{' '}
+          {slots[sentenceIndex + 1].map((item) => (
+            renderEvidence(item, sentenceIndex + 1)
+          ))}
+        </span>
+      ))}
+    </>
   );
 }
 
@@ -120,6 +121,12 @@ export function AnalysisBlock({
   representativeEvidence.forEach((evidence, index) => {
     evidenceGroups[index % evidenceGroups.length].push(evidence);
   });
+  const synthesisParagraphs = [
+    `${getFirstSentences(analysis.context)} Cette expérience doit être replacée dans la création globale du site de communication, puisque chaque réalisation dépendait de la structure WordPress, des contenus administrables et des attentes de Good Geek.`,
+    "Les traces présentent plusieurs actions concrètes qui permettent de relier ce savoir-faire général au travail réellement effectué pendant le stage. Elles montrent aussi que les décisions prises répondaient à des besoins observables dans le projet.",
+    `${getFirstSentences(analysis.learning, 3)} Ces réalisations montrent que le savoir-faire général ne repose pas sur une seule tâche, mais sur plusieurs choix complémentaires. La progression s'est construite au fil des essais, des vérifications et des corrections apportées au projet. Les situations rencontrées m'ont obligé à relier les connaissances techniques aux besoins concrets de Good Geek.`,
+    "Plus globalement, ce travail a demandé de l'autonomie pour rechercher des solutions et poursuivre le développement entre deux validations. Il a également fallu organiser les priorités, contrôler le résultat dans le navigateur et tenir compte des retours formulés par l'équipe. Le résultat final associe ainsi développement, gestion des contenus, réflexion visuelle, tests et communication professionnelle.",
+  ];
 
   return (
     <article className="analysis-block">
@@ -131,68 +138,16 @@ export function AnalysisBlock({
         <div className="analysis-sections">
           <section className="analysis-section">
             <h3>Synthèse</h3>
-            <p>
-              {getFirstSentences(analysis.context)} Cette expérience doit être
-              replacée dans la création globale du site de communication, puisque
-              chaque réalisation dépendait de la structure WordPress, des contenus
-              administrables et des attentes de Good Geek.
-              {evidenceGroups[0].map((evidence, index) => (
-                <EvidenceReference
-                  key={`${evidence.skill}-context-${index}`}
-                  evidence={evidence}
-                  index={index}
+            {synthesisParagraphs.map((paragraph, paragraphIndex) => (
+              <p key={`${analysis.skillId}-synthesis-${paragraphIndex}`}>
+                <IntegratedAnalysisParagraph
+                  text={paragraph}
+                  evidence={evidenceGroups[paragraphIndex]}
+                  paragraphIndex={paragraphIndex}
                   skillColorIndexes={skillColorIndexes}
                 />
-              ))}
-            </p>
-            <p>
-              Les traces montrent notamment plusieurs actions concrètes.{' '}
-              {evidenceGroups[1].map((evidence, index) => (
-                <EvidenceReference
-                  key={`${evidence.skill}-actions-${index}`}
-                  evidence={evidence}
-                  index={index + 2}
-                  skillColorIndexes={skillColorIndexes}
-                  detailed
-                />
-              ))}
-            </p>
-            <p>
-              {getFirstSentences(analysis.learning, 3)} Ces réalisations montrent
-              que le savoir-faire général ne repose pas sur une seule tâche, mais
-              sur plusieurs choix complémentaires observables dans les traces. La
-              progression s'est construite au fil des essais, des vérifications et
-              des corrections apportées au projet. Les situations rencontrées m'ont
-              obligé à relier les connaissances techniques aux besoins concrets de
-              Good Geek. Elles m'ont aussi appris à comparer plusieurs solutions
-              avant de retenir celle qui convenait le mieux au contexte.
-              {evidenceGroups[2].map((evidence, index) => (
-                <EvidenceReference
-                  key={`${evidence.skill}-learning-${index}`}
-                  evidence={evidence}
-                  index={index + 4}
-                  skillColorIndexes={skillColorIndexes}
-                />
-              ))}
-            </p>
-            <p>
-              Plus globalement, ce travail a demandé de l'autonomie pour rechercher
-              des solutions et poursuivre le développement entre deux validations.
-              Il a également fallu organiser les priorités, contrôler le résultat
-              dans le navigateur et tenir compte des retours formulés par l'équipe.
-              Le résultat final associe ainsi développement, gestion des contenus,
-              réflexion visuelle, tests et communication professionnelle.
-              L'ensemble forme une expérience cohérente, réutilisable dans de futurs
-              projets.
-              {evidenceGroups[3].map((evidence, index) => (
-                <EvidenceReference
-                  key={`${evidence.skill}-overview-${index}`}
-                  evidence={evidence}
-                  index={index + 6}
-                  skillColorIndexes={skillColorIndexes}
-                />
-              ))}
-            </p>
+              </p>
+            ))}
           </section>
 
           <section className="analysis-section">

@@ -1,12 +1,15 @@
 ﻿import { useEffect, useState } from 'react';
-import { formatEvidenceText } from '../evidenceText.js';
 import { getSkillCssVariables } from '../skillColors.js';
 
-function splitDescription(description, partCount) {
-  const sentences = description
+function getSentences(text) {
+  return text
     .match(/[^.!?]+[.!?]+|[^.!?]+$/g)
     ?.map((sentence) => sentence.trim())
     .filter(Boolean) || [];
+}
+
+function splitDescription(description, partCount) {
+  const sentences = getSentences(description);
 
   if (partCount <= 1 || sentences.length === 0) {
     return [description];
@@ -24,6 +27,82 @@ function splitDescription(description, partCount) {
   });
 
   return parts.map((sentencesPart) => sentencesPart.join(' '));
+}
+
+const EVIDENCE_LEADS = [
+  'Concrètement, ',
+  'Dans cette partie, ',
+  'Pour obtenir ce résultat, ',
+  'Par ailleurs, ',
+  'Ainsi, ',
+  'Lors de cette étape, ',
+];
+
+function capitalize(text) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function IntegratedTraceParagraph({
+  description,
+  evidence,
+  paragraphIndex,
+  skillColorIndexes,
+}) {
+  const sentences = getSentences(description);
+  const slots = Array.from({ length: sentences.length + 1 }, () => []);
+
+  evidence.forEach((item, evidenceIndex) => {
+    const progress = (evidenceIndex + 1) / (evidence.length + 1);
+    let slot = Math.round(progress * sentences.length);
+
+    if (paragraphIndex % 3 === 1 && evidenceIndex === 0) {
+      slot = 0;
+    } else if (
+      paragraphIndex % 3 === 2
+      && evidenceIndex === evidence.length - 1
+    ) {
+      slot = sentences.length;
+    }
+
+    slots[slot].push({ ...item, evidenceIndex });
+  });
+
+  const renderEvidence = (item, slotIndex) => {
+    const atBeginning = slotIndex === 0;
+    const passage = atBeginning ? capitalize(item.passage) : item.passage;
+    const leadIndex = (paragraphIndex * 2) + item.evidenceIndex;
+
+    return (
+      <span key={`${item.skill}-${slotIndex}-${item.evidenceIndex}`}>
+        {atBeginning ? null : ` ${EVIDENCE_LEADS[leadIndex % EVIDENCE_LEADS.length]}`}
+        <mark
+          className="skill-passage"
+          style={getSkillCssVariables(
+            item.skill,
+            skillColorIndexes.get(item.skill) ?? item.skillIndex,
+          )}
+          title={item.skill}
+        >
+          {passage}
+        </mark>
+        {'. '}
+      </span>
+    );
+  };
+
+  return (
+    <>
+      {slots[0].map((item) => renderEvidence(item, 0))}
+      {sentences.map((sentence, sentenceIndex) => (
+        <span key={`${paragraphIndex}-sentence-${sentenceIndex}`}>
+          {sentence}{' '}
+          {slots[sentenceIndex + 1].map((item) => (
+            renderEvidence(item, sentenceIndex + 1)
+          ))}
+        </span>
+      ))}
+    </>
+  );
 }
 
 export function TraceDetail({ trace, skillColorIndexes }) {
@@ -120,28 +199,12 @@ export function TraceDetail({ trace, skillColorIndexes }) {
         <div className="trace-detail__text">
           {evidenceGroups.map((group, groupIndex) => (
             <p className="trace-skill-paragraph" key={`${trace.number}-${groupIndex}`}>
-              {descriptionParts[groupIndex] ? (
-                <span>{descriptionParts[groupIndex]} </span>
-              ) : null}
-              {group.map((evidence, evidenceIndex) => (
-                <span key={`${evidence.skill}-${evidenceIndex}`}>
-                  {' '}
-                  <mark
-                    className="skill-passage"
-                    style={getSkillCssVariables(
-                      evidence.skill,
-                      skillColorIndexes.get(evidence.skill) ?? evidence.skillIndex,
-                    )}
-                    title={evidence.skill}
-                  >
-                    {formatEvidenceText(
-                      evidence.passage,
-                      (groupIndex * 2) + evidenceIndex,
-                    )}
-                  </mark>
-                  .
-                </span>
-              ))}
+              <IntegratedTraceParagraph
+                description={descriptionParts[groupIndex] || ''}
+                evidence={group}
+                paragraphIndex={groupIndex}
+                skillColorIndexes={skillColorIndexes}
+              />
             </p>
           ))}
         </div>

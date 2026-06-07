@@ -148,21 +148,21 @@
             'Savoir rendre les pages responsive',
           ],
           skillPassages: [
-            "j'ai créé et relié les templates PHP nécessaires pour que WordPress affiche correctement l'accueil, les pages d'actualités, les articles individuels, les événements, les contenus multimédias et les réseaux de Good Geek. J'ai utilisé les fonctions natives de WordPress pour récupérer les titres, les textes, les images, les catégories et les liens, puis j'ai sécurisé les valeurs affichées afin que les contenus saisis dans l'administration soient intégrés proprement dans chaque page",
+            "j'ai créé et relié les templates PHP",
             [
-              "j'ai séparé l'en-tête, la navigation et le pied de page dans des fichiers communs afin d'éviter de recopier leur code dans chaque template et de pouvoir modifier toute la structure depuis un seul emplacement",
-              "j'ai aussi réparti les fonctionnalités du thème dans plusieurs fichiers du dossier inc, chargés depuis functions.php, afin de pouvoir réutiliser les traitements consacrés aux événements, au multimédia, aux directs, à l'accueil et aux réglages visuels sans les réécrire dans chaque page",
-              "j'ai créé des fonctions réutilisables pour préparer les médias, choisir une image principale, construire les données des cartes et afficher un carrousel aussi bien dans les listes de contenus que dans les articles individuels",
+              "j'ai séparé l'en-tête, la navigation et le pied de page",
+              "j'ai réparti les fonctionnalités dans des fichiers réutilisables",
+              "j'ai créé des fonctions communes pour préparer les médias et les cartes",
             ],
             [
-              "j'ai relié les pages aux articles, images, catégories et autres informations enregistrées dans WordPress afin que le site évolue lorsque l'entreprise publie ou modifie un contenu",
-              "j'ai adapté les contenus récupérés au rôle de chaque page : l'accueil affiche une sélection choisie, la page des actualités met principalement en avant les dernières nouvelles, le blog regroupe l'ensemble des articles publiés et la page des événements rassemble les événements avec leurs dates, leurs horaires et leurs lieux",
+              "j'ai relié les pages aux contenus enregistrés dans WordPress",
+              "j'ai adapté les contenus récupérés au rôle de chaque page",
             ],
-            "j'ai protégé l'affichage des contenus provenant de l'administration avec les fonctions WordPress adaptées aux textes, aux attributs et aux adresses. Cela évite qu'une valeur saisie soit interprétée comme du code exécutable ou produise un code HTML incorrect dans la page",
-            "j'ai construit les couleurs, la typographie, les espacements et la présentation des pages en reprenant l'univers visuel jaune, noir et blanc associé à Good Geek",
+            "j'ai protégé les textes, les attributs et les adresses affichés",
+            "j'ai repris l'univers visuel jaune, noir et blanc de Good Geek",
             [
-              "j'ai adapté les grilles, les images, les textes et la navigation pour que les blocs changent de disposition lorsque la largeur de l'écran diminue",
-              "j'ai contrôlé le résultat dans le navigateur sur plusieurs largeurs et corrigé les débordements ou les éléments devenus difficiles à lire sur mobile",
+              "j'ai adapté les grilles, les images, les textes et la navigation",
+              "j'ai corrigé les débordements et les problèmes de lecture sur mobile",
             ],
           ],
           description:
@@ -188,21 +188,21 @@
             'Savoir gérer plusieurs médias dans une carte',
           ],
           skillPassages: [
-            "depuis le blog, j'ai utilisé les requêtes et les fonctions de WordPress pour récupérer les articles publiés avec leur catégorie, leur date, leur description, leur image ou vidéo et leur titre",
+            "j'ai récupéré les articles publiés avec les requêtes WordPress",
             [
-              "j'ai relié le blog aux publications WordPress afin que chaque nouvel article puisse apparaître sans modifier manuellement le template",
-              "j'ai construit l'affichage à partir des informations réellement enregistrées dans chaque article",
+              "j'ai relié le blog aux publications WordPress",
+              "j'ai construit l'affichage à partir des informations enregistrées",
             ],
             [
-              "le bloc Article regroupe dans une structure commune la catégorie, la date, la description, le média et le titre nécessaires à la création d'une carte",
-              "j'ai préparé les images et les vidéos sous une forme commune afin de conserver une présentation cohérente entre les publications",
+              "j'ai regroupé les données de chaque article dans une structure commune",
+              "j'ai préparé les images et les vidéos sous une forme commune",
             ],
-            "la catégorie et la date alimentent le filtre et le tri afin d'aider le visiteur à retrouver les publications qui l'intéressent",
+            "j'ai utilisé la catégorie et la date pour filtrer et trier",
             [
-              "la description et le média participent à la répartition de l'espace disponible dans chaque carte",
-              "j'ai ajusté la largeur des cartes, la place réservée au visuel, la longueur du texte et le nombre de colonnes pour obtenir une lecture claire",
+              "j'ai réparti l'espace entre la description et le média",
+              "j'ai ajusté la largeur des cartes et le nombre de colonnes",
             ],
-            "l'étape d'optimisation m'a permis d'améliorer progressivement la répartition de l'espace et de revenir sur la mise en page lorsqu'un essai restait déséquilibré",
+            "j'ai amélioré la répartition de l'espace après plusieurs essais",
           ],
           description:
             "La trace 2 ci-dessus représente la logique utilisée pour organiser les publications du blog avant leur affichage. Le premier bloc indique que le blog rassemble plusieurs articles enregistrés dans WordPress. Chaque article est ensuite décrit par cinq informations principales visibles dans le schéma : sa catégorie, sa date, sa description, son image ou sa vidéo et son titre. Ces données ne jouent pas toutes le même rôle dans la page. La catégorie et la date sont utilisées par le système de filtre et de tri. Elles permettent au visiteur de réduire la liste des publications et de modifier leur ordre sans parcourir l'ensemble du blog. Le titre identifie immédiatement le sujet de l'article, tandis que la description apporte un résumé de son contenu. L'image ou la vidéo forme la partie visuelle de la carte. La description et le média influencent directement la répartition de l'espace, car leur taille et leur proportion peuvent varier d'une publication à l'autre. J'ai donc préparé une structure commune avant l'affichage afin que le template puisse construire les cartes de manière cohérente à partir des données récupérées dans WordPress. Le bloc Répartition de l'espace correspond au travail réalisé sur la largeur des cartes, la place accordée au visuel, la quantité de texte visible et le nombre de colonnes. Le filtre et le tri influencent également cette répartition, puisque la grille doit rester lisible lorsque le nombre de résultats change. Enfin, la flèche entre Répartition de l'espace et Optimisation représente les différents essais effectués pendant le développement. Après avoir observé le résultat dans le navigateur, je revenais sur la mise en page pour corriger un déséquilibre, améliorer les alignements ou mieux adapter les cartes aux différentes tailles d'écran. Ce fonctionnement progressif m'a permis d'associer la récupération des articles WordPress, l'organisation de leurs données et la recherche d'une présentation visuelle claire.",
@@ -227,23 +227,23 @@
             "Savoir gérer les erreurs d'un service externe",
           ],
           skillPassages: [
-            "j'ai prévu des constantes de configuration pour les identifiants Twitch, la clé YouTube et les noms des chaînes, sans exposer ces informations dans l'interface publique",
+            "j'ai configuré les identifiants Twitch, la clé YouTube et les chaînes",
             [
-              "j'ai envoyé les identifiants de l'application à Twitch pour recevoir un jeton autorisant les requêtes vers le service des streams",
-              "j'ai conservé ce jeton temporairement et tenu compte de sa durée de validité avant de le redemander",
+              "j'ai obtenu un jeton d'accès auprès de Twitch",
+              "j'ai réutilisé le jeton pendant sa durée de validité",
             ],
             [
-              "depuis le bloc Site, j'ai utilisé les fonctions HTTP de WordPress pour envoyer une requête vers Twitch et YouTube avec un délai maximal",
-              "j'ai construit les paramètres propres à chaque plateforme, notamment le nom de la chaîne Twitch et l'identifiant de chaîne YouTube",
+              "j'ai envoyé des requêtes HTTP vers Twitch et YouTube",
+              "j'ai construit les paramètres propres à chaque plateforme",
             ],
             [
-              "dans le bloc Réponse API, j'ai décodé les données JSON afin de déterminer si une diffusion était réellement en cours",
-              "lorsque la réponse indique oui, le site récupère la plateforme et le lien du direct afin de les mettre en avant",
+              "j'ai décodé les réponses JSON",
+              "j'ai extrait la plateforme et le lien du direct",
             ],
-            "j'ai stocké temporairement le statut général et les autorisations obtenues afin de réduire les requêtes externes, d'accélérer les pages et de limiter l'utilisation des services",
+            "j'ai mis en cache le statut du direct",
             [
-              "j'ai contrôlé les erreurs WordPress, les réponses vides, les identifiants absents et les cas où aucun direct n'était en cours",
-              "lorsque la réponse indique non ou qu'un service ne répond pas correctement, le site conserve l'état pas de live sans afficher d'erreur au visiteur",
+              "j'ai contrôlé les erreurs, les réponses vides et les identifiants absents",
+              "j'ai conservé l'état hors ligne lorsqu'un service échouait",
             ],
           ],
           description:
@@ -255,55 +255,45 @@
         },
         {
           number: 4,
-          title: 'Administration des pages et de la page d’accueil',
-          image: '/images/traces/trace-wordpress-administration.svg',
+          title: "Configuration d'un booster depuis l'administration",
+          image: '/images/traces/trace-wordpress-administration.png',
           caption:
-            "Trace 4 : schéma des réglages créés pour modifier les pages d'articles, les cartes de l'accueil et les boosters depuis WordPress.",
+            "Trace 4 : interface permettant de composer un booster, de régler ses calques et de contrôler immédiatement son apparence.",
           skills: ['creer-theme-wordpress', 'organiser-contenus'],
           elementarySkills: [
             "Savoir créer des interfaces de réglage dans l'administration",
-            'Savoir factoriser les éléments communs du thème',
-            "Savoir rendre les pages d'articles personnalisables",
-            "Savoir associer un profil visuel à une catégorie ou un article",
-            "Savoir rendre les cartes de l'accueil configurables",
             "Savoir rendre les boosters administrables",
+            "Savoir organiser la superposition des calques",
+            "Savoir proposer une prévisualisation des modifications",
             "Savoir enregistrer et restituer des réglages complexes",
           ],
           skillPassages: [
             [
-              "j'ai ajouté des métaboxes, des sections du personnalisateur et des pages de réglage afin que l'entreprise puisse agir sur le site depuis l'administration WordPress sans modifier les fichiers PHP",
-              "j'ai organisé les nombreux champs par sections compréhensibles et ajouté des aperçus lorsque le résultat visuel devait être contrôlé avant l'enregistrement",
+              "j'ai créé une interface d'administration sous forme de tableau",
+              "j'ai affiché les réglages de l'élément sélectionné",
             ],
             [
-              "j'ai regroupé dans des fonctions communes la définition des profils, leurs valeurs par défaut, leur résolution et la création des variables CSS afin de réutiliser la même logique pour plusieurs pages d'articles",
-              "j'ai réemployé les fonctions de préparation des cartes et des médias entre l'administration, la page d'accueil et les templates publics plutôt que de dupliquer leurs traitements",
+              "j'ai rendu modifiables les textes, leurs positions et leurs styles",
+              "j'ai permis d'ajouter ou de remplacer les textes et les images",
             ],
             [
-              "j'ai créé plusieurs profils visuels pour les pages d'articles avec des réglages portant sur les couleurs, les polices, les dimensions, les images, la mise en valeur du titre, les boutons, les médias et certaines animations",
-              "j'ai prévu des variantes propres aux univers visuels, notamment pour les articles classiques, le cinéma, les mangas ou les cartes à collectionner, sans devoir créer un nouveau template complet pour chaque apparence",
+              "j'ai associé un numéro de calque à chaque élément",
+              "j'ai permis de déplacer les calques vers le haut ou vers le bas",
             ],
             [
-              "j'ai permis d'affecter automatiquement ou manuellement un profil à une catégorie et de choisir un profil particulier pour un article lorsque son apparence devait être différente",
-              "j'ai ajouté la possibilité de créer une déclinaison à partir d'un profil existant afin de conserver sa structure tout en modifiant ses propres couleurs et images",
+              "j'ai ajouté une prévisualisation immédiate des réglages",
+              "j'ai rendu visible la correspondance entre le tableau et le booster",
             ],
             [
-              "j'ai rendu les cartes de la page d'accueil configurables en permettant de choisir leur source, leur contenu, leur média principal, leur style, leur couleur et leur ordre d'affichage",
-              "j'ai préparé les données des cartes avant leur affichage afin que les changements enregistrés dans WordPress soient automatiquement repris par le template de l'accueil",
-            ],
-            [
-              "j'ai conçu une interface permettant d'activer plusieurs boosters, de choisir leur titre, leur description, leur thème, leur image, leurs couleurs et les cartes qu'ils contiennent",
-              "j'ai aussi rendu modifiables les textes placés sur le booster, leur position, leur taille, leur police et leurs effets, avec un aperçu facilitant les réglages",
-            ],
-            [
-              "j'ai vérifié les autorisations et les jetons de sécurité, nettoyé chaque type de valeur puis enregistré les réglages dans les métadonnées ou les options WordPress",
-              "j'ai reconstruit une structure exploitable à partir des valeurs enregistrées afin que le site public puisse afficher des listes de cartes, plusieurs médias, des profils visuels et plusieurs boosters sans ajouter ces informations directement dans le code",
+              "j'ai vérifié les autorisations et le jeton de sécurité",
+              "j'ai reconstruit les calques à partir des données enregistrées",
             ],
           ],
           description:
-            "La trace 4 ci-contre montre comment j'ai rendu une grande partie du site modifiable depuis l'administration WordPress. L'objectif n'était pas uniquement de permettre la rédaction d'un titre et d'un texte. Good Geek devait pouvoir modifier l'apparence et la composition de plusieurs pages sans intervenir dans le thème. Pour les pages d'articles, j'ai construit un système de profils visuels. Chaque profil regroupe de nombreux réglages, comme les couleurs, les typographies, la largeur du contenu, la hauteur de la zone principale, la présentation des médias, les boutons et certaines décorations. Un profil peut être associé à une catégorie, choisi directement pour un article ou dupliqué afin de créer une nouvelle déclinaison. Cette logique permet d'obtenir des pages adaptées à plusieurs univers tout en conservant un seul système de templates. La page d'accueil possède également sa propre interface de configuration. L'entreprise peut sélectionner les contenus à mettre en avant, choisir les médias utilisés, modifier l'ordre et l'apparence des cartes puis préparer les événements affichés. J'ai enfin développé une administration complète pour les boosters. Plusieurs boosters peuvent être activés et personnalisés avec un thème, une image, des couleurs, des textes positionnés sur le visuel et une sélection de cartes provenant des contenus existants. Les réglages sont contrôlés lors de leur enregistrement puis transformés en données utilisables par le site public. Cette trace montre donc que les éléments complexes du site ne sont pas figés dans le code et peuvent être adaptés plus tard par l'entreprise.",
+            "La trace 4 ci-dessus présente l'interface d'administration utilisée pour composer l'apparence d'un booster. Dans ce projet, un booster est une animation inspirée d'un paquet de cartes à collectionner qui révèle plusieurs articles du site lorsqu'il est ouvert sur la page d'accueil. Tout d'abord, le cadre rouge met en avant les réglages détaillés de l'élément « PIOCHE ». Il est important de montrer cette zone, car elle prouve que l'entreprise ne peut pas seulement remplacer un texte : elle peut adapter précisément sa présentation à l'illustration choisie. Lorsque l'utilisateur ouvre une ligne du tableau, l'interface affiche les paramètres correspondant à cet élément. Le premier champ modifie son contenu, tandis que les coordonnées X et Y déterminent sa position sur le paquet. D'autres commandes permettent également de choisir sa taille, sa couleur, sa police et ses effets. Par exemple, les options de gras, d'italique, d'ombre et de lueur servent à maintenir une bonne lisibilité sur des images différentes. En complément, le réglage « Au-dessus des bords scellés » indique si le texte doit apparaître devant ou derrière les bandes décoratives situées en haut et en bas du booster. Ensuite, le cadre violet met en évidence la colonne « Actions ». Son intérêt est de montrer que la composition n'est pas figée et que les éléments peuvent être réorganisés après leur création. Les boutons comportant une flèche vers le haut ou vers le bas changent leur ordre, la corbeille permet de les supprimer et la dernière commande ouvre ou referme leurs paramètres. Par ailleurs, le numéro de calque définit la profondeur de chaque composant : un élément placé sur un niveau supérieur apparaît devant ceux des niveaux inférieurs. Grâce à ce fonctionnement, les textes, l'illustration et les décorations peuvent être correctement superposés sans modifier leur ordre directement dans le code. Le cadre vert, quant à lui, met en avant la prévisualisation. Cette zone est essentielle, car elle affiche immédiatement le résultat produit par les réglages avant son utilisation sur la page d'accueil. Elle reprend l'image, les textes, leurs positions, leur apparence et leur ordre de superposition. Ainsi, l'utilisateur peut repérer un texte mal placé, une couleur peu lisible ou un ordre de calques incorrect, puis ajuster directement le paramètre concerné. De leur côté, les flèches colorées indiquent globalement que les éléments choisis et organisés dans le tableau sont ensuite disposés sur le booster. Elles relient les trois textes et le fichier image à leur résultat dans la prévisualisation, ce qui rend compréhensible la correspondance entre les données administrées à gauche et leur affichage à droite. Enfin, le reste de l'interface permet d'ajouter un texte ou une image afin de faire évoluer cette composition sans toucher aux fichiers PHP, JavaScript ou CSS. Après l'enregistrement, WordPress conserve les propriétés des différents éléments ; le thème les récupère alors pour reconstruire le même booster sur la page d'accueil.",
           remarkablePoints: [
-            "La personnalisation concerne à la fois le contenu, l'apparence et l'organisation des pages.",
-            "Les réglages complexes sont réutilisés par les templates sans imposer une modification du code à chaque changement.",
+            "Ces réglages permettent à l'entreprise de faire évoluer le contenu, l'apparence et l'organisation des pages sans modifier le thème.",
+            "Les valeurs sont sécurisées, enregistrées par WordPress puis récupérées automatiquement par les templates publics.",
           ],
         },
       ],
@@ -398,38 +388,45 @@
       traces: [
         {
           number: 5,
-          title: 'Liste de tâches issue du débrief de début de stage',
-          image: '/images/traces/trace-project-board.svg',
+          title: 'Comparaison entre les maquettes et les pages développées',
+          image: '/images/traces/trace-project-board.png',
           caption:
-            "Trace 5 : schéma de la liste de tâches construite après le débrief initial avec les attentes de l'entreprise.",
+            "Trace 5 : comparaison entre les maquettes que j'ai conçues et le résultat développé pour les pages Réseaux et Agenda.",
           skills: ['recueillir-besoin', 'prioriser-taches', 'suivre-projet'],
           elementarySkills: [
-            'Savoir prendre des notes pendant un débrief',
-            'Savoir reformuler une demande en objectifs',
-            'Savoir découper un projet en tâches',
-            'Savoir identifier les dépendances entre les tâches',
-            'Savoir ajuster les priorités selon les difficultés',
-            "Savoir suivre l'avancement d'une réalisation",
+            'Savoir concevoir une maquette à partir du besoin',
+            'Savoir identifier les éléments essentiels à conserver',
+            'Savoir adapter une conception aux contenus réels',
+            "Savoir faire évoluer l'interface pendant le développement",
+            'Savoir vérifier la conformité avec le besoin initial',
           ],
           skillPassages: [
-            "j'ai noté les pages, les contenus, les fonctions attendues et les contraintes présentées par l'entreprise lors du changement de mission",
-            "j'ai transformé la demande générale de site de communication en objectifs vérifiables, comme publier des actualités, présenter les événements ou signaler automatiquement un direct",
             [
-              "j'ai séparé le projet entre structure du thème, pages publiques, administration, contenus dynamiques, styles et services externes",
-              "j'ai redécoupé les parties trop larges, notamment le multimédia, en récupération des données, préparation des cartes, filtres, médias et responsive",
+              "j'ai conçu les maquettes des pages Réseaux et Agenda",
+              "j'ai traduit les besoins recueillis en composants visuels",
             ],
-            "j'ai repéré que les templates dépendaient de la structure commune et que certaines pages dépendaient d'abord de la manière dont les contenus seraient enregistrés dans WordPress",
             [
-              "j'ai modifié l'ordre de certaines tâches lorsque leur complexité réelle apparaissait pendant le développement",
-              "j'ai compris avec la partie multimédia qu'une fonction risquée doit être étudiée plus tôt, même lorsqu'il est plus rassurant de commencer par les pages simples",
+              "j'ai conservé l'identité noire et jaune et les structures principales",
+              "j'ai maintenu les actions principales prévues",
             ],
-            "j'ai utilisé les états à faire, en cours, à montrer et validé pour garder une vision du travail restant et préparer les présentations à l'équipe",
+            [
+              "j'ai remplacé les contenus génériques par les données réelles",
+              "j'ai adapté les dimensions et la hiérarchie des cartes",
+            ],
+            [
+              "j'ai rendu la navigation plus compacte",
+              "j'ai transformé les cartes d'événements en billets visuels",
+            ],
+            [
+              "j'ai comparé le résultat final aux maquettes",
+              "j'ai vérifié le respect du rôle et des parcours de chaque page",
+            ],
           ],
           description:
-            "La trace 5 ci-contre représente l'organisation du travail mise en place après le débrief réalisé au début du stage. La mission prévue au départ concernait l'amélioration du site de la boutique, mais ce projet était déjà trop avancé pour que je puisse y apporter des changements suffisamment importants. L'entreprise m'a donc confié la création d'un nouveau site consacré à sa communication. Ce changement m'a obligé à repartir d'un besoin différent et à construire rapidement une vision globale du résultat attendu. Pendant le débrief, j'ai pris des notes sur les pages, les contenus et les fonctionnalités demandés. J'ai ensuite transformé ces informations en tâches plus précises afin de ne pas conserver une consigne trop générale comme simple repère. Le projet a été découpé entre la structure du thème, les pages publiques, les contenus administrables, les événements, la partie multimédia, les réseaux et la détection des directs. J'ai utilisé des états simples pour savoir ce qui restait à faire, ce qui était en cours, ce qui pouvait être montré à l'équipe et ce qui avait été validé. Cette organisation m'a aidé à travailler seul et à mesurer l'avancement. Elle a aussi révélé une limite dans ma première planification : comme je découvrais WordPress, j'ai commencé par des éléments simples, ce qui m'a permis d'apprendre, mais a repoussé certaines difficultés importantes. Avec du recul, j'aurais identifié plus tôt les parties risquées afin de leur réserver davantage de temps.",
+            "La trace 5 ci-dessus compare les maquettes que j'ai moi-même conçues, placées dans la colonne de gauche, avec les pages réellement développées, visibles dans la colonne de droite. Les deux lignes séparent la page Réseaux de la page Agenda. Cette organisation permet de constater rapidement comment j'ai d'abord traduit les besoins de Good Geek en propositions visuelles, puis comment ces propositions ont évolué pendant leur intégration dans WordPress. Tout d'abord, la partie supérieure concerne la page Réseaux. Lors de la conception de sa maquette, j'ai prévu un bandeau jaune présentant la communauté, puis six cartes consacrées à Discord, Instagram, Twitch, YouTube, TikTok et Facebook. J'ai ensuite conservé cette structure ainsi que les boutons permettant de rejoindre ou de suivre chaque plateforme. Cependant, les textes génériques ont été remplacés par de courtes descriptions adaptées à l'utilisation réelle de chaque réseau. Dans le même temps, les grandes images colorées prévues au départ ont laissé place à des pictogrammes jaunes plus homogènes avec l'identité visuelle du site. Par ailleurs, j'ai rendu la navigation plus compacte afin de laisser davantage d'espace au contenu. Malgré cette réduction, elle conserve le logo, les pages principales, la recherche, l'accès à la boutique et l'état du direct. Ensuite, la partie inférieure présente la page Agenda. Dès la création de la maquette, j'ai imaginé une frise verticale alternant les événements à gauche et à droite afin de représenter clairement leur succession. Cette idée a été maintenue dans le résultat développé. En revanche, les cartes provisoires ont été transformées en billets plus détaillés. Désormais, chaque événement affiche son titre, une description, son lieu, sa date et ses horaires. En complément, des actions permettent de l'ajouter à un agenda ou de consulter l'article associé. Ainsi, le résultat reste fidèle à la conception initiale tout en répondant mieux aux besoins réels de publication. Cette comparaison montre donc l'ensemble de ma démarche : j'ai conçu une première solution graphique à partir des attentes de l'entreprise, puis j'ai ajusté sa taille, son contenu et sa présentation lorsque les données réelles ou la lisibilité l'exigeaient. En définitive, les différences visibles témoignent du suivi du projet et de ma capacité à faire évoluer mes propres choix sans perdre les objectifs initiaux des deux pages.",
           remarkablePoints: [
-            "Le projet a changé au début du stage, ce qui m'a obligé à repartir sur une nouvelle mission.",
-            "La liste de tâches a servi de repère pour avancer seul sans perdre de vue les attentes de l'entreprise.",
+            "Les structures principales des maquettes ont été conservées dans les deux pages développées.",
+            "Les adaptations apportées répondent aux contenus réels et améliorent la lisibilité sans modifier le besoin initial.",
           ],
         },
         {
@@ -448,20 +445,20 @@
             "Savoir suivre l'avancement d'une réalisation",
           ],
           skillPassages: [
-            "j'ai attendu que la page ou la fonctionnalité soit assez complète, préparé des contenus représentatifs et vérifié son fonctionnement avant de la montrer",
-            "j'ai présenté le besoin traité, le parcours visible et les éléments modifiables dans WordPress en utilisant le navigateur plutôt qu'une explication centrée sur le PHP",
+            "j'ai préparé des contenus représentatifs avant la démonstration",
+            "j'ai présenté le parcours visible dans le navigateur",
             [
-              "j'ai écouté les remarques de la développeuse responsable de l'informatique et celles des deux autres membres de Good Geek",
-              "j'ai distingué les retours techniques, les choix liés à l'identité visuelle et les remarques portant sur l'activité de l'entreprise",
+              "j'ai recueilli les remarques des trois membres de Good Geek",
+              "j'ai distingué les retours techniques, visuels et fonctionnels",
             ],
-            "j'ai transformé une remarque générale sur la clarté, le style ou l'ordre des informations en changements précis à effectuer dans le template ou la feuille de style",
+            "j'ai transformé les remarques en modifications précises",
             [
-              "j'ai testé de nouveau la page après la correction et contrôlé que le changement ne dégradait pas les autres tailles d'écran",
-              "j'ai considéré la partie comme validée lorsque le résultat corrigé répondait au besoin et qu'aucune nouvelle modification n'était demandée",
+              "j'ai testé de nouveau la page après chaque correction",
+              "j'ai vérifié que le résultat corrigé répondait au besoin",
             ],
             [
-              "j'ai utilisé les présentations comme des étapes de suivi pour distinguer les éléments encore à corriger de ceux qui pouvaient être considérés comme validés",
-              "j'ai reporté les demandes issues des échanges dans la suite des tâches afin de garder une vision à jour de l'avancement réel",
+              "j'ai utilisé les présentations comme étapes de suivi",
+              "j'ai reporté les nouvelles demandes dans les tâches restantes",
             ],
           ],
           description:
@@ -577,20 +574,20 @@
             'Savoir vérifier plusieurs cas dans le navigateur',
           ],
           skillPassages: [
-            "j'ai employé davantage de termes techniques avec ma référente développeuse et des explications plus visuelles avec les autres membres de l'entreprise",
+            "j'ai adapté mon vocabulaire à chaque interlocuteur",
             [
-              "j'ai expliqué ce que la page permettait de faire avant de présenter la manière dont elle avait été construite",
-              "j'ai montré les contenus modifiables et le parcours du visiteur sans demander à mes interlocuteurs de comprendre les templates ou les requêtes WordPress",
+              "j'ai expliqué les fonctionnalités par leur usage",
+              "j'ai montré le parcours du visiteur et les contenus modifiables",
             ],
-            "j'ai demandé un avis lorsque le résultat était assez avancé pour être évalué, mais avant qu'une éventuelle réorganisation ne devienne trop longue",
-            "j'ai laissé chaque personne exprimer son point de vue puis noté les changements à effectuer afin de ne pas dépendre uniquement de ma mémoire après la discussion",
+            "j'ai demandé un avis au moment où le résultat devenait évaluable",
+            "j'ai écouté les avis et noté les changements demandés",
             [
-              "j'ai continué à rechercher et tester mes solutions seul entre les présentations au lieu de solliciter l'équipe pour chaque détail",
-              "j'ai néanmoins demandé une validation lorsqu'un choix concernait l'image de Good Geek ou l'utilisation future du site par l'entreprise",
+              "j'ai recherché et testé mes solutions seul entre les présentations",
+              "j'ai demandé une validation pour les choix engageant l'entreprise",
             ],
             [
-              "j'ai présenté des pages déjà vérifiées avec plusieurs contenus et tailles d'écran afin que les retours portent sur un résultat suffisamment stable",
-              "j'ai reproduit dans le navigateur les situations signalées par l'équipe avant de corriger puis de montrer une nouvelle version",
+              "j'ai vérifié les pages avec plusieurs contenus et tailles d'écran",
+              "j'ai reproduit dans le navigateur les situations signalées",
             ],
           ],
           description:
@@ -618,23 +615,23 @@
           ],
           skillPassages: [
             [
-              "dans l'encadré vert, XAMPP montre qu'Apache et MySQL sont actifs pour faire fonctionner WordPress localement",
-              "cet environnement local me permettait de tester mes modifications sans intervenir sur un site public",
+              "j'ai utilisé Apache et MySQL avec XAMPP",
+              "j'ai testé les modifications dans un environnement local",
             ],
-            "dans l'encadré rouge, l'arborescence de Visual Studio Code distingue les fichiers PHP, les feuilles CSS et les scripts JavaScript du thème",
+            "j'ai séparé les fichiers PHP, CSS et JavaScript",
             [
-              "à l'arrière-plan, l'administration WordPress permet de créer les contenus et de renseigner les champs personnalisés sans modifier les fichiers du thème",
-              "j'ai récupéré les métadonnées enregistrées et adapté leur affichage selon leur type, par exemple une date, une image, un texte ou un lien",
+              "j'ai créé des champs personnalisés dans WordPress",
+              "j'ai adapté l'affichage des métadonnées selon leur type",
             ],
-            "j'ai vérifié les autorisations et les jetons de sécurité, nettoyé les valeurs reçues puis utilisé la fonction d'enregistrement adaptée avant de conserver les métadonnées",
-            "j'ai créé des articles et événements avec des titres courts ou longs, plusieurs médias, des champs remplis ou absents et des dates différentes afin d'observer le comportement réel des pages",
+            "j'ai vérifié les autorisations, les jetons et les valeurs reçues",
+            "j'ai créé des contenus de test variés",
             [
-              "j'ai contrôlé les pages sur plusieurs largeurs d'écran ainsi que les filtres, les liens, les images, les formulaires et les dates",
-              "j'ai testé les cas sans résultat, sans image, avec une donnée incomplète ou avec un service externe indisponible afin que l'interface reste cohérente",
+              "j'ai contrôlé les pages sur plusieurs largeurs d'écran",
+              "j'ai testé les cas sans résultat, sans image ou avec une donnée incomplète",
             ],
             [
-              "j'ai utilisé l'environnement local pour rechercher l'origine des problèmes, essayer plusieurs corrections et contrôler leur résultat avant de solliciter un nouveau retour",
-              "j'ai pu poursuivre les développements de manière indépendante entre les validations grâce aux contenus de test et aux outils disponibles sur mon poste",
+              "j'ai recherché et corrigé les problèmes dans l'environnement local",
+              "j'ai poursuivi le développement seul entre les validations",
             ],
           ],
           description:
@@ -695,6 +692,3 @@
     },
   ],
 };
-
-
-

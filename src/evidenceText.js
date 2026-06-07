@@ -45,6 +45,12 @@ function capitalize(text) {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
+function withDe(infinitiveAction) {
+  return /^[aeiouyh]/i.test(infinitiveAction)
+    ? `d’${infinitiveAction}`
+    : `de ${infinitiveAction}`;
+}
+
 function extractAction(passage) {
   const action = passage.trim().replace(/^j['’]ai\s+/i, '');
   const [firstWord, ...remainingWords] = action.split(/\s+/);
@@ -73,7 +79,7 @@ export function formatEvidenceText(passage, index, capitalizeResult = true) {
       break;
     case 3:
       result = infinitiveAction
-        ? `le travail réalisé m’a permis de ${infinitiveAction}`
+        ? `le travail réalisé m’a permis ${withDe(infinitiveAction)}`
         : passage;
       break;
     case 4:
@@ -81,7 +87,7 @@ export function formatEvidenceText(passage, index, capitalizeResult = true) {
       break;
     case 5:
       result = infinitiveAction
-        ? `une autre action importante a été de ${infinitiveAction}`
+        ? `une autre action importante a été ${withDe(infinitiveAction)}`
         : passage;
       break;
     default:
