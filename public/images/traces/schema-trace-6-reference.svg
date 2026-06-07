@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="900" viewBox="0 0 1400 900">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#202124"/>
+    </marker>
+    <style>
+      .title { font: 700 30px Arial, sans-serif; fill: #111; }
+      .box-title { font: 700 23px Arial, sans-serif; fill: #111; }
+      .label { font: 600 18px Arial, sans-serif; fill: #202124; }
+      .small { font: 500 16px Arial, sans-serif; fill: #333; }
+      .line { fill: none; stroke: #202124; stroke-width: 3; marker-end: url(#arrow); }
+      .dashed { stroke-dasharray: 9 7; }
+    </style>
+  </defs>
+
+  <rect width="1400" height="900" fill="#fff"/>
+  <text x="700" y="52" text-anchor="middle" class="title">Cycle de présentation et de validation d’une réalisation</text>
+
+  <rect x="70" y="110" width="280" height="105" rx="8" fill="#dce6ff" stroke="#315bd6" stroke-width="4"/>
+  <text x="210" y="154" text-anchor="middle" class="box-title">Version présentée</text>
+  <text x="210" y="184" text-anchor="middle" class="small">Page ou fonctionnalité assez avancée</text>
+
+  <path class="line" d="M350 162 H440"/>
+
+  <rect x="440" y="80" width="540" height="390" rx="8" fill="#fff9db" stroke="#e5ad00" stroke-width="4"/>
+  <text x="710" y="125" text-anchor="middle" class="box-title">Contrôle du résultat</text>
+  <text x="710" y="153" text-anchor="middle" class="small">Éléments observés pendant la présentation</text>
+
+  <rect x="475" y="185" width="220" height="90" rx="6" fill="#fff" stroke="#e5ad00" stroke-width="2"/>
+  <text x="585" y="220" text-anchor="middle" class="label">Respect du besoin</text>
+  <text x="585" y="248" text-anchor="middle" class="small">Fonction demandée remplie</text>
+
+  <rect x="725" y="185" width="220" height="90" rx="6" fill="#fff" stroke="#e5ad00" stroke-width="2"/>
+  <text x="835" y="220" text-anchor="middle" class="label">Organisation</text>
+  <text x="835" y="248" text-anchor="middle" class="small">Informations faciles à trouver</text>
+
+  <rect x="475" y="295" width="220" height="90" rx="6" fill="#fff" stroke="#e5ad00" stroke-width="2"/>
+  <text x="585" y="330" text-anchor="middle" class="label">Identité visuelle</text>
+  <text x="585" y="358" text-anchor="middle" class="small">Style cohérent avec Good Geek</text>
+
+  <rect x="725" y="295" width="220" height="90" rx="6" fill="#fff" stroke="#e5ad00" stroke-width="2"/>
+  <text x="835" y="330" text-anchor="middle" class="label">Navigation</text>
+  <text x="835" y="358" text-anchor="middle" class="small">Parcours et boutons compréhensibles</text>
+
+  <rect x="475" y="405" width="220" height="45" rx="6" fill="#fff" stroke="#e5ad00" stroke-width="2"/>
+  <text x="585" y="434" text-anchor="middle" class="label">Contenus administrables</text>
+
+  <rect x="725" y="405" width="220" height="45" rx="6" fill="#fff" stroke="#e5ad00" stroke-width="2"/>
+  <text x="835" y="434" text-anchor="middle" class="label">Fonctionnement général</text>
+
+  <path class="line" d="M980 275 H1060"/>
+
+  <polygon points="1160,185 1280,275 1160,365 1040,275" fill="#e8dcff" stroke="#7c3aed" stroke-width="4"/>
+  <text x="1160" y="266" text-anchor="middle" class="box-title">Résultat</text>
+  <text x="1160" y="296" text-anchor="middle" class="box-title">conforme ?</text>
+
+  <path class="line" d="M1160 365 V510"/>
+  <text x="1177" y="430" class="label">Oui</text>
+
+  <rect x="1020" y="510" width="280" height="105" rx="8" fill="#d9f7c7" stroke="#31a10d" stroke-width="4"/>
+  <text x="1160" y="553" text-anchor="middle" class="box-title">Validation</text>
+  <text x="1160" y="583" text-anchor="middle" class="small">La réalisation répond au besoin</text>
+
+  <path class="line" d="M1040 275 H970 V585 H900"/>
+  <text x="986" y="300" class="label">Non</text>
+
+  <rect x="620" y="530" width="280" height="110" rx="8" fill="#f1d4ff" stroke="#b53bd3" stroke-width="4"/>
+  <text x="760" y="573" text-anchor="middle" class="box-title">Modifications</text>
+  <text x="760" y="603" text-anchor="middle" class="small">Correction du style, du contenu</text>
+  <text x="760" y="626" text-anchor="middle" class="small">ou du fonctionnement</text>
+
+  <path class="line" d="M620 585 H500"/>
+
+  <rect x="220" y="530" width="280" height="110" rx="8" fill="#d8f5ed" stroke="#138a70" stroke-width="4"/>
+  <text x="360" y="573" text-anchor="middle" class="box-title">Nouvelle vérification</text>
+  <text x="360" y="603" text-anchor="middle" class="small">Tests après les corrections</text>
+
+  <path class="line dashed" d="M360 530 V350 H440"/>
+  <text x="376" y="450" class="small">Retour au contrôle</text>
+
+  <rect x="70" y="730" width="1260" height="110" rx="8" fill="#f5f5f5" stroke="#777" stroke-width="2"/>
+  <text x="100" y="770" class="label">Lecture du schéma :</text>
+  <text x="100" y="804" class="small">une version suffisamment avancée est présentée, plusieurs aspects sont contrôlés, puis la réalisation est validée</text>
+  <text x="100" y="830" class="small">ou corrigée avant une nouvelle vérification. Le cycle peut recommencer tant que le résultat ne répond pas complètement au besoin.</text>
+</svg>
