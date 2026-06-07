@@ -432,7 +432,7 @@
         {
           number: 6,
           title: "Cycle de vérification et de validation d'une réalisation",
-          image: '/images/traces/schema-trace-6-reference.svg',
+          image: '/images/traces/trace-validation-note.png',
           caption:
             "Trace 6 : cycle suivi pour présenter une réalisation, contrôler son résultat, apporter des corrections et obtenir sa validation.",
           skills: ['recueillir-besoin', 'suivre-projet'],
