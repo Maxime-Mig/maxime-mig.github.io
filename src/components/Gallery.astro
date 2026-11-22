@@ -1,0 +1,158 @@
+---
+// Captures d'un projet. Sans JavaScript, chaque vignette ouvre l'image en grand ;
+// avec, elle s'ouvre dans une boîte de dialogue (Échap ou bouton pour fermer).
+import { Image, getImage } from 'astro:assets';
+import type { Shot } from '../data/projects';
+import Icon from './Icon.astro';
+import { fr } from '../lib/format';
+
+interface Props {
+  shots: Shot[];
+}
+
+const { shots } = Astro.props;
+const items = await Promise.all(
+  shots.map(async (shot) => ({
+    shot,
+    full: await getImage({ src: shot.src, width: Math.min(shot.src.width, 1800), format: 'webp', quality: 82 }),
+  })),
+);
+---
+
+<div class="gallery">
+  {
+    items.map(({ shot, full }) => (
+      <figure class="shot">
+        <a class="shot-link" href={full.src} data-lightbox data-alt={shot.alt} data-caption={fr(shot.caption)}>
+          <Image src={shot.src} alt={shot.alt} widths={[420, 640, 960]} sizes="(min-width: 900px) 440px, 92vw" />
+          <span class="visually-hidden">(agrandir l’image)</span>
+        </a>
+        <figcaption>{fr(shot.caption)}</figcaption>
+      </figure>
+    ))
+  }
+</div>
+
+<dialog class="lightbox" aria-label="Image agrandie">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" type="button">
+      <Icon name="close" />
+      <span>Fermer</span>
+    </button>
+    <p class="lightbox-caption"></p>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('dialog.lightbox');
+
+  if (dialog && typeof dialog.showModal === 'function') {
+    const caption = dialog.querySelector<HTMLElement>('.lightbox-caption')!;
+    const close = dialog.querySelector<HTMLButtonElement>('.lightbox-close')!;
+    // L'image est créée ici : une balise <img> sans src serait invalide dans le HTML.
+    const image = document.createElement('img');
+    image.className = 'lightbox-img';
+    image.alt = '';
+    caption.before(image);
+
+    document.addEventListener('click', (event) => {
+      const link = (event.target as HTMLElement).closest<HTMLAnchorElement>('a[data-lightbox]');
+      if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      image.src = link.href;
+      image.alt = link.dataset.alt ?? '';
+      caption.textContent = link.dataset.caption ?? '';
+      dialog.showModal();
+    });
+
+    close.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      image.removeAttribute('src');
+    });
+  }
+</script>
+
+<style>
+  .gallery {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 760px) {
+    .gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .shot {
+    margin: 0;
+  }
+
+  .shot-link {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    cursor: zoom-in;
+  }
+
+  .shot-link :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    color: var(--ink-soft);
+  }
+
+  .lightbox {
+    width: min(1200px, 100vw - 24px);
+    max-height: calc(100vh - 24px);
+    padding: 0;
+    border: 0;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .lightbox::backdrop {
+    background: rgba(21, 27, 32, 0.85);
+  }
+
+  .lightbox-inner {
+    display: grid;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .lightbox-close {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.45rem 0.9rem;
+    border: 0;
+    background: var(--label);
+    color: var(--label-ink);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .lightbox :global(.lightbox-img) {
+    width: 100%;
+    max-height: calc(100vh - 170px);
+    object-fit: contain;
+    background: var(--bg-alt);
+  }
+
+  .lightbox-caption {
+    margin: 0;
+    padding: 0 0.25rem 0.25rem;
+    color: var(--ink-soft);
+  }
+</style>

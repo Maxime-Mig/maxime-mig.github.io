@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { profile } from '../data/profile';
+---
+
+<BaseLayout
+  title="Mentions légales et confidentialité"
+  description="Mentions légales du portfolio de Maxime Miguet et utilisation des données : pas de cookie ni de suivi, et un formulaire utilisé seulement pour vous répondre."
+>
+  <div class="container page">
+    <div class="sheet">
+      <PageHeader
+        title="Mentions légales et confidentialité"
+        lead="Ce site ne dépose pas de cookie et n’utilise ni statistiques de visite ni publicité. Seul le formulaire de contact reçoit des informations, uniquement pour que je puisse vous répondre."
+        fortune="Le seul cookie de ce site est déjà cassé."
+      />
+      <div class="prose legal">
+      <section aria-labelledby="editor-title">
+        <h2 id="editor-title">Éditeur du site</h2>
+        <p>
+          Ce portfolio est un site personnel et non commercial, édité par Maxime Miguet, étudiant en BUT Informatique.
+          Pour toute question : <a href={`mailto:${profile.email}`}>{profile.email}</a>.
+        </p>
+      </section>
+
+      <section aria-labelledby="host-title">
+        <h2 id="host-title">Hébergement</h2>
+        <p>
+          Le site est hébergé par GitHub Pages, un service de GitHub, Inc., 88 Colin P. Kelly Jr. Street, San Francisco,
+          CA&nbsp;94107, États-Unis.
+        </p>
+      </section>
+
+      <section aria-labelledby="visit-title">
+        <h2 id="visit-title">Pendant votre visite</h2>
+        <ul>
+          <li>
+            <strong>Aucun cookie</strong> n’est déposé et aucun outil de mesure d’audience ou de publicité n’est utilisé.
+          </li>
+          <li>
+            Les polices et les images sont servies par le site lui-même : naviguer ici n’envoie aucune requête à un
+            service tiers.
+          </li>
+          <li>
+            Comme le précise GitHub, l’hébergeur enregistre l’adresse IP des visiteurs
+            <a href="https://docs.github.com/fr/pages/getting-started-with-github-pages/what-is-github-pages#data-collection" rel="noopener"
+              >à des fins de sécurité</a
+            >.
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="form-title">
+        <h2 id="form-title">Formulaire de contact</h2>
+        <ul>
+          <li><strong>Données envoyées :</strong> votre nom, votre adresse e-mail, l’objet et votre message.</li>
+          <li><strong>Utilisation :</strong> uniquement pour vous répondre. Elles ne sont ni revendues ni utilisées pour de la prospection.</li>
+          <li><strong>Base légale :</strong> votre consentement, donné en cochant la case du formulaire.</li>
+          <li>
+            <strong>Transmission :</strong> le formulaire passe par le service
+            <a href="https://formsubmit.co/" rel="noopener">FormSubmit</a>, qui me le transmet par e-mail. FormSubmit s’engage
+            à ne pas communiquer ces données à des tiers (<a href="https://formsubmit.co/privacy.pdf" rel="noopener"
+              >sa politique de confidentialité</a
+            >, en anglais).
+          </li>
+          <li>
+            <strong>Conservation :</strong> le message reste dans ma messagerie le temps de vous répondre et de suivre notre
+            échange. Rien n’est enregistré sur ce site.
+          </li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="rights-title">
+        <h2 id="rights-title">Vos droits</h2>
+        <p>
+          Vous pouvez à tout moment me demander de consulter, de corriger ou de supprimer les informations que vous m’avez
+          envoyées, en écrivant à <a href={`mailto:${profile.email}`}>{profile.email}</a>. Si vous estimez que vos droits
+          ne sont pas respectés, vous pouvez adresser une réclamation à la
+          <a href="https://www.cnil.fr/fr/plaintes" rel="noopener">CNIL</a>.
+        </p>
+      </section>
+
+      <section aria-labelledby="credits-title">
+        <h2 id="credits-title">Crédits</h2>
+        <p>
+          Site réalisé avec Astro. Polices libres Source Sans&nbsp;3 (licence SIL Open Font License) et Special
+          Elite (licence Apache&nbsp;2.0). Icônes Material Symbols de Google (licence Apache&nbsp;2.0), Devicon (licence MIT)
+          et Font Awesome (licence SIL Open Font License). Les messages des fortune cookies viennent de mon jeu Fortune Cookie.
+        </p>
+      </section>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .legal > section:first-child h2 {
+    margin-top: 0;
+  }
+</style>

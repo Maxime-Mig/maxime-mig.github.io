@@ -1,0 +1,296 @@
+---
+// Formulaire envoyé par FormSubmit (aucun serveur à maintenir).
+// Avec JavaScript : envoi en arrière-plan et message dans la page.
+// Sans JavaScript : envoi classique puis redirection vers /contact/merci/.
+import { profile } from '../data/profile';
+import Icon from './Icon.astro';
+
+const endpoint = `https://formsubmit.co/${profile.email}`;
+const ajaxEndpoint = `https://formsubmit.co/ajax/${profile.email}`;
+const thanks = new URL('/contact/merci/', Astro.site ?? profile.site).href;
+---
+
+<form class="contact-form" id="contact-form" action={endpoint} method="POST" data-ajax={ajaxEndpoint}>
+  <input type="hidden" name="_subject" value="Nouveau message depuis le portfolio" />
+  <input type="hidden" name="_template" value="table" />
+  <input type="hidden" name="_captcha" value="false" />
+  <input type="hidden" name="_next" value={thanks} />
+  <div class="honey" aria-hidden="true">
+    <label for="f-honey">Ne pas remplir ce champ</label>
+    <input type="text" id="f-honey" name="_honey" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="field">
+    <label for="f-name">Nom <span class="req" aria-hidden="true">*</span></label>
+    <input id="f-name" name="nom" type="text" autocomplete="name" required minlength="2" maxlength="80" aria-describedby="f-name-error" />
+    <p class="field-error" id="f-name-error" hidden></p>
+  </div>
+
+  <div class="field">
+    <label for="f-email">Adresse e-mail <span class="req" aria-hidden="true">*</span></label>
+    <input
+      id="f-email"
+      name="email"
+      type="email"
+      autocomplete="email"
+      required
+      maxlength="120"
+      aria-describedby="f-email-hint f-email-error"
+    />
+    <p class="field-hint" id="f-email-hint">Pour pouvoir vous répondre.</p>
+    <p class="field-error" id="f-email-error" hidden></p>
+  </div>
+
+  <div class="field">
+    <label for="f-subject">Objet</label>
+    <select id="f-subject" name="objet">
+      <option>Proposition de stage ou d’alternance</option>
+      <option>Collaboration ou projet</option>
+      <option>Question sur un projet du portfolio</option>
+      <option>Autre</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="f-message">Message <span class="req" aria-hidden="true">*</span></label>
+    <textarea id="f-message" name="message" rows="6" required minlength="10" maxlength="4000" aria-describedby="f-message-error"
+    ></textarea>
+    <p class="field-error" id="f-message-error" hidden></p>
+  </div>
+
+  <div class="field field-check">
+    <input id="f-consent" name="consentement" type="checkbox" value="oui" required aria-describedby="f-consent-error" />
+    <label for="f-consent">J’accepte que ces informations soient utilisées uniquement pour me répondre.</label>
+    <p class="field-error" id="f-consent-error" hidden></p>
+  </div>
+
+  <p class="form-note">
+    Les champs marqués d’un astérisque (*) sont obligatoires. Le message transite par le service
+    <a href="https://formsubmit.co/" rel="noopener">FormSubmit</a> jusqu’à ma boîte de réception ; rien n’est conservé sur ce site.
+    Pour connaître et exercer vos droits, consultez la page <a href="/confidentialite/">Confidentialité</a>.
+  </p>
+
+  <button class="btn" type="submit"><Icon name="send" /> <span data-submit-label>Envoyer le message</span></button>
+  <p class="form-status" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#contact-form');
+
+  if (form) {
+    // Les messages d'erreur en français remplacent ceux du navigateur.
+    form.noValidate = true;
+    const status = form.querySelector<HTMLElement>('.form-status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const label = button.querySelector<HTMLElement>('[data-submit-label]')!;
+    const email = form.dataset.ajax?.split('/').pop() ?? '';
+
+    const checks: [string, (field: HTMLInputElement) => string][] = [
+      ['f-name', (f) => (f.value.trim().length < 2 ? 'Indiquez votre nom (2 caractères minimum).' : '')],
+      [
+        'f-email',
+        (f) => (!f.value.trim() ? 'Indiquez votre adresse e-mail.' : f.validity.typeMismatch ? 'Cette adresse e-mail ne semble pas valide (exemple : nom@domaine.fr).' : ''),
+      ],
+      ['f-message', (f) => (f.value.trim().length < 10 ? 'Écrivez un message d’au moins 10 caractères.' : '')],
+      ['f-consent', (f) => (!f.checked ? 'Cochez la case pour que je puisse vous répondre.' : '')],
+    ];
+
+    const setError = (field: HTMLInputElement, message: string) => {
+      const error = document.getElementById(`${field.id}-error`);
+      field.toggleAttribute('aria-invalid', Boolean(message));
+      if (error) {
+        error.textContent = message;
+        error.hidden = !message;
+      }
+    };
+
+    const validate = () => {
+      let firstInvalid: HTMLInputElement | null = null;
+      for (const [id, check] of checks) {
+        const field = document.getElementById(id) as HTMLInputElement | null;
+        if (!field) continue;
+        const message = check(field);
+        setError(field, message);
+        if (message && !firstInvalid) firstInvalid = field;
+      }
+      return firstInvalid;
+    };
+
+    for (const [id, check] of checks) {
+      const field = document.getElementById(id) as HTMLInputElement | null;
+      field?.addEventListener(field.type === 'checkbox' ? 'change' : 'blur', () => {
+        if (field.hasAttribute('aria-invalid') || field.type === 'checkbox') setError(field, check(field));
+      });
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.className = 'form-status';
+      const invalid = validate();
+      if (invalid) {
+        status.textContent = 'Le formulaire contient des erreurs : corrigez les champs indiqués.';
+        status.classList.add('is-error');
+        invalid.focus();
+        return;
+      }
+
+      const data = new FormData(form);
+      if (String(data.get('_honey') ?? '').trim()) {
+        status.textContent = 'Merci, votre message est bien parti.';
+        form.reset();
+        return;
+      }
+
+      button.disabled = true;
+      label.textContent = 'Envoi en cours…';
+      status.textContent = '';
+
+      try {
+        const response = await fetch(form.dataset.ajax!, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(Object.fromEntries(data)),
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || String(result.success) !== 'true') throw new Error(result.message ?? 'Envoi refusé');
+        form.reset();
+        status.textContent = 'Merci, votre message est bien parti ! Je vous réponds dès que possible.';
+        status.classList.add('is-success');
+      } catch {
+        status.innerHTML = '';
+        status.append(
+          'L’envoi n’a pas abouti. Vous pouvez réessayer ou m’écrire directement à ',
+          Object.assign(document.createElement('a'), { href: `mailto:${email}`, textContent: email }),
+          '.',
+        );
+        status.classList.add('is-error');
+      } finally {
+        button.disabled = false;
+        label.textContent = 'Envoyer le message';
+      }
+    });
+  }
+</script>
+
+<style>
+  .contact-form {
+    display: grid;
+    gap: 1.15rem;
+    max-width: 620px;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  label {
+    font-weight: 700;
+  }
+
+  .req {
+    color: var(--red);
+  }
+
+  input[type='text'],
+  input[type='email'],
+  select,
+  textarea {
+    width: 100%;
+    min-height: 46px;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 0;
+    background: var(--bg-alt);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  textarea {
+    min-height: 9rem;
+    resize: vertical;
+  }
+
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 3px solid var(--link);
+    outline-offset: 1px;
+    border-color: var(--ink);
+  }
+
+  [aria-invalid] {
+    border-color: var(--red) !important;
+  }
+
+  .field-hint {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  .field-error {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--red);
+  }
+
+  .field-check {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    column-gap: 0.7rem;
+  }
+
+  .field-check input {
+    width: 24px;
+    height: 24px;
+    margin: 0.1rem 0 0;
+    accent-color: var(--link);
+  }
+
+  .field-check label {
+    font-weight: 600;
+  }
+
+  .field-check .field-error {
+    grid-column: 1 / -1;
+  }
+
+  .form-note {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+
+  .contact-form .btn {
+    justify-self: start;
+  }
+
+  .form-status {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .form-status:empty {
+    display: none;
+  }
+
+  .form-status.is-success {
+    color: var(--label-ink);
+    padding: 0.8rem 1rem;
+    background: var(--label);
+  }
+
+  .form-status.is-error {
+    color: var(--red);
+  }
+
+  .honey {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+</style>

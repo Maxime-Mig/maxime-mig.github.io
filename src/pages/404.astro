@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+---
+
+<BaseLayout title="Page introuvable" description="Cette page n’existe pas sur le portfolio de Maxime Miguet." noindex>
+  <div class="container page">
+    <div class="sheet">
+      <PageHeader title="Page introuvable" lead="La page demandée n’existe pas ou a été déplacée." fortune="Erreur 404 : avenir introuvable.">
+        <p><a href="/">Retour à l’accueil</a></p>
+      </PageHeader>
+    </div>
+  </div>
+</BaseLayout>

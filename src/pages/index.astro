@@ -1,0 +1,304 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CookieHero from '../components/CookieHero.astro';
+import Icon from '../components/Icon.astro';
+import PaperRibbon from '../components/PaperRibbon.astro';
+import ProjectRow from '../components/ProjectRow.astro';
+import { featuredProjects, projects } from '../data/projects';
+import { skillGroups, levelLabels } from '../data/skills';
+import { profile } from '../data/profile';
+import { fr } from '../lib/format';
+
+const toolbox = ['jeu-video', 'web', 'donnees', 'devops']
+  .map((id) => skillGroups.find((group) => group.id === id))
+  .filter((group) => group !== undefined)
+  .map((group) => ({ ...group, skills: group.skills.slice(0, 4) }));
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: profile.role,
+  url: profile.site,
+  email: `mailto:${profile.email}`,
+  sameAs: [profile.github],
+  affiliation: { '@type': 'CollegeOrUniversity', name: profile.school, url: profile.schoolUrl },
+  knowsAbout: ['Godot', 'GDScript', 'Développement web', 'Vue.js', 'Node.js', 'WordPress', 'MongoDB', 'GitLab CI/CD'],
+  knowsLanguage: ['fr', 'en'],
+};
+const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'Maxime Miguet · Portfolio', url: profile.site, inLanguage: 'fr-FR' };
+---
+
+<BaseLayout
+  title="Maxime Miguet · Développeur jeux vidéo et web"
+  description="Portfolio de Maxime Miguet, développeur jeux vidéo et web en 3e année de BUT Informatique : jeu Godot, sites, API et futur Studio Fortune Cookies."
+  type="profile"
+  jsonLd={[person, website]}
+>
+  <div class="home">
+    <PaperRibbon />
+
+    <section class="section hero" data-ribbon-side="right" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="sheet hero-text">
+          <h1 id="hero-title">
+            <span class="hero-name">Maxime Miguet</span>
+            <span class="hero-role">Développeur jeux vidéo et web</span>
+          </h1>
+          <p>
+            {
+              fr(
+                'Je suis en troisième année de BUT Informatique à l’IUT Nord Franche-Comté, à Belfort. Je développe surtout des jeux vidéo et des sites web. En ce moment, je termine mon jeu Fortune Cookie, que j’aimerais sortir sur Steam.',
+              )
+            }
+          </p>
+          <p class="btn-row">
+            <a class="btn" href="/projets/">Mes projets</a>
+            <a class="icon-link" href={profile.cvPdf} download={profile.cvFileName}><Icon name="download" /><span>Mon CV (PDF)</span></a>
+            <a class="icon-link" href={profile.github} rel="me"><Icon name="github" /><span>GitHub</span></a>
+          </p>
+        </div>
+
+        <div class="hero-cookie">
+          <CookieHero />
+          <p class="visually-hidden" id="cookie-hint">{fr('Les messages du papier viennent de mon jeu. Cliquez sur le cookie pour en ouvrir un autre.')}</p>
+        </div>
+
+        <div class="sheet about">
+          <h2 id="about-title">À propos</h2>
+          <p>
+            {
+              fr(
+                'Je suis entré en BUT en 2024, après un bac avec les spécialités maths et NSI. Je joue beaucoup aux jeux vidéo et j’écoute énormément de musique, et c’est en grande partie ce qui m’a donné envie de développer.',
+              )
+            }
+          </p>
+          <p>
+            {
+              fr(
+                'Pendant la formation, j’ai surtout travaillé en équipe, par exemple à cinq sur une application pour un événement médiéval. Mon stage de deuxième année chez Good Geek m’a ensuite appris à réaliser seul un site complet, des maquettes jusqu’aux dernières corrections.',
+              )
+            }
+          </p>
+          <p class="last">
+            {
+              fr(
+                'En 2027, j’aimerais créer mon studio de jeux, Fortune Cookies, avec le statut national d’étudiant-entrepreneur. Je reste ouvert aux propositions de stage.',
+              )
+            }{' '}
+            <a href="/a-propos/">Mon parcours</a>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section projects" data-ribbon-side="left" aria-labelledby="projects-title">
+      <div class="container">
+        <div class="sheet">
+          <h2 id="projects-title">Projets</h2>
+          {featuredProjects.map((project, index) => <ProjectRow project={project} big={index === 0} />)}
+          <p class="more"><a href="/projets/">Les {projects.length} projets</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section skills" data-ribbon-side="right" aria-labelledby="skills-title">
+      <div class="container">
+        <div class="sheet">
+          <h2 id="skills-title">Compétences</h2>
+          <div class="skill-columns">
+            {
+              toolbox.map((group) => (
+                <div class="skill-group">
+                  <h3>{group.title}</h3>
+                  <ul>
+                    {group.skills.map((skill) => (
+                      <li class="leader">
+                        <span class="skill-name"><Icon name={skill.icon} /><span>{skill.name.replace(/ \(.*\)/, '')}</span></span>
+                        <span class="level">{levelLabels[skill.level].toLowerCase()}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            }
+          </div>
+          <p class="more"><a href="/competences/">Toutes mes compétences, avec les projets où je m’en suis servi</a></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="slip end" data-ribbon-end>
+          <h2 id="contact-title">Me contacter</h2>
+          <p>
+            <a class="icon-link" href={`mailto:${profile.email}`}><Icon name="mail" /><span>{profile.email}</span></a><br />
+            <a class="icon-link" href="/contact/"><Icon name="send" /><span>Formulaire de contact</span></a>
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .home {
+    position: relative;
+  }
+
+  .hero {
+    padding-top: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Sur grand écran, la présentation et « À propos » forment une seule feuille. */
+  @media (min-width: 960px) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 620px) minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      gap: 0 1rem;
+    }
+
+    .hero-text,
+    .about {
+      grid-column: 1;
+    }
+
+    .hero-text {
+      padding-bottom: 0;
+      box-shadow: 3px 3px 0 var(--shade);
+    }
+
+    .about {
+      margin-top: -1px;
+    }
+
+    .hero-cookie {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+  }
+
+  /* Place pour que le papier du cookie s'affine avant de longer la feuille. */
+  @media (max-width: 959.98px) {
+    .about {
+      margin-top: 8rem;
+    }
+  }
+
+  h1 {
+    margin-bottom: 1.25rem;
+  }
+
+  .hero-name,
+  .hero-role {
+    display: block;
+  }
+
+  .hero-role {
+    font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+  }
+
+  .hero-text .btn-row {
+    margin-block: 1.5rem 0;
+  }
+
+  .last {
+    margin: 0;
+  }
+
+  .projects {
+    margin-top: 10rem;
+  }
+
+  .skills {
+    margin-top: 11rem;
+  }
+
+  @media (min-width: 960px) {
+    .skills .sheet {
+      width: 940px;
+      margin-left: auto;
+    }
+  }
+
+  .more {
+    margin: 1.5rem 0 0;
+  }
+
+  .projects .more {
+    margin: 0;
+    padding-top: 1.25rem;
+    border-top: 2px dashed var(--line-strong);
+  }
+
+  .skill-columns {
+    columns: 2 22rem;
+    column-gap: 3.5rem;
+  }
+
+  .skill-group {
+    break-inside: avoid;
+    padding-bottom: 1.5rem;
+  }
+
+  .skill-group h3 {
+    margin-bottom: 0.35rem;
+  }
+
+  .skill-group ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .skill-group li {
+    padding-block: 0.15rem;
+  }
+
+  .skill-name {
+    display: flex;
+    align-items: baseline;
+    gap: 0.55rem;
+  }
+
+  .skill-name :global(.icon) {
+    position: relative;
+    top: 0.18em;
+  }
+
+  .level {
+    color: var(--ink-soft);
+  }
+
+  .contact {
+    margin-top: 10rem;
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+
+  .end {
+    width: fit-content;
+    max-width: 100%;
+    margin-left: 12%;
+    padding: 2rem 2.5rem 1.6rem;
+    position: relative;
+  }
+
+  .end p {
+    margin: 0;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 700px) {
+    .end {
+      margin-inline: auto;
+    }
+  }
+</style>

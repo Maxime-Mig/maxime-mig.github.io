@@ -1,0 +1,29 @@
+---
+// Logo du site : le fortune cookie du jeu avec son papier qui dépasse, tel que sur son écran
+// titre (même image que le favicon).
+import { Image } from 'astro:assets';
+import logo from '../assets/cookie/cookie-logo.png';
+
+interface Props {
+  class?: string;
+  size?: number;
+}
+
+const { class: className, size = 32 } = Astro.props;
+---
+
+<Image
+  src={logo}
+  alt=""
+  width={size}
+  height={size}
+  densities={[1, 2, 3]}
+  loading="eager"
+  class={['cookie-mark', className].filter(Boolean).join(' ')}
+/>
+
+<style>
+  :global(.cookie-mark) {
+    flex: none;
+  }
+</style>

@@ -1,0 +1,13 @@
+# Dépendances et builds
+node_modules/
+dist/
+.astro/
+
+# Données privées (numéro du CV PDF, variables locales)
+.env
+.env.*
+cv.private.json
+
+# Système
+.DS_Store
+Thumbs.db

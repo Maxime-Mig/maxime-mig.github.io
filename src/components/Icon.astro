@@ -1,0 +1,16 @@
+---
+// Icône décorative, tirée d'une police (Material Symbols, Devicon ou Font Awesome) : le texte
+// voisin porte le sens. Le caractère est ajouté en CSS pour ne pas être copié avec le texte.
+import { icon, type IconName } from '../lib/icons';
+
+interface Props {
+  name: IconName;
+  class?: string;
+  'data-light'?: string;
+  'data-dark'?: string;
+}
+const { name, class: className, ...rest } = Astro.props;
+const { set, char } = icon(name);
+---
+
+<span class:list={['icon', `icon-${set}`, className]} data-icon={char} aria-hidden="true" {...rest}></span>

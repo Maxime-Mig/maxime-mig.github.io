@@ -1,0 +1,188 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { skillGroups, softSkills, levelLabels, type Level } from '../data/skills';
+import { projectBySlug } from '../data/projects';
+import { fr } from '../lib/format';
+
+const levels = Object.keys(levelLabels).map(Number).reverse() as Level[];
+const levelHints: Record<Level, string> = {
+  3: 'je l’utilise souvent et je saurais l’expliquer à quelqu’un',
+  2: 'je l’ai utilisé dans un projet, avec la documentation à côté',
+  1: 'j’en connais les bases, vues en cours ou en TP',
+};
+---
+
+<BaseLayout
+  title="Compétences"
+  description="Compétences de Maxime Miguet : Godot, HTML, CSS, Vue, Node.js, WordPress, SQL, MongoDB, GitLab CI/CD, Docker, Java, Python. Chaque niveau vient d’un projet."
+>
+  <div class="container page">
+    <div class="sheet">
+      <PageHeader title="Compétences" fortune="Si tu lis ceci, tu sais lire. Bravo.">
+        <dl class="legend">
+          {
+            levels.map((level) => (
+              <div>
+                <dt>{levelLabels[level]}&#8239;:</dt>
+                <dd>{fr(levelHints[level])}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </PageHeader>
+
+      {
+        skillGroups.map((group) => (
+          <section class="section" aria-labelledby={`group-${group.id}`}>
+            <h2 id={`group-${group.id}`}>{group.title}</h2>
+            <table>
+              <thead class="visually-hidden">
+                <tr>
+                  <th scope="col">Compétence</th>
+                  <th scope="col">Niveau</th>
+                  <th scope="col">Où je m’en suis servi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {group.skills.map((skill) => {
+                  // Seuls les projets publiés sur le site sont cités.
+                  const seenIn = (skill.projects ?? []).map((slug) => projectBySlug(slug)).filter((project) => project !== undefined);
+                  return (
+                    <tr>
+                      <th scope="row"><span class="skill-name"><Icon name={skill.icon} />{skill.name}</span></th>
+                      <td class="level">{levelLabels[skill.level]}</td>
+                      <td>
+                        {fr(skill.proof)}
+                        {seenIn.length > 0 && (
+                          <span class="seen">
+                            {seenIn.map((project, index) => [index > 0 && ', ', <a href={`/projets/${project.slug}/`}>{project.title}</a>])}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </section>
+        ))
+      }
+
+      <section class="section" aria-labelledby="soft-title">
+        <h2 id="soft-title">Compétences humaines</h2>
+        <dl class="soft">
+          {
+            softSkills.map((skill) => (
+              <div>
+                <dt>{fr(skill.name)}</dt>
+                <dd>{fr(skill.proof)}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .legend {
+    margin: 0;
+  }
+
+  .legend dt,
+  .legend dd {
+    display: inline;
+    margin: 0;
+  }
+
+  dt {
+    font-weight: 700;
+  }
+
+  h2 {
+    margin-bottom: 0.4rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.6rem 1.5rem 0.6rem 0;
+    border-top: 2px dashed var(--line);
+    text-align: left;
+    vertical-align: top;
+    font-weight: 400;
+  }
+
+  th {
+    width: 16.5rem;
+    font-weight: 700;
+  }
+
+  .skill-name {
+    display: flex;
+    gap: 0.55rem;
+  }
+
+  .skill-name :global(.icon) {
+    margin-top: 0.12em;
+  }
+
+  .level {
+    width: 10.5rem;
+  }
+
+  td:last-child {
+    padding-right: 0;
+  }
+
+  .seen {
+    display: block;
+  }
+
+  .soft {
+    margin: 0;
+    columns: 2 20rem;
+    column-gap: 3rem;
+  }
+
+  .soft > div {
+    break-inside: avoid;
+    padding-bottom: 0.9rem;
+  }
+
+  .soft dd {
+    margin: 0;
+  }
+
+  /* Sur téléphone, chaque ligne du tableau devient un bloc. */
+  @media (max-width: 720px) {
+    tr {
+      display: block;
+      padding-block: 0.6rem;
+      border-top: 2px dashed var(--line);
+    }
+
+    .skill-name {
+      align-items: center;
+    }
+
+    .skill-name :global(.icon) {
+      margin-top: 0;
+    }
+
+    th,
+    td {
+      display: block;
+      width: auto;
+      padding: 0;
+      border: 0;
+    }
+  }
+</style>

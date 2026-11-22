@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ProjectRow from '../../components/ProjectRow.astro';
+import { projects } from '../../data/projects';
+---
+
+<BaseLayout
+  title="Projets"
+  description="Projets de Maxime Miguet : jeu Godot en route vers Steam, stage WordPress, application web à cinq, API MongoDB et Redis, CI/CD et blind test en temps réel."
+>
+  <div class="container page">
+    <div class="sheet">
+      <PageHeader title="Projets" lead="Un jeu, un stage, une SAÉ, deux projets de module et un blind test." fortune="Ce cookie vaut double. Il a fait des études." />
+      {projects.map((project, index) => <ProjectRow project={project} headingLevel="h2" big={index === 0} />)}
+    </div>
+  </div>
+</BaseLayout>

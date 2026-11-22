@@ -1,0 +1,270 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Icon from '../components/Icon.astro';
+import { profile } from '../data/profile';
+import { fr } from '../lib/format';
+import type { IconName } from '../lib/icons';
+
+const timeline: { when: string; icon: IconName; title: string; text: string; href?: string; linkLabel?: string }[] = [
+  {
+    when: '2024',
+    icon: 'menu_book',
+    title: 'Baccalauréat général',
+    text: 'Spécialités mathématiques et numérique et sciences informatiques (NSI).',
+  },
+  {
+    when: '2024 – 2027',
+    icon: 'school',
+    title: 'BUT Informatique, IUT Nord Franche-Comté',
+    text: 'Algorithmique, bases de données, réseaux, développement web et mobile, qualité et gestion de projet. Troisième année en cours, à Belfort.',
+  },
+  {
+    when: 'Avril – juin 2026',
+    icon: 'work',
+    title: 'Stage de 9 semaines chez Good Geek',
+    text: 'J’étais le seul développeur du nouveau site WordPress de la boutique, des maquettes à la mise en production.',
+    href: '/projets/stage-good-geek/',
+    linkLabel: 'Le projet de stage',
+  },
+  {
+    when: '2027',
+    icon: 'storefront',
+    title: 'Studio Fortune Cookies',
+    text: 'Création de mon studio et sortie de mon premier jeu, si j’obtiens le statut national d’étudiant-entrepreneur.',
+    href: '/projets/fortune-cookie/',
+    linkLabel: 'Le jeu Fortune Cookie',
+  },
+];
+
+const qualities = [
+  { name: 'Persévérant', text: 'Quand quelque chose ne marche pas, je cherche jusqu’à comprendre pourquoi, quitte à reprendre plusieurs fois.' },
+  { name: 'Curieux', text: 'Je fais ma veille en anglais et j’essaie dans mes projets ce que je découvre.' },
+  { name: 'Empathique', text: 'Je pense aux personnes qui vont utiliser mon travail, que ce soient des joueurs, des visiteurs ou l’équipe qui mettra le site à jour.' },
+  { name: 'Fiable', text: 'Je ne présente que ce qui fonctionne, et je préviens dès qu’un problème risque de me retarder.' },
+  { name: 'Flexible', text: 'Pendant mon stage, la mission a changé après le premier point avec l’équipe. J’ai refait mon planning et livré le nouveau site.' },
+];
+---
+
+<BaseLayout
+  title="À propos"
+  description="Maxime Miguet, étudiant en 3e année de BUT Informatique à Belfort : parcours, projet de Studio Fortune Cookies, qualités et centres d’intérêt."
+>
+  <div class="container page layout">
+    <div class="sheet">
+      <PageHeader title="À propos de moi" fortune="Ton signe astrologique est : biscuit." />
+
+      <div class="text">
+        <p>
+          {
+            fr(
+              'Je m’appelle Maxime Miguet et je suis en troisième année de BUT Informatique à l’IUT Nord Franche-Comté, à Belfort. J’ai toujours beaucoup joué aux jeux vidéo, et je me suis vite demandé comment ils étaient faits. Par exemple, comment une partie de plusieurs heures peut tenir dans une simple sauvegarde. C’est ce qui m’a amené à l’informatique, d’abord avec la spécialité NSI au lycée, puis avec le BUT.',
+            )
+          }
+        </p>
+        <p>
+          {
+            fr(
+              'Depuis, j’ai travaillé sur plusieurs projets en équipe à l’IUT et j’ai réalisé seul un site WordPress pendant mon stage chez Good Geek. J’ai aussi commencé mon premier jeu, Fortune Cookie, que je compte vendre sur Steam.',
+            )
+          }
+        </p>
+        <p>
+          {
+            fr(
+              'Pour équilibrer Fortune Cookie, j’ai programmé un joueur automatique qui enchaîne les parties à ma place. J’ai pu tester beaucoup plus de réglages qu’en jouant moi-même.',
+            )
+          }
+        </p>
+      </div>
+
+      <section class="section text" aria-labelledby="goal-title">
+        <h2 id="goal-title">Mon projet de studio</h2>
+        <p>
+          {
+            fr(
+              'Cette année, je prépare la création de mon studio de jeux vidéo, Fortune Cookies. Je souhaite obtenir le statut national d’étudiant-entrepreneur. S’il m’est accordé, ce projet remplacera mon stage de fin d’études.',
+            )
+          }
+        </p>
+        <p>
+          {
+            fr(
+              'Le premier jeu, Fortune Cookie, est bien avancé. Pour le suivant, un RPG roguelite en 2D jouable à plusieurs, je n’en suis qu’à la phase de recherche.',
+            )
+          }
+        </p>
+        <p>
+          {
+            fr(
+              'Je reste quand même ouvert aux propositions de stage. Travailler dans une équipe expérimentée m’apprendrait beaucoup avant de me lancer.',
+            )
+          }
+          <a href="/contact/">M’écrire</a>
+        </p>
+      </section>
+
+      <section class="section" aria-labelledby="path-title">
+        <h2 id="path-title">Formation et parcours</h2>
+        <ol class="path" role="list">
+          {
+            timeline.map((step) => (
+              <li>
+                <p class="when">{step.when}</p>
+                <div>
+                  <h3><Icon name={step.icon} /> {step.title}</h3>
+                  <p>
+                    {fr(step.text)} {step.href && <a href={step.href}>{step.linkLabel}</a>}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="section text" aria-labelledby="qualities-title">
+        <h2 id="qualities-title">Qualités</h2>
+        <dl class="run-in">
+          {
+            qualities.map((quality) => (
+              <div>
+                <dt>{quality.name}.</dt>
+                <dd>{fr(quality.text)}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <section class="section text" aria-labelledby="hobbies-title">
+        <h2 id="hobbies-title">Centres d’intérêt</h2>
+        <p>
+          <strong><Icon name="sports_esports" /> Les jeux vidéo.</strong>
+          {fr('J’y joue beaucoup. Depuis que je développe les miens, je fais plus attention à ce qui donne envie de relancer une partie.')}
+        </p>
+        <p>
+          <strong><Icon name="music_note" /> La musique.</strong>
+          {fr('J’écoute un peu de tout. C’est pour jouer entre amis que j’ai créé mon')}
+          <a href="/projets/blindtest-generator/">BlindTest Generator</a>.
+        </p>
+        <p class="last">
+          <strong><Icon name="newspaper" /> La veille.</strong>
+          {fr('Je fais une veille régulière, surtout en anglais : daily.dev, dev.to, le blog de Godot et des newsletters sur le jeu indépendant.')}
+        </p>
+      </section>
+    </div>
+
+    <aside class="receipt-wrap" aria-labelledby="facts-title">
+      <div class="receipt">
+        <h2 class="receipt-title" id="facts-title">En bref</h2>
+        <dl>
+          <div>
+            <dt><Icon name="menu_book" />Formation</dt>
+            <dd>{profile.degree}, {profile.year}</dd>
+          </div>
+          <div>
+            <dt><Icon name="school" />École</dt>
+            <dd><a href={profile.schoolUrl} rel="noopener">{profile.school}</a></dd>
+          </div>
+          <div>
+            <dt><Icon name="location_on" />Région</dt>
+            <dd>{profile.region}</dd>
+          </div>
+          <div>
+            <dt><Icon name="translate" />Langues</dt>
+            <dd>Français, anglais technique (C1)</dd>
+          </div>
+          <div>
+            <dt><Icon name="directions_car" />Mobilité</dt>
+            <dd>Permis B</dd>
+          </div>
+          <div>
+            <dt><Icon name="description" />CV</dt>
+            <dd><a href={profile.cvPdf} download={profile.cvFileName}>à télécharger en PDF</a></dd>
+          </div>
+        </dl>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 1000px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr) 270px;
+    }
+
+    aside {
+      margin-top: 5rem;
+    }
+  }
+
+  .text p,
+  .text dl {
+    max-width: 66ch;
+  }
+
+  .path {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .path li {
+    padding-block: 0.8rem;
+    border-top: 2px dashed var(--line);
+  }
+
+  @media (min-width: 640px) {
+    .path li {
+      display: grid;
+      grid-template-columns: 9.5rem minmax(0, 1fr);
+    }
+  }
+
+  .path p {
+    margin: 0;
+  }
+
+  .when {
+    color: var(--ink-soft);
+  }
+
+  .path h3 {
+    margin-bottom: 0.2rem;
+    font-size: 1.1rem;
+  }
+
+  .path h3 :global(.icon) {
+    margin-right: 0.2rem;
+  }
+
+  .run-in {
+    margin: 0;
+  }
+
+  .run-in > div {
+    margin-bottom: 0.6rem;
+  }
+
+  .run-in dt,
+  .run-in dd {
+    display: inline;
+    margin: 0;
+  }
+
+  .run-in dt {
+    font-weight: 700;
+  }
+
+  .last {
+    margin: 0;
+  }
+</style>

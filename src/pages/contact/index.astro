@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ContactForm from '../../components/ContactForm.astro';
+import Icon from '../../components/Icon.astro';
+import { profile } from '../../data/profile';
+---
+
+<BaseLayout
+  title="Contact"
+  description="Contacter Maxime Miguet, développeur jeux vidéo et web : proposition de stage, collaboration ou question sur un projet. Formulaire, adresse e-mail et GitHub."
+>
+  <div class="container page layout">
+    <div class="sheet">
+      <PageHeader
+        title="Contact"
+        lead="Une proposition de stage, une question sur un projet ? Le message arrive directement dans ma boîte mail."
+        fortune="La réponse est oui. La question, tu la trouveras plus tard."
+      />
+      <section aria-labelledby="form-title">
+        <h2 class="visually-hidden" id="form-title">Formulaire de contact</h2>
+        <ContactForm />
+      </section>
+    </div>
+
+    <aside class="receipt-wrap" aria-labelledby="other-title">
+      <div class="receipt">
+        <h2 class="receipt-title" id="other-title">Sans formulaire</h2>
+        <dl>
+          <div>
+            <dt><Icon name="mail" />E-mail</dt>
+            <dd><a href={`mailto:${profile.email}`}>{profile.email}</a></dd>
+          </div>
+          <div>
+            <dt><Icon name="github" />GitHub</dt>
+            <dd><a href={profile.github} rel="me noopener">{profile.githubHandle}</a></dd>
+          </div>
+          <div>
+            <dt><Icon name="description" />CV</dt>
+            <dd><a href={profile.cvPdf} download={profile.cvFileName}>à télécharger en PDF</a></dd>
+          </div>
+          <div>
+            <dt><Icon name="location_on" />Région</dt>
+            <dd>{profile.region}</dd>
+          </div>
+          <div>
+            <dt><Icon name="event_available" />Disponibilité</dt>
+            <dd>Je prépare mon studio pour 2027, mais je reste ouvert aux propositions de stage.</dd>
+          </div>
+        </dl>
+      </div>
+    </aside>
+  </div>
+</BaseLayout>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 1000px) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr) 270px;
+    }
+
+    aside {
+      margin-top: 9rem;
+    }
+  }
+</style>

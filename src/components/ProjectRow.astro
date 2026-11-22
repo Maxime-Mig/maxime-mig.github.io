@@ -1,0 +1,92 @@
+---
+// Un projet dans la liste, présenté comme un article de la boutique du jeu : nom, pointillés,
+// étiquette jaune (l'année à la place du prix). L'image n'apparaît que s'il existe une vraie capture.
+import { Image } from 'astro:assets';
+import type { Project } from '../data/projects';
+import { fr } from '../lib/format';
+
+interface Props {
+  project: Project;
+  headingLevel?: 'h2' | 'h3';
+  big?: boolean;
+}
+
+const { project, headingLevel = 'h3', big = false } = Astro.props;
+const Heading = headingLevel;
+const years = [...new Set(project.period.match(/\d{4}/g) ?? [])].join(' – ');
+---
+
+<article class:list={['row', { 'row-big': big, 'row-image': project.cover }]}>
+  {
+    project.cover && (
+      <Image
+        class="row-shot"
+        src={project.cover.src}
+        alt={project.cover.alt}
+        widths={big ? [480, 720, 1100] : [280, 420, 560]}
+        sizes={big ? '(min-width: 860px) 560px, 92vw' : '(min-width: 860px) 260px, 92vw'}
+        loading={big ? 'eager' : 'lazy'}
+      />
+    )
+  }
+  <div>
+    <div class="leader">
+      <Heading class="row-title"><a href={`/projets/${project.slug}/`}>{project.title}</a></Heading>
+      <span class="label">{years}</span>
+    </div>
+    <p class="row-summary">{fr(project.summary)}</p>
+    <p class="row-meta">{fr(project.kind)}. {project.stack.slice(0, 4).join(', ')}.</p>
+  </div>
+</article>
+
+<style>
+  .row {
+    padding-block: 1.6rem;
+    border-top: 2px dashed var(--line-strong);
+  }
+
+  .row-shot {
+    width: 100%;
+    margin-bottom: 0.9rem;
+    border: 1px solid var(--line);
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  @media (min-width: 860px) {
+    .row-image {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 1.75rem;
+      align-items: start;
+    }
+
+    .row-big {
+      grid-template-columns: 560px minmax(0, 1fr);
+    }
+
+    .row-shot {
+      margin: 0;
+    }
+  }
+
+  .row-title {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+
+  .row-big .row-title {
+    font-size: 1.6rem;
+  }
+
+  .row-summary {
+    max-width: 66ch;
+    margin: 0.5rem 0;
+  }
+
+  .row-meta {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+</style>

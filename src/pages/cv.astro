@@ -1,0 +1,530 @@
+---
+// CV au format A4, dans le style du site. Le PDF téléchargeable est généré à
+// partir de cette page (npm run cv:pdf) ; le numéro de téléphone n'est ajouté
+// que dans le PDF et n'apparaît jamais dans le code du site.
+import QRCode from 'qrcode';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CookieMark from '../components/CookieMark.astro';
+import Icon from '../components/Icon.astro';
+import { profile } from '../data/profile';
+import { fr } from '../lib/format';
+
+const portfolioUrl = `${profile.site}/`;
+// L'adresse se coupe après « @ » quand la colonne est trop étroite.
+const [emailUser, emailDomain] = profile.email.split('@');
+const qr = await QRCode.toString(portfolioUrl, {
+  type: 'svg',
+  margin: 0,
+  errorCorrectionLevel: 'M',
+  color: { dark: '#212429', light: '#00000000' },
+});
+
+const skills = [
+  { group: 'Jeu vidéo', items: 'Godot 4, GDScript, Blender, Steamworks, game design' },
+  { group: 'Web', items: 'HTML, CSS, JavaScript, TypeScript, Vue 3, Node.js, Express, PHP, WordPress, Flask' },
+  { group: 'Données', items: 'SQL (MySQL, MariaDB), MCD et MLD, Prisma, MongoDB, Redis' },
+  { group: 'Qualité et DevOps', items: 'Git, GitHub, GitLab CI/CD, Docker Compose, JUnit, Cucumber' },
+  { group: 'Langages', items: 'Java, Python, C' },
+];
+
+const projects = [
+  {
+    title: 'Fortune Cookie',
+    meta: 'Projet personnel, depuis 2026, seul',
+    text: 'Jeu incrémental en 3D sous Godot 4, prévu sur Steam. 15 outils, 224 papiers de fortune, 38 succès, 3 langues. Étude de marché pour choisir le prix.',
+  },
+  {
+    title: 'Terres du Lion',
+    meta: 'SAÉ de BUT2, 2025 – 2026, équipe de 5',
+    text: 'Application full-stack pour un événement médiéval (Vue 3, TypeScript, Express, Prisma). J’ai réalisé les quiz, les statistiques et la gestion de compte.',
+  },
+  {
+    title: 'Forme Comtoise',
+    meta: 'Module de BUT3, 2026, seul',
+    text: 'Back-end d’un réseau de salles de sport : migration de SQLite vers MongoDB, API REST, cache Redis avec benchmark, worker Python, Docker.',
+  },
+  {
+    title: 'Pipeline CI/CD GitLab',
+    meta: 'Module de BUT3, 2026, seul',
+    text: 'Pipelines enfants pour deux services Java et Node.js, tests d’intégration, Package Registry, GitLab Pages et release sur tag.',
+  },
+  {
+    title: 'BlindTest Generator',
+    meta: 'Projet personnel, 2025 – 2026, seul',
+    text: 'Blind test multijoueur en temps réel (Vue, Socket.IO) : salons avec code, buzzer et 15 secondes pour répondre.',
+  },
+];
+---
+
+<BaseLayout
+  title="CV"
+  description="CV de Maxime Miguet, développeur jeux vidéo et web en 3e année de BUT Informatique : expérience, projets, compétences et formation. PDF à télécharger."
+>
+  <div class="cv-page">
+    <div class="cv-toolbar">
+      <a class="btn" href={profile.cvPdf} download={profile.cvFileName}><Icon name="download" /> Télécharger le PDF</a>
+      <p>{fr('Le PDF est identique, avec mon numéro de téléphone en plus.')}</p>
+    </div>
+
+    <article class="cv-sheet" aria-labelledby="cv-name">
+      <header class="cv-head">
+        <CookieMark class="cv-mark" size={52} />
+        <div class="cv-id">
+          <h1 class="cv-name" id="cv-name">Maxime Miguet</h1>
+          <p class="cv-role">{profile.role}</p>
+        </div>
+        <p class="cv-tagline">BUT Informatique, 3e année<br />IUT Nord Franche-Comté</p>
+      </header>
+
+      <div class="cv-body">
+        <aside class="cv-side">
+          <section aria-labelledby="cv-contact">
+            <h2 id="cv-contact">Contact</h2>
+            <ul class="cv-contact">
+              <li>
+                <span class="cv-label"><Icon name="mail" /> E-mail</span><a href={`mailto:${profile.email}`}
+                  >{emailUser}@<wbr /><span class="nowrap">{emailDomain}</span></a
+                >
+              </li>
+              <li data-phone-slot hidden><span class="cv-label"><Icon name="call" /> Téléphone</span><span data-phone></span></li>
+              <li><span class="cv-label"><Icon name="public" /> Portfolio</span><a href={portfolioUrl}>{profile.siteLabel}</a></li>
+              <li><span class="cv-label"><Icon name="github" /> GitHub</span><a href={profile.github}>github.com/{profile.githubHandle}</a></li>
+              <li><span class="cv-label"><Icon name="location_on" /> Région</span>{profile.region}</li>
+              <li><span class="cv-label"><Icon name="directions_car" /> Mobilité</span>Permis B</li>
+            </ul>
+          </section>
+
+          <section aria-labelledby="cv-skills">
+            <h2 id="cv-skills">Compétences</h2>
+            <dl class="cv-skills">
+              {
+                skills.map((skill) => (
+                  <div>
+                    <dt>{skill.group}</dt>
+                    <dd>{skill.items}</dd>
+                  </div>
+                ))
+              }
+            </dl>
+          </section>
+
+          <section aria-labelledby="cv-lang">
+            <h2 id="cv-lang">Langues</h2>
+            <p>Français : langue maternelle<br />Anglais technique : niveau C1</p>
+          </section>
+
+          <section aria-labelledby="cv-qualities">
+            <h2 id="cv-qualities">Qualités</h2>
+            <p>Persévérant, curieux, empathique, fiable, flexible</p>
+          </section>
+
+          <section aria-labelledby="cv-hobbies">
+            <h2 id="cv-hobbies">Centres d’intérêt</h2>
+            <p>{fr('Jeux vidéo, musique en tous genres, veille technologique (daily.dev, dev.to, blog de Godot)')}</p>
+          </section>
+        </aside>
+
+        <div class="cv-main">
+          <section aria-labelledby="cv-profile">
+            <h2 id="cv-profile">Profil</h2>
+            <p>
+              {
+                fr(
+                  'Étudiant en troisième année de BUT Informatique, je développe des jeux vidéo et des applications web. En 2027, je souhaite créer mon studio de jeux, Fortune Cookies, avec le statut national d’étudiant-entrepreneur. Ouvert aux propositions de stage.',
+                )
+              }
+            </p>
+          </section>
+
+          <section aria-labelledby="cv-xp">
+            <h2 id="cv-xp">Expérience</h2>
+            <div class="entry">
+              <div class="entry-head">
+                <h3>Stage de développeur WordPress, Good Geek</h3>
+                <p class="entry-when">7 avril – 5 juin 2026</p>
+              </div>
+              <p class="entry-meta">Boutique de pop culture, 9 semaines, seul sur le site</p>
+              <ul>
+                <li>{fr('Création complète d’un site de communication : thème sur mesure, actualités, agenda, multimédia, réseaux.')}</li>
+                <li>{fr('Indicateur de live branché sur les API Twitch et YouTube, avec cache et repli « hors ligne ».')}</li>
+                <li>{fr('Éditeur de « boosters » dans l’administration : calques, positions, effets et aperçu en direct.')}</li>
+                <li>{fr('Maquettes, présentations régulières à l’équipe et corrections à partir de ses retours.')}</li>
+              </ul>
+            </div>
+          </section>
+
+          <section aria-labelledby="cv-projects">
+            <h2 id="cv-projects">Projets</h2>
+            {
+              projects.map((project) => (
+                <div class="entry">
+                  <div class="entry-head">
+                    <h3>{project.title}</h3>
+                    <p class="entry-when">{project.meta}</p>
+                  </div>
+                  <p>{fr(project.text)}</p>
+                </div>
+              ))
+            }
+          </section>
+
+          <section aria-labelledby="cv-edu">
+            <h2 id="cv-edu">Formation</h2>
+            <div class="entry">
+              <div class="entry-head">
+                <h3>BUT Informatique, IUT Nord Franche-Comté, Belfort</h3>
+                <p class="entry-when">2024 – 2027</p>
+              </div>
+              <p>{fr('Algorithmique, bases de données, réseaux, développement web et mobile, qualité, gestion de projet. 3e année en cours.')}</p>
+            </div>
+            <div class="entry">
+              <div class="entry-head">
+                <h3>Baccalauréat général</h3>
+                <p class="entry-when">2024</p>
+              </div>
+              <p>Spécialités mathématiques et numérique et sciences informatiques (NSI).</p>
+            </div>
+          </section>
+
+          <div class="cv-fortune">
+            <div class="cv-qr" set:html={qr} aria-hidden="true" />
+            <div>
+              <p class="cv-fortune-title">{fr('Tous mes projets sont sur mon portfolio :')}</p>
+              <p class="cv-fortune-link"><a href={portfolioUrl}>{profile.siteLabel}</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</BaseLayout>
+
+<style is:global>
+  @page {
+    size: A4;
+    margin: 0;
+  }
+</style>
+
+<style>
+  .cv-page {
+    position: relative;
+    z-index: 1;
+    padding: clamp(1.5rem, 4vw, 3rem) 0 clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .cv-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+    width: min(210mm, 100% - 2 * var(--gutter));
+    margin: 0 auto 1.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--paper);
+    box-shadow: 3px 4px 0 var(--shade);
+  }
+
+  .cv-toolbar p {
+    margin: 0;
+  }
+
+  /* La feuille reste claire dans les deux thèmes, comme du papier. */
+  .cv-sheet {
+    --ink: #212429;
+    --ink-soft: #53575d;
+    --link: #1c4f8c;
+    --line: #d3d6d8;
+    --line-strong: #868c92;
+    --side: #e9eff5;
+    width: min(210mm, 100% - 2 * var(--gutter));
+    margin-inline: auto;
+    overflow: hidden;
+    background: #ffffff;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 3px 4px 0 var(--shade);
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .cv-sheet a {
+    color: var(--ink);
+    text-decoration-color: var(--line-strong);
+  }
+
+  .cv-sheet p {
+    margin: 0;
+  }
+
+  .cv-sheet ul {
+    margin: 0;
+  }
+
+  .cv-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    background: #46535d;
+    border-bottom: 8px solid #d3c5aa;
+    color: #f7f6f1;
+  }
+
+  .cv-head :global(.cv-mark) {
+    width: 52px;
+    height: 52px;
+  }
+
+  .cv-name {
+    margin: 0;
+    font-size: 2.1rem;
+    line-height: 1.05;
+    color: inherit;
+  }
+
+  .cv-role {
+    margin-top: 0.2rem !important;
+    font-family: var(--font-title);
+    font-size: 1.1rem;
+  }
+
+  .cv-tagline {
+    grid-column: 1 / -1;
+    font-size: 0.95rem;
+  }
+
+  .cv-body {
+    display: grid;
+  }
+
+  .cv-side,
+  .cv-main {
+    display: grid;
+    align-content: start;
+    gap: 1.1rem;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .cv-side {
+    order: 2;
+    background: var(--side);
+  }
+
+  .cv-sheet h2 {
+    margin: 0 0 0.45rem;
+    padding-bottom: 0.2rem;
+    border-bottom: 1.5px dashed var(--line-strong);
+    font-size: 1.1rem;
+  }
+
+  .cv-contact {
+    display: grid;
+    gap: 0.35rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .cv-contact li {
+    display: grid;
+    overflow-wrap: anywhere;
+  }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  .cv-label {
+    padding: 0;
+    background: none;
+    font-size: 0.88em;
+    color: var(--ink-soft);
+  }
+
+  .cv-skills {
+    display: grid;
+    gap: 0.4rem;
+    margin: 0;
+  }
+
+  .cv-skills dt {
+    font-weight: 700;
+  }
+
+  .cv-skills dd {
+    margin: 0;
+  }
+
+  .entry + .entry {
+    margin-top: 0.6rem;
+  }
+
+  .entry-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 0.75rem;
+  }
+
+  .entry h3 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .entry-when {
+    font-size: 0.95em;
+    color: var(--ink-soft);
+  }
+
+  .entry-meta {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  .entry ul {
+    display: grid;
+    gap: 0.15rem;
+    margin-top: 0.25rem;
+    padding-left: 1.1rem;
+  }
+
+  .cv-fortune {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.4rem;
+    padding: 0.8rem 1rem;
+    border: 1.5px dashed var(--line-strong);
+  }
+
+  .cv-qr {
+    width: 76px;
+    height: 76px;
+  }
+
+  .cv-qr :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .cv-fortune-title {
+  }
+
+  .cv-fortune-link {
+    font-family: var(--font-title);
+    font-size: 1.15rem;
+  }
+
+  @media (min-width: 820px) {
+    .cv-sheet {
+      font-size: 9.3pt;
+    }
+
+    .cv-body {
+      grid-template-columns: 64mm 1fr;
+    }
+
+    .cv-side {
+      order: 0;
+      min-height: 100%;
+    }
+
+    .cv-head {
+      grid-template-columns: auto 1fr auto;
+      padding: 9mm 11mm 6mm;
+    }
+
+    .cv-tagline {
+      grid-column: auto;
+      text-align: right;
+    }
+
+    .cv-side,
+    .cv-main {
+      gap: 3.4mm;
+      padding: 6mm 8mm 8mm;
+    }
+
+    .cv-main {
+      padding-right: 11mm;
+    }
+
+    .cv-side {
+      padding-left: 11mm;
+    }
+  }
+
+  @media print {
+    :global(.site-header),
+    :global(.site-footer),
+    :global(.skip-link),
+    .cv-toolbar {
+      display: none !important;
+    }
+
+    :global(html),
+    :global(body),
+    :global(main) {
+      background: #ffffff !important;
+      border: 0 !important;
+    }
+
+    .cv-page {
+      padding: 0;
+    }
+
+    .cv-sheet {
+      width: 210mm;
+      height: 297mm;
+      margin: 0;
+      font-size: 9.3pt;
+      box-shadow: none;
+    }
+
+    .cv-body {
+      grid-template-columns: 64mm 1fr;
+      height: calc(297mm - 31mm);
+    }
+
+    .cv-side {
+      order: 0;
+    }
+
+    .cv-head {
+      grid-template-columns: auto 1fr auto;
+      height: 31mm;
+      padding: 9mm 11mm 6mm;
+    }
+
+    .cv-tagline {
+      grid-column: auto;
+      text-align: right;
+    }
+
+    .cv-side,
+    .cv-main {
+      gap: 3.4mm;
+      padding: 6mm 8mm 8mm;
+    }
+
+    .cv-main {
+      padding-right: 11mm;
+    }
+
+    .cv-side {
+      padding-left: 11mm;
+    }
+
+    .cv-sheet a {
+      text-decoration: none;
+    }
+  }
+</style>

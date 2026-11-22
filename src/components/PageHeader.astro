@@ -1,0 +1,117 @@
+---
+// En-tête des pages intérieures : titre, introduction et petit fortune cookie cassé (les deux
+// moitiés du modèle du jeu), avec un papier choisi selon le sujet de la page. Les phrases viennent
+// du jeu Fortune Cookie, sauf celle de la page de confidentialité, écrite pour elle.
+import { getImage } from 'astro:assets';
+import cookieLeft from '../assets/cookie/cookie-gauche.webp';
+import cookieRight from '../assets/cookie/cookie-droite.webp';
+import { fr } from '../lib/format';
+
+interface Props {
+  title: string;
+  lead?: string;
+  fortune?: string;
+}
+
+const { title, lead, fortune } = Astro.props;
+const sizes = '210px';
+const halves = fortune
+  ? await Promise.all([cookieLeft, cookieRight].map((src) => getImage({ src, widths: [210, 420], sizes, format: 'webp' })))
+  : [];
+---
+
+<header class="page-header">
+  <div class="page-header-grid">
+    <div class="page-header-text">
+      <slot name="before" />
+      <h1>{fr(title)}</h1>
+      {lead && <p class="lead">{fr(lead)}</p>}
+      <slot />
+    </div>
+    {
+      fortune && (
+        <div class="mini-cookie" aria-hidden="true">
+          {halves.map((half, index) => (
+            <img
+              class:list={['mini-half', index === 0 ? 'mini-left' : 'mini-right']}
+              src={half.src}
+              srcset={half.srcSet.attribute}
+              sizes={sizes}
+              width={cookieLeft.width}
+              height={cookieLeft.height}
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+          ))}
+          <p class="mini-slip slip">{fr(fortune)}</p>
+        </div>
+      )
+    }
+  </div>
+</header>
+
+<style>
+  .page-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .page-header-grid {
+    display: grid;
+    gap: 2rem;
+  }
+
+  @media (min-width: 900px) {
+    .page-header-grid {
+      grid-template-columns: minmax(0, 1fr) 260px;
+    }
+  }
+
+  .page-header-text > :last-child {
+    margin-bottom: 0;
+  }
+
+  .mini-cookie {
+    position: relative;
+    display: none;
+    height: 216px;
+  }
+
+  @media (min-width: 900px) {
+    .mini-cookie {
+      display: block;
+    }
+  }
+
+  /* Les deux moitiés partagent le même cadre : côte à côte, elles reforment le cookie. */
+  .mini-half {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 210px;
+    height: auto;
+    transform-origin: 50% 90%;
+  }
+
+  .mini-left {
+    transform: translateX(-62%) rotate(-9deg);
+  }
+
+  .mini-right {
+    transform: translateX(-38%) rotate(8deg);
+  }
+
+  .mini-slip {
+    position: absolute;
+    left: 50%;
+    top: 160px;
+    z-index: 1;
+    width: 260px;
+    margin: 0;
+    padding: 14px 18px;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    text-align: center;
+    transform: translateX(-50%) rotate(-2deg);
+  }
+</style>

@@ -1,0 +1,481 @@
+---
+// Le papier de fortune qui sort du cookie et descend le long de la page.
+// SVG décoratif placé derrière le contenu ; il se déroule avec le défilement.
+// Le papier du cookie ([data-ribbon-start]) en est le début : une fois le cookie ouvert, c'est
+// ce SVG qui dessine le papier sous son texte (classe is-attached sur le papier), puis le
+// prolonge depuis son bout droit, à la même hauteur et avec les mêmes liserés rouges. Le ruban
+// s'affine ensuite en douceur jusqu'à la largeur de la marge, longe chaque section
+// [data-ribbon-side="left|right"] et finit sous [data-ribbon-end].
+---
+
+<svg class="ribbon" aria-hidden="true" focusable="false">
+  <defs>
+    <mask id="ribbon-mask" maskUnits="userSpaceOnUse">
+      <path class="ribbon-reveal" fill="none" stroke="#fff" stroke-linecap="butt" stroke-linejoin="round"></path>
+    </mask>
+  </defs>
+  <path class="ribbon-center" fill="none" stroke="none"></path>
+  <g class="ribbon-band">
+    <path class="ribbon-shadow ribbon-shadow-soft" transform="translate(4 8)"></path>
+    <path class="ribbon-shadow" transform="translate(2 4)"></path>
+    <path class="ribbon-paper"></path>
+    <path class="ribbon-rules" fill="none"></path>
+  </g>
+  <g class="ribbon-tip">
+    <rect class="ribbon-roll"></rect>
+    <path class="ribbon-roll-line"></path>
+  </g>
+</svg>
+
+<script>
+  type Point = [number, number];
+
+  const svg = document.querySelector<SVGSVGElement>('svg.ribbon');
+  const root = svg?.parentElement;
+
+  if (svg && root) {
+    const center = svg.querySelector<SVGPathElement>('.ribbon-center')!;
+    const reveal = svg.querySelector<SVGPathElement>('.ribbon-reveal')!;
+    const paper = svg.querySelector<SVGPathElement>('.ribbon-paper')!;
+    const shadows = svg.querySelectorAll<SVGPathElement>('.ribbon-shadow');
+    const rules = svg.querySelector<SVGPathElement>('.ribbon-rules')!;
+    const mask = svg.querySelector<SVGMaskElement>('mask')!;
+    const band = svg.querySelector<SVGGElement>('.ribbon-band')!;
+    const tip = svg.querySelector<SVGGElement>('.ribbon-tip')!;
+    const roll = svg.querySelector<SVGRectElement>('.ribbon-roll')!;
+    const rollLine = svg.querySelector<SVGPathElement>('.ribbon-roll-line')!;
+    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+    const STEP = 6;
+    // Comme sur les papiers du jeu : liserés de 1,5 px, à 6 px du bord, 10 px en retrait au bout.
+    const RULE_MARGIN = 10;
+
+    let total = 0;
+    let drawn = 0;
+    let target = 0;
+    let active = false;
+    let frame = 0;
+    let builds = 0;
+    // Largeur le long de la page ; largeur et longueur du papier du cookie (toujours visible
+    // une fois le cookie ouvert).
+    let ribbonWidth = 12;
+    let startWidth = 12;
+    let lead = 0;
+    // Le ruban s'affine de chaque côté séparément : côté intérieur du premier virage (à droite
+    // dans le sens du ruban) et côté extérieur, chacun entre deux longueurs.
+    let innerFrom = 0;
+    let innerTo = 0;
+    let outerFrom = 0;
+    let outerTo = 0;
+    let sampleStep = STEP;
+    let samples: number[] = [];
+    let centers: Point[] = [];
+    let start: HTMLElement | null = null;
+
+    const f = (n: number) => n.toFixed(1);
+
+    const box = (element: Element) => {
+      const rect = element.getBoundingClientRect();
+      const origin = root.getBoundingClientRect();
+      return { x: rect.left - origin.left, y: rect.top - origin.top, w: rect.width, h: rect.height };
+    };
+
+    // Place d'un élément dans la mise en page, sans ses transformations CSS.
+    const layoutBox = (element: HTMLElement) => {
+      const parent = element.offsetParent;
+      if (!parent) return box(element);
+      const p = box(parent);
+      return {
+        x: p.x + parent.clientLeft + element.offsetLeft,
+        y: p.y + parent.clientTop + element.offsetTop,
+        w: element.offsetWidth,
+        h: element.offsetHeight,
+      };
+    };
+
+    const ease = (value: number, from: number, to: number) => {
+      if (value <= from) return 0;
+      if (value >= to) return 1;
+      const t = (value - from) / (to - from);
+      return t * t * (3 - 2 * t);
+    };
+
+    // Demi-largeurs [intérieur, extérieur] à une longueur donnée. Dans un virage, le bord
+    // intérieur ne doit s'affiner qu'une fois le virage passé : s'il s'affinait avant, le bas
+    // du papier remonterait juste avant de tourner et ferait une bosse.
+    const sides = (length: number): Point => {
+      const half = startWidth / 2;
+      const change = (startWidth - ribbonWidth) / 2;
+      return [half - change * ease(length, innerFrom, innerTo), half - change * ease(length, outerFrom, outerTo)];
+    };
+    const widthAt = (length: number) => {
+      const [inner, outer] = sides(length);
+      return inner + outer;
+    };
+
+    // Distance entre le bord du papier et le milieu d'un liseré : 6,75 px sur le papier du
+    // cookie (liseré de 1,5 px à 6 px du bord), moins sur un ruban étroit.
+    const ruleInset = (width: number) => Math.min(6.75, Math.max(2.5, width * 0.116));
+
+    // Tracé de la ligne centrale, en coordonnées de la zone parente. Le ruban descend dans la marge
+    // de chaque section ; il ne change de côté que dans l'espace vide entre deux sections.
+    const route = (): string | null => {
+      start = root.querySelector<HTMLElement>('[data-ribbon-start]');
+      if (!start) return null;
+      const width = root.clientWidth;
+      const container = root.querySelector('.container');
+      const gutter = container ? box(container).x : 16;
+      const wide = gutter >= 70;
+      ribbonWidth = wide ? Math.min(56, gutter - 20) : Math.max(10, Math.min(40, gutter - 8));
+      const half = ribbonWidth / 2;
+      const leftX = wide ? gutter / 2 : half + 3;
+      const rightX = width - leftX;
+      const turnRadius = wide ? Math.min(120, Math.max(64, gutter - leftX)) : Math.max(28, ribbonWidth * 1.6);
+      const K = 0.5523; // quart de cercle en courbe de Bézier
+
+      // Départ : tout le papier du cookie, à mi-hauteur, puis un quart de cercle vers la marge.
+      // Sa place est lue sans ses transformations : elle est juste même pendant qu'il sort.
+      const s = layoutBox(start);
+      let y = s.y + s.h / 2;
+      startWidth = s.h;
+      const room = rightX - s.x - s.w;
+      const radius = Math.max(24, Math.min(160, room - Math.max(8, Math.min(20, room * 0.2))));
+      const run = Math.max(8, room - radius);
+      let x = s.x + s.w + run + radius;
+      let d = `M${f(s.x)} ${f(y)} L${f(x - radius)} ${f(y)}`;
+      d += ` C${f(x - radius * (1 - K))} ${f(y)} ${f(x)} ${f(y + radius * (1 - K))} ${f(x)} ${f(y + radius)}`;
+      y += radius;
+
+      // Le bord extérieur s'affine pendant le virage (le papier reste dans l'écran), le bord
+      // intérieur juste après, quand le ruban descend ; dès le début si le virage est trop serré.
+      const gap = Math.abs(startWidth - ribbonWidth);
+      const turnStart = s.w + run;
+      const turnEnd = turnStart + (Math.PI / 2) * radius;
+      lead = s.w + Math.min(run, 20) * 0.5;
+      outerFrom = turnStart;
+      outerTo = turnEnd;
+      innerFrom = radius > startWidth / 2 + 8 ? turnEnd : turnStart;
+      innerTo = innerFrom + Math.max(60, gap * 2.5);
+
+      // Descente dans la marge, avec une légère ondulation quand la marge est large.
+      const wave = wide ? Math.max(0, Math.min(10, leftX - half - 4)) : 0;
+      const down = (to: number) => {
+        const from = y;
+        const base = x;
+        const count = Math.max(1, Math.round((to - from) / 340));
+        for (let i = 1; i <= count; i += 1) {
+          const nextX = base + (i < count ? (i % 2 ? wave : -wave) : 0);
+          const nextY = from + ((to - from) * i) / count;
+          const mid = (y + nextY) / 2;
+          d += ` C${f(x)} ${f(mid)} ${f(nextX)} ${f(mid)} ${f(nextX)} ${f(nextY)}`;
+          x = nextX;
+          y = nextY;
+        }
+      };
+
+      // Traversée entre deux contenus (hauteurs top et bottom) : virage, passage, virage.
+      const cross = (toX: number, top: number, bottom: number) => {
+        const direction = toX > x ? 1 : -1;
+        const r = Math.min(turnRadius, Math.abs(toX - x) / 2);
+        const middle = (top + bottom) / 2;
+        // Légère pente, seulement si la place le permet.
+        const slope = Math.max(0, Math.min(24, (bottom - top) / 2 - half - 24));
+        down(Math.max(y + 1, middle - slope - r));
+        const y1 = y + r;
+        const y2 = Math.max(y1, middle + slope);
+        const x1 = x + direction * r;
+        const x2 = toX - direction * r;
+        const midX = (x1 + x2) / 2;
+        d += ` C${f(x)} ${f(y + r * K)} ${f(x1 - direction * r * K)} ${f(y1)} ${f(x1)} ${f(y1)}`;
+        d += ` C${f(midX)} ${f(y1)} ${f(midX)} ${f(y2)} ${f(x2)} ${f(y2)}`;
+        d += ` C${f(x2 + direction * r * K)} ${f(y2)} ${f(toX)} ${f(y2 + r * (1 - K))} ${f(toX)} ${f(y2 + r)}`;
+        x = toX;
+        y = y2 + r;
+      };
+
+      const content = (section: Element) => box(section.querySelector('.container') ?? section);
+      const sections = [...root.querySelectorAll<HTMLElement>('[data-ribbon-side]')];
+      let side = 'right';
+      sections.forEach((section, index) => {
+        const next = section.dataset.ribbonSide ?? side;
+        if (index === 0 || next === side) return;
+        const above = content(sections[index - 1]);
+        cross(next === 'left' ? leftX : rightX, above.y + above.h, content(section).y);
+        side = next;
+      });
+
+      // Fin : le ruban passe sous le bloc de contact.
+      const end = root.querySelector('[data-ribbon-end]');
+      const last = sections[sections.length - 1];
+      if (end && last) {
+        const e = box(end);
+        const above = content(last);
+        cross(e.x + e.w / 2, above.y + above.h, e.y);
+        d += ` L${f(x)} ${f(Math.max(y + 1, e.y + 28))}`;
+      }
+      return d;
+    };
+
+    // Contour du ruban (largeur variable) et ses deux liserés, calculés de part et d'autre
+    // de la ligne centrale. Retient aussi, pour le défilement, la hauteur atteinte à chaque pas.
+    const shape = () => {
+      total = center.getTotalLength();
+      const count = Math.max(2, Math.ceil(total / STEP));
+      sampleStep = total / count;
+      const points: Point[] = [];
+      for (let i = 0; i <= count; i += 1) {
+        const p = center.getPointAtLength(i * sampleStep);
+        points.push([p.x, p.y]);
+      }
+      // Milieu réel du ruban à chaque pas (ses deux bords ne s'affinent pas en même temps).
+      centers = [];
+
+      const left: string[] = [];
+      const right: string[] = [];
+      const ruleA: string[] = [];
+      const ruleB: string[] = [];
+      samples = [];
+      let maxY = -Infinity;
+      points.forEach(([x, y], i) => {
+        const a = points[Math.max(0, i - 1)];
+        const b = points[Math.min(points.length - 1, i + 1)];
+        const length = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
+        const nx = -(b[1] - a[1]) / length;
+        const ny = (b[0] - a[0]) / length;
+        const along = i * sampleStep;
+        const [inner, outer] = sides(along);
+        const inset = ruleInset(inner + outer);
+        left.push(`${f(x + nx * inner)} ${f(y + ny * inner)}`);
+        right.push(`${f(x - nx * outer)} ${f(y - ny * outer)}`);
+        centers.push([x + (nx * (inner - outer)) / 2, y + (ny * (inner - outer)) / 2]);
+        // Les liserés commencent à 10 px du bout du papier, comme dans le jeu.
+        if (along >= RULE_MARGIN || i === count) {
+          const ruleIn = inner - inset;
+          const ruleOut = outer - inset;
+          if (!ruleA.length && along > RULE_MARGIN) {
+            // Premier point exactement à 10 px du bout (le premier tronçon est droit).
+            const back = along - RULE_MARGIN;
+            const ux = (b[0] - a[0]) / length;
+            const uy = (b[1] - a[1]) / length;
+            ruleA.push(`${f(x - ux * back + nx * ruleIn)} ${f(y - uy * back + ny * ruleIn)}`);
+            ruleB.push(`${f(x - ux * back - nx * ruleOut)} ${f(y - uy * back - ny * ruleOut)}`);
+          }
+          ruleA.push(`${f(x + nx * ruleIn)} ${f(y + ny * ruleIn)}`);
+          ruleB.push(`${f(x - nx * ruleOut)} ${f(y - ny * ruleOut)}`);
+        }
+        maxY = Math.max(maxY, y);
+        samples.push(maxY);
+      });
+
+      const outline = `M${left.join('L')}L${right.reverse().join('L')}Z`;
+      paper.setAttribute('d', outline);
+      shadows.forEach((path) => path.setAttribute('d', outline));
+      rules.setAttribute('d', `M${ruleA.join('L')}M${ruleB.join('L')}`);
+      rules.setAttribute('stroke-width', ribbonWidth >= 20 ? '1.5' : '1.2');
+    };
+
+    // Longueur de ruban à dérouler pour atteindre une hauteur donnée.
+    const lengthAtY = (y: number) => {
+      const last = samples.length - 1;
+      if (last < 0) return 0;
+      if (y >= samples[last]) return total;
+      let lo = 0;
+      let hi = last;
+      while (lo < hi) {
+        const mid = (lo + hi + 1) >> 1;
+        if (samples[mid] <= y) lo = mid;
+        else hi = mid - 1;
+      }
+      return Math.min(total, lo * sampleStep);
+    };
+
+    const scrollTarget = () => {
+      if (!active) return 0;
+      const y = window.innerHeight * 0.82 - root.getBoundingClientRect().top;
+      return Math.max(lead, lengthAtY(y));
+    };
+
+    // Partie visible : le papier du cookie dès qu'il est sorti, puis ce qui est déroulé.
+    // Le rouleau de papier se trouve au bout de la partie déroulée.
+    const render = () => {
+      const visible = active ? Math.max(drawn, lead) : 0;
+      reveal.setAttribute('stroke-dashoffset', String(total - visible));
+      // Entièrement déroulé : plus de masque (Chrome pouvait en garder une version périmée, qui
+      // rognait le ruban après un changement de mise en page).
+      const masked = visible < total - 0.5;
+      if (masked) band.setAttribute('mask', `url(#${mask.id})`);
+      else band.removeAttribute('mask');
+      if (active && drawn > lead + 2 && drawn < total - 2 && centers.length > 1) {
+        // Position sur la ligne centrale réelle (celle du contour), entre deux échantillons.
+        const k = Math.min(centers.length - 2, Math.floor(drawn / sampleStep));
+        const t = drawn / sampleStep - k;
+        const [ax, ay] = centers[k];
+        const [bx, by] = centers[k + 1];
+        const p = { x: ax + (bx - ax) * t, y: ay + (by - ay) * t };
+        const angle = (Math.atan2(by - ay, bx - ax) * 180) / Math.PI + 90;
+        const width = widthAt(drawn) + 4;
+        const thickness = Math.min(18, Math.max(7, width * 0.34));
+        roll.setAttribute('x', f(-width / 2));
+        roll.setAttribute('y', f(-thickness / 2));
+        roll.setAttribute('width', f(width));
+        roll.setAttribute('height', f(thickness));
+        roll.setAttribute('rx', f(thickness / 2));
+        rollLine.setAttribute('d', `M${f(-width / 2 + thickness / 2)} 0H${f(width / 2 - thickness / 2)}`);
+        tip.setAttribute('transform', `translate(${f(p.x)} ${f(p.y)}) rotate(${f(angle)})`);
+        tip.style.opacity = '1';
+      } else {
+        tip.style.opacity = '0';
+      }
+    };
+
+    const tick = () => {
+      frame = 0;
+      const gap = target - drawn;
+      if (Math.abs(gap) < 0.8) {
+        drawn = target;
+        render();
+        return;
+      }
+      drawn += gap * 0.085;
+      render();
+      frame = requestAnimationFrame(tick);
+    };
+
+    const update = () => {
+      if (!motion.matches) return;
+      target = Math.max(target, scrollTarget());
+      if (!frame && target !== drawn) frame = requestAnimationFrame(tick);
+    };
+
+    const build = () => {
+      // Un nouvel identifiant à chaque tracé : le navigateur ne peut pas réutiliser l'ancien masque.
+      builds += 1;
+      mask.id = `ribbon-mask-${builds}`;
+      const d = route();
+      if (!d) {
+        svg.classList.remove('is-ready');
+        start?.classList.remove('is-attached');
+        return;
+      }
+      const progress = total ? drawn / total : 0;
+      const width = root.clientWidth;
+      const height = root.offsetHeight;
+      svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      svg.setAttribute('width', String(width));
+      svg.setAttribute('height', String(height));
+      // La hauteur CSS vaut 0 tant que le tracé n'est pas calculé.
+      svg.style.height = `${height}px`;
+      for (const [name, value] of [['x', 0], ['y', 0], ['width', width], ['height', height]] as const) {
+        mask.setAttribute(name, String(value));
+      }
+
+      center.setAttribute('d', d);
+      reveal.setAttribute('d', d);
+      shape();
+      reveal.setAttribute('stroke-width', String(Math.max(startWidth, ribbonWidth) + 24));
+      reveal.setAttribute('stroke-dasharray', `${total} ${total}`);
+
+      if (motion.matches) {
+        drawn = Math.max(lead, progress * total);
+        target = Math.max(drawn, scrollTarget());
+      } else {
+        drawn = target = total;
+      }
+      svg.classList.add('is-ready');
+      // Le papier du cookie ne garde que son texte : le SVG dessine le papier dessous.
+      start?.classList.toggle('is-attached', active);
+      render();
+      update();
+    };
+
+    let timer = 0;
+    const scheduleBuild = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(build, 120);
+    };
+
+    // Le ruban n'apparaît qu'une fois le cookie cassé et son papier sorti ; son point de
+    // départ est recalculé à chaque ouverture, quand le papier est à sa place.
+    const activate = () => {
+      if (active) return;
+      active = true;
+      build();
+    };
+
+    const hero = root.querySelector<HTMLElement>('.cookie-hero');
+    if (!hero || hero.dataset.opened === 'true' || !motion.matches) {
+      active = true;
+    } else {
+      document.addEventListener('cookie:open', activate, { once: true });
+    }
+    document.addEventListener('cookie:open', scheduleBuild);
+
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', scheduleBuild);
+    new ResizeObserver(scheduleBuild).observe(root);
+    document.fonts?.ready.then(scheduleBuild);
+    window.addEventListener('load', scheduleBuild);
+    // Une feuille peut changer de hauteur sans que la zone entière change de taille.
+    const sheets = new ResizeObserver(scheduleBuild);
+    root.querySelectorAll('.sheet, [data-ribbon-end]').forEach((sheet) => sheets.observe(sheet));
+    build();
+  }
+</script>
+
+<style>
+  .ribbon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 0;
+    overflow: visible;
+    pointer-events: none;
+    visibility: hidden;
+  }
+
+  .ribbon.is-ready {
+    visibility: visible;
+  }
+
+  .ribbon-shadow {
+    fill: var(--slip-shadow);
+  }
+
+  .ribbon-shadow-soft {
+    fill: var(--slip-shadow-soft);
+  }
+
+  .ribbon-paper {
+    fill: var(--slip);
+  }
+
+  .ribbon-rules {
+    stroke: var(--slip-rule);
+    stroke-linejoin: round;
+  }
+
+  .ribbon-tip {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .ribbon-roll {
+    fill: var(--slip);
+    stroke: #d8cfbf;
+    stroke-width: 1.2;
+  }
+
+  .ribbon-roll-line {
+    fill: none;
+    stroke: #d8cfbf;
+    stroke-width: 1.2;
+    stroke-linecap: round;
+  }
+
+  @media print {
+    .ribbon {
+      display: none;
+    }
+  }
+</style>

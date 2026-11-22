@@ -1,0 +1,425 @@
+---
+import { Image } from 'astro:assets';
+import { Code } from 'astro:components';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Gallery from '../../components/Gallery.astro';
+import Icon from '../../components/Icon.astro';
+import { projects, type Project } from '../../data/projects';
+import { profile } from '../../data/profile';
+import { fr, rich } from '../../lib/format';
+import { techIcon } from '../../lib/icons';
+
+export function getStaticPaths() {
+  return projects.map((project, index) => ({
+    params: { slug: project.slug },
+    props: {
+      project,
+      prev: projects[(index - 1 + projects.length) % projects.length],
+      next: projects[(index + 1) % projects.length],
+    },
+  }));
+}
+
+interface Props {
+  project: Project;
+  prev: Project;
+  next: Project;
+}
+
+const { project, prev, next } = Astro.props;
+
+const url = new URL(`/projets/${project.slug}/`, profile.site).href;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: project.title,
+    headline: project.tagline,
+    description: project.summary,
+    url,
+    inLanguage: 'fr-FR',
+    keywords: project.stack.join(', '),
+    author: { '@type': 'Person', name: profile.name, url: profile.site },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${profile.site}/` },
+      { '@type': 'ListItem', position: 2, name: 'Projets', item: `${profile.site}/projets/` },
+      { '@type': 'ListItem', position: 3, name: project.title, item: url },
+    ],
+  },
+];
+---
+
+<BaseLayout title={project.title} description={project.summary} jsonLd={jsonLd}>
+  <article class="container page">
+    <!--
+      Ordre de lecture (consigne, figure 11) : d'abord l'image et un texte clair pour tous,
+      puis la fiche (contexte, technologies, lien vers le code), puis le détail technique.
+      Sur grand écran, la fiche passe dans la colonne de droite.
+    -->
+    <div class="project-layout">
+      <div class="sheet project-intro">
+        <nav class="breadcrumbs" aria-label="Fil d’Ariane">
+          <ol>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/projets/">Projets</a></li>
+            <li aria-current="page">{project.title}</li>
+          </ol>
+        </nav>
+        <h1>{project.title}</h1>
+        <p class="lead">{fr(project.tagline)}</p>
+        {
+          project.cover && (
+            <figure class="project-cover">
+              <Image
+                src={project.cover.src}
+                alt={project.cover.alt}
+                widths={[480, 720, 960, 1280]}
+                sizes="(min-width: 1120px) 720px, (min-width: 900px) 62vw, 92vw"
+                loading="eager"
+              />
+              <figcaption>{fr(project.cover.caption)}</figcaption>
+            </figure>
+          )
+        }
+        <section aria-labelledby="brief-title">
+          <h2 id="brief-title">Présentation</h2>
+          {project.description.map((paragraph) => <p set:html={rich(paragraph)} />)}
+        </section>
+      </div>
+
+      <aside class="project-aside" aria-labelledby="sheet-title">
+        <div class="receipt-wrap">
+          <div class="receipt">
+            <h2 class="receipt-title" id="sheet-title">Fiche du projet</h2>
+            <dl>
+              <div>
+                <dt><Icon name="category" />Type</dt>
+                <dd>{project.kind}</dd>
+              </div>
+              <div>
+                <dt><Icon name="calendar_month" />Période</dt>
+                <dd>{fr(project.period)}</dd>
+              </div>
+              <div>
+                <dt><Icon name="school" />Cadre</dt>
+                <dd>{fr(project.setting)}</dd>
+              </div>
+              <div>
+                <dt><Icon name="group" />Équipe</dt>
+                <dd>{fr(project.team)}</dd>
+              </div>
+              <div>
+                <dt><Icon name="handyman" />Technologies</dt>
+                <dd>
+                  <ul class="stack" role="list">
+                    {project.stack.map((tech) => {
+                      const logo = techIcon(tech);
+                      return (
+                        <li>
+                          {logo && <Icon name={logo} />}
+                          {tech}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </dd>
+              </div>
+              <div>
+                <dt><Icon name="code" />Code</dt>
+                <dd>
+                  {project.links?.map((link) => (
+                    <a class="sheet-link" href={link.href} rel="noopener">
+                      <span>{link.label}</span>
+                      <span class="visually-hidden"> (site externe)</span>
+                    </a>
+                  ))}
+                  {project.linkNote && fr(project.linkNote)}
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </aside>
+
+      <div class="sheet project-main">
+        <section class="block" aria-labelledby="features-title">
+          <h2 id="features-title">Fonctionnalités</h2>
+          <ul class="list">
+            {
+              project.features.map((feature) => (
+                <li>{fr(feature)}</li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="block" aria-labelledby="role-title">
+          <h2 id="role-title">Mon rôle</h2>
+          <p>{fr(project.role.intro)}</p>
+          {
+            project.role.items && (
+              <ul class="list">
+                {project.role.items.map((item) => (
+                  <li>{fr(item)}</li>
+                ))}
+              </ul>
+            )
+          }
+        </section>
+
+        {
+          project.gallery && (
+            <section class="block" aria-labelledby="gallery-title">
+              <h2 id="gallery-title">Images</h2>
+              <Gallery shots={project.gallery} />
+            </section>
+          )
+        }
+
+        {
+          project.tracks && (
+            <section class="block" aria-labelledby="audio-title">
+              <h2 id="audio-title">Extraits audio</h2>
+              <p>{fr('Le même enregistrement, après chaque étape du Pauvocodeur. Le son ne se lance que si vous appuyez sur lecture.')}</p>
+              <ul class="tracks" role="list">
+                {project.tracks.map((track, index) => (
+                  <li class="track">
+                    <p class="track-title" id={`track-${index}`}>
+                      {fr(track.title)}
+                    </p>
+                    <p class="track-text">{fr(track.text)}</p>
+                    <audio controls preload="none" src={track.src} aria-labelledby={`track-${index}`}>
+                      <a href={track.src}>Écouter l’extrait (MP3)</a>
+                    </audio>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        <section class="block" aria-labelledby="challenges-title">
+          <h2 id="challenges-title">Difficultés rencontrées</h2>
+          <dl class="challenges">
+            {
+              project.challenges.map((challenge) => (
+                <div>
+                  <dt>{fr(challenge.problem)}</dt>
+                  <dd>{fr(challenge.solution)}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </section>
+
+        {
+          project.learned && (
+            <section class="block" aria-labelledby="learned-title">
+              <h2 id="learned-title">Ce que j’ai appris</h2>
+              <ul class="list">
+                {project.learned.map((item) => (
+                  <li>{fr(item)}</li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        {
+          project.next && (
+            <section class="block" aria-labelledby="next-title">
+              <h2 id="next-title">Suite du projet</h2>
+              <ul class="list">
+                {project.next.map((item) => (
+                  <li>{fr(item)}</li>
+                ))}
+              </ul>
+            </section>
+          )
+        }
+
+        {
+          (project.technical || project.code) && (
+            <section class="block" aria-labelledby="tech-title">
+              <h2 id="tech-title">Détails techniques</h2>
+              {project.technical && (
+                <ul class="list">
+                  {project.technical.map((item) => (
+                    <li>{fr(item)}</li>
+                  ))}
+                </ul>
+              )}
+              {project.code && (
+                <figure class="code-sample">
+                  <Code code={project.code.content} lang={project.code.lang} theme="github-dark-dimmed" />
+                  <figcaption>{fr(project.code.label)}</figcaption>
+                </figure>
+              )}
+            </section>
+          )
+        }
+
+        <nav class="pager" aria-label="Autres projets">
+          <span>Projet précédent&#8239;: <a href={`/projets/${prev.slug}/`} rel="prev">{prev.title}</a></span>
+          <span>Projet suivant&#8239;: <a href={`/projets/${next.slug}/`} rel="next">{next.title}</a></span>
+        </nav>
+      </div>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  @media (min-width: 1000px) {
+    .project-layout {
+      grid-template-columns: minmax(0, 1fr) 270px;
+      column-gap: 2rem;
+      row-gap: 0;
+      align-items: start;
+    }
+
+    .project-intro {
+      grid-column: 1;
+      grid-row: 1;
+      padding-bottom: 0;
+      box-shadow: 3px 3px 0 var(--shade);
+    }
+
+    .project-main {
+      grid-column: 1;
+      grid-row: 2;
+      margin-top: -1px;
+    }
+
+    .project-aside {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      position: sticky;
+      top: calc(var(--header-height) + 1.5rem);
+      margin-top: 4rem;
+    }
+  }
+
+  .project-intro > section > :last-child {
+    margin-bottom: 0;
+  }
+
+  .project-intro p {
+    max-width: 68ch;
+  }
+
+  .stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.1rem 0.9rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stack li {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .sheet-link {
+    display: inline-block;
+    padding-block: 0.3rem;
+  }
+
+  .project-cover {
+    margin: 1.5rem 0 2.25rem;
+  }
+
+  .project-cover :global(img) {
+    width: 100%;
+    border: 1px solid var(--line);
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    color: var(--ink-soft);
+  }
+
+  .block {
+    margin-bottom: 2.25rem;
+  }
+
+  .block > p,
+  .list {
+    max-width: 68ch;
+  }
+
+  .list {
+    margin: 0;
+  }
+
+  .list li {
+    margin-bottom: 0.3rem;
+  }
+
+  .challenges {
+    max-width: 68ch;
+    margin: 0;
+  }
+
+  .challenges dt {
+    font-weight: 700;
+  }
+
+  .challenges dd {
+    margin: 0.2rem 0 1.1rem;
+  }
+
+  .code-sample {
+    margin: 1.25rem 0 0;
+  }
+
+  .code-sample :global(pre) {
+    margin: 0;
+    padding: 1rem 1.1rem;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .tracks {
+    display: grid;
+    gap: 1rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .track-title {
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .track-text {
+    margin: 0;
+  }
+
+  .track audio {
+    width: 100%;
+    margin-top: 0.35rem;
+  }
+
+  .pager {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding-top: 1.25rem;
+    border-top: 2px dashed var(--line-strong);
+  }
+</style>

@@ -1,0 +1,386 @@
+---
+// Le fortune cookie de l'accueil : le modèle 3D du jeu Fortune Cookie, rendu avec la lumière
+// et la caméra de son écran titre (cookie entier, sans papier visible, puis ses deux moitiés,
+// dans le même cadre). Il se casse au chargement, puis à chaque clic. Le papier, au style des papiers
+// du jeu, se prolonge par le ruban qui descend le long de la page (PaperRibbon).
+import { getImage } from 'astro:assets';
+import cookieWhole from '../assets/cookie/cookie-ferme.webp';
+import cookieLeft from '../assets/cookie/cookie-gauche.webp';
+import cookieRight from '../assets/cookie/cookie-droite.webp';
+import { fortunes } from '../data/fortunes';
+import { fr } from '../lib/format';
+
+const first = fortunes[0];
+const payload = JSON.stringify(fortunes.map((text) => fr(text)));
+
+const sizes = '(min-width: 960px) 340px, 64vw';
+const [whole, left, right] = await Promise.all(
+  [cookieWhole, cookieLeft, cookieRight].map((src) => getImage({ src, widths: [340, 680, 900], sizes, format: 'webp' })),
+);
+
+// Miettes projetées à la cassure : décalage (px), rotation, taille.
+const crumbs = [
+  [-86, -40, 160, 1.1],
+  [-58, -78, -120, 0.8],
+  [-20, -96, 90, 0.7],
+  [30, -88, -60, 1],
+  [70, -62, 140, 0.8],
+  [96, -20, -150, 1.2],
+  [-104, 18, 70, 0.9],
+  [84, 36, 110, 0.7],
+  [-40, 60, -80, 1],
+  [44, 70, 30, 0.9],
+];
+---
+
+<div class="cookie-hero" data-fortunes={payload}>
+  <div class="cookie-scene">
+    <span class="cookie-shadow" aria-hidden="true"></span>
+
+    <button class="cookie-stage" type="button" aria-label="Casser un autre fortune cookie" aria-describedby="cookie-hint">
+      <img class="cookie-img cookie-whole" src={whole.src} srcset={whole.srcSet.attribute} sizes={sizes} width={cookieWhole.width} height={cookieWhole.height} alt="" draggable="false" />
+      <img class="cookie-img cookie-half cookie-left" src={left.src} srcset={left.srcSet.attribute} sizes={sizes} width={cookieLeft.width} height={cookieLeft.height} alt="" draggable="false" />
+      <img class="cookie-img cookie-half cookie-right" src={right.src} srcset={right.srcSet.attribute} sizes={sizes} width={cookieRight.width} height={cookieRight.height} alt="" draggable="false" />
+      <span class="crumbs" aria-hidden="true">
+        {crumbs.map(([dx, dy, r, s]) => <span class="crumb" style={`--dx:${dx}px;--dy:${dy}px;--r:${r}deg;--s:${s}`} />)}
+      </span>
+    </button>
+
+    <div class="fortune" data-ribbon-start>
+      <p class="fortune-text" aria-live="polite">{fr(first)}</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('.cookie-hero');
+
+  if (hero) {
+    const stage = hero.querySelector<HTMLButtonElement>('.cookie-stage')!;
+    const text = hero.querySelector<HTMLElement>('.fortune-text')!;
+    const fortunes: string[] = JSON.parse(hero.dataset.fortunes ?? '[]');
+    const motion = window.matchMedia('(prefers-reduced-motion: no-preference)');
+    let current = 0;
+    let busy = false;
+
+    const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, motion.matches ? ms : 0));
+
+    // Prévient le ruban : il part du bout droit du papier, qui peut avoir changé de taille.
+    const announceOpen = () => {
+      hero.dataset.opened = 'true';
+      hero.dispatchEvent(new CustomEvent('cookie:open', { bubbles: true }));
+    };
+
+    // Les papiers sont choisis à l'avance : toujours dans l'ordre de la liste, puis on recommence.
+    const pickFortune = () => {
+      current = (current + 1) % fortunes.length;
+      return fortunes[current] ?? '';
+    };
+
+    const breakCookie = async () => {
+      hero.classList.add('is-shaking');
+      await wait(440);
+      hero.classList.remove('is-shaking');
+      hero.classList.add('is-open', 'has-paper');
+    };
+
+    // Un nouveau cookie arrive entier, se casse, et le papier change de message. Le papier
+    // reste en place pendant ce temps : le ruban qui en sort ne se retrouve jamais sans attache.
+    stage.addEventListener('click', async () => {
+      if (busy) return;
+      busy = true;
+      const next = pickFortune();
+      if (motion.matches) {
+        hero.classList.add('is-changing');
+        hero.classList.remove('is-open');
+        await wait(560);
+        // Le texte est caché pendant le changement : le ruban a le temps de s'adapter si le
+        // papier change de hauteur.
+        text.textContent = next;
+        announceOpen();
+        await breakCookie();
+        hero.classList.remove('is-changing');
+        await wait(500);
+      } else {
+        text.textContent = next;
+        announceOpen();
+      }
+      busy = false;
+    });
+
+    // Sur mobile, le cookie est sous le texte : on attend qu'il soit visible
+    // pour le casser, sinon l'animation se jouerait hors de l'écran.
+    const whenVisible = () =>
+      new Promise<void>((resolve) => {
+        if (!('IntersectionObserver' in window)) return resolve();
+        const observer = new IntersectionObserver(
+          (entries) => {
+            if (entries.some((entry) => entry.isIntersecting)) {
+              observer.disconnect();
+              resolve();
+            }
+          },
+          { threshold: 0.6 },
+        );
+        observer.observe(stage);
+      });
+
+    const start = async () => {
+      if (!motion.matches) {
+        hero.classList.add('is-open', 'has-paper');
+        announceOpen();
+        return;
+      }
+      busy = true;
+      const images = [...hero.querySelectorAll('img')];
+      await Promise.all(images.map((image) => image.decode().catch(() => undefined)));
+      await whenVisible();
+      await wait(650);
+      await breakCookie();
+      await wait(700);
+      announceOpen();
+      busy = false;
+    };
+
+    start();
+  }
+</script>
+
+<style>
+  .cookie-hero {
+    --open-left: translate(-12%, 2%) rotate(-9deg);
+    --open-right: translate(12%, 2%) rotate(8deg);
+    position: relative;
+  }
+
+  .cookie-scene {
+    position: relative;
+    width: min(100%, 520px);
+    margin-inline: auto;
+    aspect-ratio: 520 / 400;
+  }
+
+  .cookie-shadow {
+    position: absolute;
+    left: 24%;
+    right: 24%;
+    top: 63%;
+    height: 11%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(40, 55, 70, 0.4), transparent);
+  }
+
+  .cookie-stage {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    z-index: 2;
+    width: 64%;
+    aspect-ratio: 900 / 854;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    transform: translateX(-50%);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .cookie-stage:focus-visible {
+    outline: 3px solid var(--link);
+    outline-offset: 8px;
+  }
+
+  .cookie-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* État ouvert : c'est aussi l'affichage sans JavaScript. */
+  .cookie-whole {
+    opacity: 0;
+  }
+
+  .cookie-half {
+    transform-origin: 50% 90%;
+    transition:
+      transform 0.8s cubic-bezier(0.2, 0.9, 0.25, 1.15),
+      opacity 0s;
+  }
+
+  .cookie-left {
+    transform: var(--open-left);
+  }
+
+  .cookie-right {
+    transform: var(--open-right);
+  }
+
+  /* Le papier, comme ceux du jeu : blanc cassé, liserés rouges, ombre nette. Une fois le
+     cookie ouvert, le ruban de la page (PaperRibbon) dessine ce papier sous le texte et le
+     prolonge depuis son bout droit : papier et ruban ne forment qu'une seule bande. */
+  /* Sous les moitiés : le papier est dessiné derrière le cookie, son texte ne doit pas
+     passer sur les moitiés. */
+  /* Centré sans transform : le ruban mesure la place du papier sans ses transformations,
+     même si l'animation de sortie n'est pas finie (onglet en arrière-plan). */
+  .fortune {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 80%;
+    margin-inline: auto;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: min(360px, 94%);
+    min-height: 58px;
+    padding: 11px 18px;
+    background:
+      linear-gradient(var(--slip-rule), var(--slip-rule)) 10px 6px / calc(100% - 20px) 1.5px no-repeat,
+      linear-gradient(var(--slip-rule), var(--slip-rule)) 10px calc(100% - 6px) / calc(100% - 20px) 1.5px no-repeat,
+      var(--slip);
+    box-shadow:
+      2px 4px 0 var(--slip-shadow),
+      4px 8px 0 var(--slip-shadow-soft);
+    transition:
+      transform 0.45s cubic-bezier(0.25, 1.35, 0.45, 1),
+      opacity 0.12s linear;
+  }
+
+  .fortune.is-attached {
+    background: none;
+    box-shadow: none;
+  }
+
+  .fortune-text {
+    margin: 0;
+    color: var(--slip-ink);
+    font-family: var(--font-title);
+    font-size: 14px;
+    line-height: 1.25;
+    text-align: center;
+    transition: opacity 0.3s ease 0.3s;
+  }
+
+  .crumbs {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 4;
+  }
+
+  .crumb {
+    position: absolute;
+    width: calc(9px * var(--s));
+    height: calc(7px * var(--s));
+    border-radius: 45% 55% 40% 60%;
+    background: #e9a95a;
+    opacity: 0;
+  }
+
+  .crumb:nth-child(3n) {
+    background: #c97a35;
+  }
+
+  .crumb:nth-child(3n + 1) {
+    background: #f7d48c;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Avec JavaScript, le cookie arrive entier puis se casse. */
+    :global(.js) .cookie-hero:not(.is-open) .cookie-whole {
+      opacity: 1;
+      animation: cookie-in 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.25);
+    }
+
+    :global(.js) .cookie-hero:not(.is-open) .cookie-half {
+      opacity: 0;
+      transform: none;
+      transition:
+        opacity 0.2s ease,
+        transform 0s linear 0.2s;
+    }
+
+    /* Avant la première cassure, le papier est encore dans le cookie. */
+    :global(.js) .cookie-hero:not(.has-paper) .fortune {
+      opacity: 0;
+      transform: translateY(-150%) scale(0.15) rotate(-20deg);
+      transition: none;
+    }
+
+    .cookie-hero.is-changing .fortune-text {
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    :global(.js) .cookie-hero.is-shaking:not(.is-open) .cookie-whole {
+      animation: cookie-shake 0.44s ease-in-out;
+    }
+
+    .cookie-hero.is-open .crumb {
+      animation: crumb-fly 0.95s cubic-bezier(0.15, 0.7, 0.35, 1) forwards;
+    }
+
+    .cookie-stage:hover .cookie-whole {
+      transform: rotate(-3deg) scale(1.02);
+      transition: transform 0.25s ease;
+    }
+  }
+
+  @keyframes cookie-in {
+    from {
+      opacity: 0;
+      transform: translateY(-14px) scale(0.7);
+    }
+  }
+
+  @keyframes cookie-shake {
+    0%,
+    100% {
+      transform: rotate(0) scale(1);
+    }
+    20% {
+      transform: rotate(-6deg) scale(1.03);
+    }
+    40% {
+      transform: rotate(5deg) scale(1.04);
+    }
+    60% {
+      transform: rotate(-4deg) scale(1.05);
+    }
+    80% {
+      transform: rotate(3deg) scale(1.06);
+    }
+  }
+
+  @keyframes crumb-fly {
+    0% {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(var(--dx), calc(var(--dy) + 30px)) rotate(var(--r));
+    }
+  }
+
+  /* Sur téléphone, le papier laisse de la place à droite pour que le ruban tourne vers le bord. */
+  @media (max-width: 560px) {
+    /* Centre à 45 % de la largeur. */
+    .fortune {
+      left: -10%;
+      width: 82%;
+      padding-inline: 12px;
+    }
+
+    .fortune-text {
+      font-size: 13px;
+    }
+  }
+</style>
