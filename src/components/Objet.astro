@@ -16,7 +16,7 @@ interface Props {
 const { name, sizes = '(min-width: 900px) 420px, 60vw', class: className, eager = false } = Astro.props;
 const src = files[`../assets/objets/${name}.webp`]?.default;
 if (!src) throw new Error(`Objet inconnu : ${name}`);
-const widths = [320, 640, 960].filter((width) => width < src.width).concat(src.width);
+const widths = [320, 640, 960, 1500].filter((width) => width < src.width).concat(src.width);
 ---
 
 <Image class={['objet', className].filter(Boolean).join(' ')} src={src} alt="" widths={widths} sizes={sizes} loading={eager ? 'eager' : 'lazy'} draggable="false" />

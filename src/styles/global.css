@@ -108,11 +108,16 @@
   --hue-ink: var(--h-ink);
 }
 
-/* Sur téléphone, le menu tient sur deux lignes. */
 @media (max-width: 820px) {
   :root {
-    --header-height: 100px;
     --round: 22px;
+  }
+}
+
+/* Sur téléphone et petite tablette, le menu se déplie (voir Header). */
+@media (max-width: 860px) {
+  :root {
+    --header-height: 64px;
   }
 }
 

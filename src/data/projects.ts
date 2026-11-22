@@ -17,7 +17,14 @@ import btAToi from '../assets/projects/blindtest-generator/a-toi.png';
 import tlCarte from '../assets/projects/terres-du-lion/carte.png';
 import tlQuiz from '../assets/projects/terres-du-lion/stats-quiz.png';
 import tlBoutique from '../assets/projects/terres-du-lion/stats-boutique.png';
-import fcRapport from '../assets/projects/forme-comtoise/rapport.png';
+import pxPartie from '../assets/projects/puissancex/partie.png';
+import bsDeclinaisons from '../assets/projects/boutique-skins/declinaisons.png';
+import bsCatalogue from '../assets/projects/boutique-skins/catalogue.png';
+import bsStock from '../assets/projects/boutique-skins/stock.png';
+import vcReparations from '../assets/projects/velocampus/reparations.png';
+import vcEtat from '../assets/projects/velocampus/etat.png';
+import pvOndes from '../assets/projects/pauvocodeur/formes-onde.png';
+import fpFinance from '../assets/projects/fortiche-production/finance.png';
 
 export type Category = 'jeu' | 'web' | 'donnees' | 'devops' | 'audio';
 
@@ -70,15 +77,11 @@ export interface Project {
   gallery?: Shot[];
   tracks?: Track[];
   /** Extrait de code réel, affiché dans « Détails techniques ». */
-  code?: { label: string; lang: 'yaml' | 'ts' | 'js' | 'java' | 'python'; content: string };
-  /**
-   * Projet retiré du site sans être supprimé : la consigne demande un nombre restreint
-   * de projets. Passer à false (ou supprimer la ligne) pour le republier.
-   */
-  archived?: boolean;
+  code?: { label: string; lang: 'gherkin' | 'yaml' | 'ts' | 'js' | 'java' | 'python'; content: string };
 }
 
-const allProjects: Project[] = [
+/** Dans l’ordre d’affichage. */
+export const projects: Project[] = [
   {
     slug: 'fortune-cookie',
     hue: 'corail',
@@ -272,11 +275,11 @@ const allProjects: Project[] = [
     slug: 'terres-du-lion',
     hue: 'menthe',
     title: 'Terres du Lion',
-    kind: 'SAÉ de 2e année',
+    kind: 'Projet universitaire, 2e année',
     categories: ['web', 'donnees'],
     featured: true,
     period: 'Septembre 2025 – avril 2026',
-    setting: 'SAÉ de BUT2 à l’IUT Nord Franche-Comté',
+    setting: 'Projet universitaire de 2e année, à l’IUT Nord Franche-Comté',
     team: 'Équipe de 5 étudiants',
     tagline: 'Une application web pour un événement médiéval, réalisée à cinq en deuxième année.',
     summary:
@@ -351,134 +354,187 @@ const allProjects: Project[] = [
     ],
   },
   {
-    slug: 'forme-comtoise',
+    slug: 'puissancex',
     hue: 'ciel',
-    title: 'Forme Comtoise',
-    kind: 'Projet de module, BUT3',
-    categories: ['donnees', 'devops'],
+    title: 'PuissanceX',
+    kind: 'Projet universitaire, 1re année',
+    categories: ['jeu'],
     featured: true,
-    period: 'Septembre – octobre 2026',
-    setting: 'Module « Nouvelles bases de données », 3e année de BUT',
-    team: 'Seul',
-    tagline: 'Un projet de module en troisième année : migration d’une base SQLite vers MongoDB, API, cache Redis et rapports PDF.',
+    period: 'Avril – juin 2025',
+    setting: 'Projet universitaire de 1re année, à l’IUT Nord Franche-Comté',
+    team: 'Équipe de 5 étudiants',
+    tagline: 'Un Puissance 4 paramétrable en Java, avec plusieurs intelligences artificielles.',
     summary:
-      'Back-end d’un réseau fictif de salles de sport. J’ai migré la base SQLite vers MongoDB, puis ajouté une API, un cache Redis et des rapports PDF sous Docker.',
+      'Puissance 4 paramétrable en Java. J’ai conçu ConditionAI, une IA à règles qui cherche le coup gagnant et bloque celui de l’adversaire.',
     description: [
-      'Forme Comtoise est un réseau fictif de clubs de sport. Sa base SQLite ne suffisait plus. Il fallait la migrer vers MongoDB, proposer une API pour les plannings, les adhérents et les réservations, et produire des rapports d’activité à partir de plusieurs années de passages en salle.',
-      'Tout se lance avec une seule commande Docker Compose. La migration s’exécute puis s’arrête, l’API démarre et le worker attend les demandes de rapport. L’API compte 17 routes et les données sont réparties dans 5 collections.',
+      'PuissanceX reprend le Puissance 4 en le rendant paramétrable : nombre de lignes et de colonnes, nombre de jetons à aligner, mode de jeu et difficulté. Le jeu est écrit en Java avec une architecture MVC, sur le framework Boardifier imposé par le sujet. Il a d’abord été jouable en console, puis avec une interface JavaFX.',
+      'Plusieurs IA peuvent s’affronter : une qui joue au hasard, un Minimax avec heuristiques, et ConditionAI, l’IA à règles que j’ai écrite.',
     ],
     features: [
-      'Migration Python vers 5 collections (clubs, formules, adhérents, coachs, séances), relançable sans créer de doublons',
-      'API Express et Mongoose : planning sur sept jours, réservations, administration, statistiques',
-      'Statistiques calculées par des pipelines d’agrégation MongoDB avec $lookup',
-      'Cache Redis de 120 secondes sur les lectures, vidé à chaque écriture, désactivable par variable d’environnement',
-      'Rapports PDF asynchrones : l’API répond tout de suite, un worker Python et Celery fait le calcul',
-      'Benchmark de charge : 20 clients de 20 requêtes, avec moyenne, écart-type, p95, échecs et débit',
-      'Collection Postman et tests d’intégration',
+      'Modes humain contre humain, humain contre IA et IA contre IA',
+      'Grille et condition de victoire paramétrables',
+      'IA Minimax avec heuristiques',
+      'ConditionAI : coup gagnant, blocage de l’adversaire, plateau simplifié',
+      'Tests unitaires avec JUnit 5',
     ],
     role: {
-      intro: 'Projet individuel. J’ai fait la modélisation, la migration, l’API, le cache, le worker, le benchmark et la mise en conteneurs.',
+      intro: 'J’ai écrit ConditionAI de bout en bout, puis travaillé sur le menu du jeu.',
     },
-    stack: ['Node.js 22', 'Express', 'Mongoose', 'MongoDB', 'Redis', 'Python', 'Celery', 'Docker Compose', 'Postman'],
+    stack: ['Java 17', 'JavaFX', 'Maven', 'JUnit 5', 'Boardifier'],
     challenges: [
       {
-        problem: 'Après une réservation, le planning gardé en cache n’était plus à jour.',
+        problem: 'Une IA réactive sans explorer tout l’arbre des coups.',
         solution:
-          'Chaque écriture supprime les clés de cache concernées. Les lectures passent par le cache, mais les données de référence restent celles de MongoDB.',
-      },
-      {
-        problem: 'Un rapport sur plusieurs années de données ne doit pas bloquer l’API.',
-        solution:
-          'L’API répond 202 avec un identifiant et place la demande dans une file Redis. Le worker Celery génère le PDF, et le client suit le statut avant de le télécharger.',
-      },
-      {
-        problem: 'Mesurer le vrai gain apporté par le cache.',
-        solution:
-          'J’ai ajouté des requêtes d’échauffement et des clients simultanés, regardé le p95 en plus de la moyenne, puis refait exactement la même mesure avec le cache désactivé.',
+          'Des règles appliquées dans l’ordre sur une copie simplifiée du plateau : gagner si c’est possible, sinon bloquer le coup gagnant adverse, sinon jouer un coup utile.',
       },
     ],
     learned: [
-      'Prévoir l’invalidation du cache en même temps que le cache, et pas après.',
-      'Regarder le p95 et pas seulement la moyenne, qui cache les requêtes lentes.',
+      'Découper une stratégie de jeu en règles simples, testées dans un ordre précis.',
+      'Avancer sur une branche à soi, puis l’intégrer au travail des autres.',
     ],
-    next: ['Remplacer KEYS par SCAN pour l’invalidation, car KEYS bloque Redis quand le nombre de clés augmente.'],
     technical: [
-      'Rapport : visiteurs et passages, durée moyenne et médiane des visites, pics de présence, taux d’occupation, cartes utilisées dans deux clubs en moins de 40 minutes, abonnés actifs sans passage, comparaison avec l’année précédente.',
-      'Clés de cache construites à partir de l’URL demandée, durée de vie de 120 secondes.',
-      'Données sources montées en lecture seule dans les conteneurs.',
+      'ConditionAI essaie dans l’ordre : gagner, bloquer l’adversaire, éviter de lui offrir le coup suivant, aligner trois jetons, jouer au centre, et enfin jouer au hasard.',
+      'La classe SimplifyBoard copie le plateau dans un tableau, pour tester un coup sans toucher à la partie en cours.',
     ],
-    linkNote: 'Projet de module, je peux montrer le code sur demande.',
+    links: [{ label: 'Dépôt GitHub', href: 'https://github.com/gh-Constant/SAE_PuissanceX' }],
     cover: {
-      src: fcRapport,
-      alt: 'Première page du rapport de fréquentation généré : résumé chiffré, passages par club et pic de présence en barres',
-      caption: 'Un rapport généré par le worker, qui résume plus d’un million de passages club par club.',
+      src: pxPartie,
+      alt: 'Plateau de PuissanceX : cinq jetons jaunes alignés sur la même ligne, entourés de jetons rouges',
+      caption: 'Une partie à cinq jetons à aligner. ConditionAI (jaune) vient de gagner contre l’IA qui joue au hasard.',
     },
   },
   {
-    slug: 'pipeline-ci-cd',
+    slug: 'vehicule-autonome',
     hue: 'lilas',
     objet: 'bras-robot',
-    title: 'Pipeline CI/CD GitLab',
-    kind: 'TP de module, BUT3',
+    title: 'Véhicule autonome',
+    kind: 'Projet universitaire, 3e année',
     categories: ['devops'],
     featured: false,
-    period: 'Novembre 2026',
-    setting: 'Module d’automatisation, 3e année de BUT',
-    team: 'Seul',
-    tagline: 'Un TP de troisième année : une pipeline GitLab CI/CD pour deux services qui communiquent.',
+    period: 'Depuis octobre 2026',
+    setting: 'Projet universitaire de 3e année, en cours',
+    team: 'En équipe',
+    tagline: 'Une voiture miniature qui suit un parcours toute seule, et les tests qui vérifient son comportement.',
     summary:
-      'Pipeline GitLab CI/CD pour deux services, en Java et en Node.js, avec des pipelines enfants, des tests d’intégration et une release automatique sur tag.',
+      'Projet d’équipe en cours autour d’une voiture miniature autonome. Pour l’instant, j’ai surtout travaillé sur les tests d’acceptation, écrits en français avec Cucumber.',
     description: [
-      'Le dépôt contient deux services qui communiquent, une API de stock en Java et une API de commandes en Node.js qui retire du stock. Le but était qu’une modification d’un service lance sa construction et ses tests, puis vérifie que l’ensemble fonctionne toujours.',
-      'La pipeline principale lance une pipeline enfant seulement pour les dossiers modifiés. Un job d’intégration déploie ensuite les versions publiées des deux services pour tester leurs API ensemble. Enfin, un site GitLab Pages est publié avec les téléchargements, la documentation et les résultats des tests.',
+      'Le projet porte sur une voiture miniature qui doit suivre un couloir de scotch blanc, respecter des feux à LED et s’arrêter devant un obstacle. Un serveur Java reçoit ses mesures, enregistre les sessions d’essai et transmet les consignes de l’opérateur.',
+      'Avant de passer sur la vraie voiture, nous décrivons son comportement dans des scénarios écrits en français. Ils s’exécutent sur un modèle Java du véhicule. En octobre, les 36 tests passaient.',
     ],
     features: [
-      'Pipelines enfants par composant, déclenchées seulement si leur dossier a changé',
-      'Étapes construction, tests, paquet, documentation et publication dans le Package Registry',
-      'Tests d’intégration de bout en bout sur les versions publiées',
-      'Site GitLab Pages : paquets, documentation et résultats des tests',
-      'Release automatique sur un tag de version',
-      'Tests d’acceptation Cucumber d’un TP précédent intégrés à la chaîne',
+      'Suivi du couloir, feux à LED, freinage d’urgence et surveillance de la batterie',
+      'Session d’essai en cinq étapes, de la préparation au bilan, avec des données figées à la fin',
+      'Deux chemins pour enregistrer les mesures : une API Node.js, ou MongoDB directement depuis Java',
+      'Mesures de vision (écart à la ligne, balises de chronométrage) rattachées à la session',
+      'Droits différents pour un observateur et un opérateur',
     ],
-    role: { intro: 'TP individuel. J’ai conçu toute la chaîne et les deux services de démonstration.' },
-    stack: ['GitLab CI/CD', 'Java 17', 'Maven', 'JUnit 5', 'Node.js 22', 'Express', 'Cucumber', 'GitLab Pages'],
+    role: {
+      intro: 'J’ai écrit 11 scénarios et le modèle Java qu’ils testent :',
+      items: [
+        'l’accès aux données, avec au moins un tiers des écritures par la voie directe ;',
+        'les mesures de vision, les sorties de ligne et la validation des tours ;',
+        'l’analyse d’une session par l’IA : score d’anomalie et vitesse conseillée ;',
+        'les droits de l’observateur et de l’opérateur.',
+      ],
+    },
+    stack: ['Java 17', 'Cucumber', 'JUnit 4', 'Maven', 'PicoContainer'],
     challenges: [
       {
-        problem: 'Éviter de tout reconstruire à chaque commit.',
+        problem: 'Tester le comportement de la voiture sans avoir la voiture.',
         solution:
-          'Chaque composant a sa propre pipeline enfant, lancée par une règle sur les fichiers modifiés. Sur un tag, tout est reconstruit pour publier une version complète.',
+          'Les scénarios tournent sur un modèle Java, avec des mesures de vitesse, de distance et de vision fournies par le test. Le matériel pourra être branché ensuite sans réécrire les scénarios.',
       },
       {
-        problem: 'Tester les services ensemble, et pas seulement chacun de son côté.',
+        problem: 'Enregistrer les mesures par deux chemins différents sans compliquer le reste du serveur.',
         solution:
-          'Le job d’intégration démarre les versions publiées des deux services puis appelle leurs API. Les tests portent donc sur ce qui sera livré, et non sur le code local.',
-      },
-      {
-        problem: 'L’instance GitLab de l’IUT n’a pas de Container Registry.',
-        solution: 'J’ai publié et récupéré les composants depuis le Package Registry, qui lui est disponible.',
+          'Les deux voies respectent la même interface, DataDriver. Un gestionnaire choisit laquelle utiliser et répartit les écritures. Pour les tests, les deux sont simulées en mémoire.',
       },
     ],
+    learned: [
+      'Écrire une règle dans une phrase que tout le monde peut lire, puis en faire un test.',
+      'Partager l’état d’un scénario entre plusieurs classes de test grâce à l’injection.',
+    ],
+    next: ['Passer du modèle à la vraie voiture et au vrai serveur.'],
     technical: [
-      'trigger: include pour les pipelines enfants, avec strategy: depend pour que la suite ne se lance que si l’enfant réussit.',
-      'rules: changes par dossier, et rules: if $CI_COMMIT_TAG pour les versions.',
-      'Tests unitaires JUnit 5 côté Java, node:test côté Node.',
+      'Cucumber 7 avec les mots-clés français (Etant donné, Quand, Alors) et des plans de scénario pour les tableaux d’exemples.',
+      'Une classe MyWorld, injectée par PicoContainer, garde l’état du scénario en cours.',
     ],
     code: {
-      label: 'Extrait du fichier .gitlab-ci.yml du projet : la pipeline enfant du service Java ne se lance que si son dossier a changé, ou sur un tag de version.',
-      lang: 'yaml',
+      label: 'Un de mes scénarios : un observateur ne doit pas pouvoir commander la voiture.',
+      lang: 'gherkin',
       content: [
-        'stock-api:',
-        '  stage: composants',
-        '  trigger:',
-        '    include: stock-api/.gitlab-ci.yml',
-        '    strategy: depend',
-        '  rules:',
-        '    - if: $CI_COMMIT_TAG',
-        '    - changes:',
-        '        - stock-api/**/*',
+        '# language: fr',
+        'Scénario: Refus d\'envoi de consigne par un observateur non autorisé',
+        '  Etant donné qu\'un utilisateur consulte l\'interface avec le profil "OBSERVATEUR"',
+        '  Quand il tente d\'émettre la consigne "vitesse:15"',
+        '  Alors l\'action est refusée pour motif "NON_AUTORISE"',
+        '  Et la consigne n\'est pas transmise au véhicule',
       ].join('\n'),
     },
-    linkNote: 'Dépôt hébergé sur le GitLab de l’IUT, non public.',
+    linkNote: 'Dépôt privé pendant le projet.',
+  },
+  {
+    slug: 'boutique-skins',
+    hue: 'soleil',
+    title: 'Boutique de skins',
+    kind: 'Projet universitaire, 1re année',
+    categories: ['web', 'donnees'],
+    featured: false,
+    period: 'Janvier – avril 2025',
+    setting: 'Projet universitaire de 1re année, autour des bases de données, du web et de la gestion de projet',
+    team: 'Équipe de 4 étudiants',
+    tagline: 'Une boutique en ligne Flask et MySQL, avec déclinaisons, stock et back-office.',
+    summary:
+      'Boutique en ligne de skins de jeu vidéo, en Flask et MySQL. J’ai réalisé le catalogue, le panier, les déclinaisons et une partie du back-office.',
+    description: [
+      'Une boutique en ligne de skins du jeu Counter-Strike, construite du modèle de données (MCD, MLD) jusqu’au site : un front-office pour les clients et un back-office pour l’administration.',
+    ],
+    features: [
+      'Catalogue avec filtres',
+      'Déclinaisons d’un même article, avec affichage « rupture de stock » quand le stock est vide',
+      'Panier et commandes',
+      'Back-office : ajout et modification d’articles, suivi des commandes et de leur état',
+      'Visualisation du stock',
+    ],
+    role: {
+      intro: 'Mes parties :',
+      items: [
+        'l’affichage des articles et du panier, et les filtres ;',
+        'les déclinaisons et la gestion du stock ;',
+        'l’ajout et la modification d’articles côté administration ;',
+        'la visualisation du stock.',
+      ],
+    },
+    stack: ['Python', 'Flask', 'Jinja', 'MySQL', 'SQL', 'HTML', 'CSS'],
+    challenges: [
+      {
+        problem: 'Un panier cohérent avec les déclinaisons et le stock.',
+        solution:
+          'Refonte de la table du panier pour enregistrer la déclinaison choisie, contrôle des quantités par rapport au stock, et affichage « rupture de stock » quand il atteint zéro.',
+      },
+    ],
+    learned: [
+      'Prendre le temps de bien concevoir la base, car changer une table en cours de route oblige à reprendre beaucoup de code.',
+      'Tenir compte des remarques reçues à chaque livraison.',
+    ],
+    links: [{ label: 'Dépôt GitHub', href: 'https://github.com/amintt2/S2_SAE_345' }],
+    cover: {
+      src: bsDeclinaisons,
+      alt: 'Page de modification d’un article : image, nom, type, description, puis tableau des déclinaisons avec prix et stock',
+      caption: 'La modification d’un article et de ses déclinaisons, chacune avec son prix, son stock et son état.',
+    },
+    gallery: [
+      {
+        src: bsCatalogue,
+        alt: 'Catalogue de la boutique : skins présentés en grille avec prix, stock et bouton d’ajout au panier',
+        caption: 'Le catalogue. Un article avec plusieurs déclinaisons propose de choisir une version.',
+      },
+      {
+        src: bsStock,
+        alt: 'Liste des articles côté administration, avec type, prix, stock, notes et nombre de déclinaisons',
+        caption: 'La liste des articles côté administration, avec une alerte quand le stock devient critique.',
+      },
+    ],
   },
   {
     slug: 'blindtest-generator',
@@ -549,131 +605,112 @@ const allProjects: Project[] = [
     ],
   },
   {
-    slug: 'puissancex',
-    hue: 'soleil',
-    archived: true,
-    title: 'PuissanceX',
-    kind: 'SAÉ de 1re année',
-    categories: ['jeu'],
-    featured: false,
-    period: 'Avril – juin 2025',
-    setting: 'SAÉ de BUT1 à l’IUT Nord Franche-Comté',
-    team: 'Équipe de 5 étudiants',
-    tagline: 'Un Puissance 4 paramétrable en Java, avec plusieurs intelligences artificielles.',
-    summary:
-      'Puissance 4 paramétrable (taille de la grille, nombre de jetons à aligner) en Java. J’ai conçu ConditionAI, une IA à règles qui cherche le coup gagnant et bloque celui de l’adversaire.',
-    description: [
-      'PuissanceX reprend le Puissance 4 en le rendant paramétrable : nombre de lignes et de colonnes, nombre de jetons à aligner, mode de jeu et difficulté. Le jeu se joue en console, en Java, sur le framework Boardifier imposé par la SAÉ, avec une architecture MVC.',
-      'Plusieurs IA peuvent s’affronter : un Minimax avec heuristiques, et ConditionAI, l’IA à règles que j’ai écrite.',
-    ],
-    features: [
-      'Modes humain contre humain, humain contre IA et IA contre IA',
-      'Grille et condition de victoire paramétrables',
-      'IA Minimax avec heuristiques',
-      'ConditionAI : coup gagnant, blocage de l’adversaire, plateau simplifié',
-      'Tests unitaires avec JUnit 5',
-    ],
-    role: {
-      intro: 'J’ai écrit ConditionAI de bout en bout, puis travaillé sur le menu du jeu.',
-    },
-    stack: ['Java 17', 'Maven', 'Boardifier', 'JUnit 5', 'MVC'],
-    challenges: [
-      {
-        problem: 'Une IA réactive sans explorer tout l’arbre des coups.',
-        solution:
-          'Des règles appliquées dans l’ordre sur une copie simplifiée du plateau : gagner si c’est possible, sinon bloquer le coup gagnant adverse, sinon jouer un coup utile.',
-      },
-    ],
-    links: [{ label: 'Dépôt GitHub', href: 'https://github.com/gh-Constant/SAE_PuissanceX' }],
-  },
-  {
-    slug: 'boutique-skins',
+    slug: 'velocampus',
     hue: 'menthe',
-    archived: true,
-    title: 'Boutique de skins',
-    kind: 'SAÉ de 1re année',
+    title: 'VeloCampus',
+    kind: 'Projet universitaire, 1re année',
     categories: ['web', 'donnees'],
     featured: false,
-    period: 'Janvier – avril 2025',
-    setting: 'SAÉ de BUT1 : base de données, développement web et gestion de projet',
-    team: 'Équipe de 4 étudiants',
-    tagline: 'Une boutique en ligne Flask et MySQL, avec déclinaisons, stock et back-office.',
+    period: 'Novembre – décembre 2024',
+    setting: 'Projet universitaire de 1re année, à l’IUT Nord Franche-Comté',
+    team: 'Équipe de 3 étudiants',
+    tagline: 'Un site de location et de réparation de vélos entre étudiants, relié à une base de données.',
     summary:
-      'Site e-commerce de skins de jeu vidéo en Flask et MySQL. J’ai réalisé l’affichage des articles et du panier, les déclinaisons avec gestion du stock et une partie du back-office.',
+      'Site de location de vélos entre étudiants, en Flask et MySQL. J’ai réalisé toute la partie réparations : liste, ajout, modification, suppression et bilan par personne.',
     description: [
-      'Une boutique en ligne de skins du jeu Counter-Strike, construite du modèle de données (MCD, MLD) jusqu’au site : un front-office pour les clients et un back-office pour l’administration.',
+      'VeloCampus permet à des étudiants de louer leurs vélos et de suivre les réparations. Nous avons commencé par le modèle de données, puis chacun a développé une partie du site : les locations, les vélos et, pour moi, les réparations.',
+      'J’ai avancé par petits essais : une page à la fois, d’abord la liste, puis l’ajout, la modification, la suppression et enfin la page d’état.',
     ],
     features: [
-      'Catalogue avec filtres',
-      'Déclinaisons d’un même article, avec affichage « rupture de stock » quand le stock est vide',
-      'Panier et commandes',
-      'Back-office : ajout et modification d’articles, suivi des commandes et de leur état',
-      'Visualisation du stock',
+      'Base de 10 tables : vélos, catégories, états, pièces, locations, réparations, factures…',
+      'Gestion des vélos et des locations',
+      'Gestion des réparations, avec une facture créée pour chacune',
+      'Page d’état : réparations, vélos concernés et total de main d’œuvre pour une personne',
     ],
     role: {
-      intro: 'Mes parties :',
+      intro: 'Je me suis occupé de la partie réparations, de la requête SQL à la page :',
       items: [
-        'l’affichage des articles et du panier, et les filtres ;',
-        'les déclinaisons et la gestion du stock ;',
-        'l’ajout et la modification d’articles côté administration ;',
-        'la visualisation du stock.',
+        'la liste, l’ajout, la modification et la suppression d’une réparation ;',
+        'la création de la facture en même temps que la réparation ;',
+        'l’ajout d’un type de réparation ;',
+        'la page d’état, avec ses totaux par personne et par vélo.',
       ],
     },
-    stack: ['Python', 'Flask', 'Jinja', 'MySQL', 'SQL', 'HTML', 'CSS'],
+    stack: ['Python', 'Flask', 'MySQL', 'Jinja', 'HTML', 'CSS'],
     challenges: [
       {
-        problem: 'Un panier cohérent avec les déclinaisons et le stock.',
+        problem: 'Une réparation est reliée à un vélo, une personne, un type et une facture.',
         solution:
-          'Refonte de la table du panier pour enregistrer la déclinaison choisie, contrôle des quantités par rapport au stock, et affichage « rupture de stock » quand il atteint zéro.',
+          'La liste rassemble ces tables avec des jointures. À l’ajout, la facture est créée en premier, puis la réparation reçoit son identifiant.',
+      },
+      {
+        problem: 'Afficher un bilan par personne.',
+        solution: 'J’ai utilisé GROUP BY, COUNT et SUM pour compter les réparations et additionner les montants, au lieu de faire les calculs en Python.',
       },
     ],
-    links: [{ label: 'Dépôt GitHub', href: 'https://github.com/amintt2/S2_SAE_345' }],
+    learned: [
+      'Écrire des requêtes SQL avec plusieurs jointures.',
+      'Relier un formulaire, une route et une table.',
+    ],
+    links: [{ label: 'Dépôt GitHub', href: 'https://github.com/TimotheSandt/SAE1.03-1.04' }],
+    cover: {
+      src: vcReparations,
+      alt: 'Liste des réparations de VeloCampus : type, date, durée, prix, facture, vélo, personne et boutons Éditer et Supprimer',
+      caption: 'La liste des réparations, avec des données de démonstration.',
+    },
+    gallery: [
+      {
+        src: vcEtat,
+        alt: 'Page d’état des réparations d’une personne : nombre de réparations, total et détail',
+        caption: 'L’état des réparations d’une personne, avec le total de main d’œuvre et le détail.',
+      },
+    ],
   },
   {
-    slug: 'audio-java',
+    slug: 'pauvocodeur',
     hue: 'ciel',
-    archived: true,
-    title: 'Audio en Java : Pauvocodeur et synthétiseur',
-    kind: 'SAÉ de 1re année et TD de 3e année',
+    title: 'Pauvocodeur',
+    kind: 'Projet universitaire, 1re année',
     categories: ['audio'],
     featured: false,
-    period: 'Novembre 2024 – janvier 2025, puis automne 2026',
-    setting: 'SAÉ de BUT1 (Pauvocodeur) et TD de programmation multimédia en BUT3 (synthétiseur)',
-    team: 'En binôme pour le Pauvocodeur, seul pour le synthétiseur',
-    tagline: 'Traiter le son à la main : changer la hauteur d’une voix, ajouter de l’écho, fabriquer des voyelles.',
+    period: 'Novembre 2024 – janvier 2025',
+    setting: 'Projet universitaire de 1re année, à l’IUT Nord Franche-Comté',
+    team: 'En binôme',
+    tagline: 'Changer la hauteur d’une voix sans changer sa durée, en Java.',
     summary:
-      'Deux projets audio en Java : le Pauvocodeur, qui rend une voix plus grave ou plus aiguë sans changer sa durée, et un synthétiseur additif de voyelles avec une interface JavaFX.',
+      'Programme Java qui rend une voix plus grave ou plus aiguë sans changer sa durée. J’ai écrit l’effet d’écho et participé à l’intercorrélation.',
     description: [
       'Le Pauvocodeur change la hauteur d’un enregistrement sans changer sa durée. Le son est d’abord rééchantillonné, ce qui modifie la hauteur mais aussi la vitesse. Il est ensuite découpé en séquences de 100 millisecondes que l’on recolle pour retrouver la durée d’origine. Chaque version améliore les raccords, et un écho peut être ajouté.',
-      'Le synthétiseur additif fabrique des voyelles à partir d’une fréquence fondamentale et de trois formants réglables, avec une interface JavaFX qui reste fluide pendant le calcul.',
     ],
     features: [
       'Rééchantillonnage pour changer la hauteur',
       'Recollage simple, puis avec chevauchement, puis avec recherche du meilleur raccord par intercorrélation',
       'Effet d’écho',
-      'Synthétiseur : fréquence fondamentale et trois formants réglables, contrôle F1 < F2 < F3',
-      'Calcul et lecture dans un fil d’exécution dédié : l’interface ne se fige jamais',
     ],
     role: {
       intro:
-        'Pauvocodeur : j’ai écrit l’effet d’écho (trois versions), participé à l’intercorrélation et documenté le code ; mon binôme a écrit l’essentiel du cœur du vocodeur. Synthétiseur : travail individuel.',
+        'J’ai écrit l’effet d’écho (trois versions), participé à l’intercorrélation et documenté le code. Mon binôme a écrit l’essentiel du cœur du vocodeur.',
     },
-    stack: ['Java', 'JavaFX', 'Java Sound', 'FFT'],
+    stack: ['Java', 'FFT', 'Fichiers WAV'],
     challenges: [
       {
         problem: 'Des clics audibles entre les séquences recollées.',
         solution:
           'Faire se chevaucher les séquences, puis chercher, dans une petite fenêtre, le décalage où les deux signaux se ressemblent le plus (intercorrélation, accélérée par FFT).',
       },
-      {
-        problem: 'Une interface qui se fige pendant le calcul du son.',
-        solution:
-          'Calcul et lecture lancés dans une tâche JavaFX exécutée par un exécuteur à un seul fil : la fenêtre reste réactive et deux lectures ne se superposent jamais.',
-      },
     ],
-    links: [{ label: 'Dépôt GitHub du Pauvocodeur', href: 'https://github.com/TimotheSandt/SAE1.01-1.02' }],
+    learned: [
+      'Écouter le résultat après chaque changement, car un défaut s’entend plus vite qu’il ne se voit dans le code.',
+      'Documenter mon code pour que mon binôme puisse le reprendre.',
+    ],
+    links: [{ label: 'Dépôt GitHub', href: 'https://github.com/TimotheSandt/SAE1.01-1.02' }],
+    cover: {
+      src: pvOndes,
+      alt: 'Formes d’onde du même enregistrement : original de 9,6 secondes, version grave de 13,7 secondes, version finale de 9,6 secondes',
+      caption: 'Le même enregistrement à trois étapes. Le rééchantillonnage l’allonge, le recollage lui rend sa durée d’origine.',
+    },
     tracks: [
-      { src: '/audio/pauvocodeur-original.mp3', title: 'Enregistrement d’origine', text: 'Le mot « l’informatique », sans traitement.' },
+      { src: '/audio/pauvocodeur-original.mp3', title: 'Enregistrement d’origine', text: 'L’enregistrement de départ, sans traitement.' },
       {
         src: '/audio/pauvocodeur-resampled.mp3',
         title: '1. Rééchantillonné',
@@ -689,10 +726,59 @@ const allProjects: Project[] = [
       { src: '/audio/pauvocodeur-simpleovercrossecho.mp3', title: '5. Avec écho', text: 'La version finale, avec l’écho que j’ai écrit.' },
     ],
   },
+  {
+    slug: 'fortiche-production',
+    hue: 'lilas',
+    title: 'Site Fortiche Production',
+    kind: 'Projet universitaire, 1re année',
+    categories: ['web'],
+    featured: false,
+    period: 'Septembre – octobre 2024',
+    setting: 'Premier projet universitaire de 1re année, à l’IUT Nord Franche-Comté',
+    team: 'Équipe de 4 étudiants',
+    tagline: 'Le premier projet du BUT : un site pour présenter un studio d’animation français.',
+    summary:
+      'Site de cinq pages en HTML et CSS pour présenter le studio d’animation Fortiche Production. J’ai fait la page Finance et les planches de style.',
+    description: [
+      'Il fallait présenter une entreprise française du numérique. Nous avons choisi Fortiche Production, le studio d’animation d’Arcane. Le site raconte son histoire, ses projets, son fonctionnement et ses résultats financiers.',
+      'C’était notre premier projet, dès la rentrée. Avant d’écrire du HTML, nous avons fait des questionnaires, un zoning et des planches de style.',
+    ],
+    features: [
+      'Cinq pages : accueil, histoire, projets, finance, à propos',
+      'Page Finance avec graphiques et tableaux de chiffres',
+      'Pages vérifiées avec le validateur du W3C',
+      'Éco-conception mesurée avec EcoIndex : note A (87 sur 100) pour la page Finance',
+    ],
+    role: {
+      intro: 'Mes parties :',
+      items: [
+        'la page Finance ;',
+        'les planches de style, et le zoning à deux ;',
+        'les questionnaires, à deux, et une partie du rapport.',
+      ],
+    },
+    stack: ['HTML', 'CSS', 'JavaScript'],
+    challenges: [
+      {
+        problem: 'Rendre des chiffres financiers lisibles.',
+        solution: 'J’ai séparé les chiffres en plusieurs tableaux par thème, et mis les trois plus importants dans des graphiques que l’on fait défiler.',
+      },
+    ],
+    learned: [
+      'Faire une maquette avant de coder.',
+      'Vérifier un site avec des outils extérieurs, pour le code comme pour son poids.',
+    ],
+    links: [
+      { label: 'Voir le site', href: 'https://timothesandt.github.io/SAE_Fortiche_Production/' },
+      { label: 'Dépôt GitHub', href: 'https://github.com/TimotheSandt/SAE_Fortiche_Production' },
+    ],
+    cover: {
+      src: fpFinance,
+      alt: 'Page Finance du site : courbe du chiffre d’affaires et tableau des performances de 2018 à 2022',
+      caption: 'La page Finance, que j’ai faite : des graphiques à faire défiler, puis les tableaux de chiffres.',
+    },
+  },
 ];
-
-/** Projets publiés, dans l’ordre d’affichage. */
-export const projects = allProjects.filter((project) => !project.archived);
 
 export const featuredProjects = projects.filter((project) => project.featured);
 

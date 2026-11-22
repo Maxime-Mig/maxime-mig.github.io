@@ -5,7 +5,9 @@
 // ce SVG qui dessine le papier sous son texte (classe is-attached sur le papier), puis le
 // prolonge depuis son bout droit, à la même hauteur et avec les mêmes liserés rouges. Le ruban
 // s'affine ensuite en douceur jusqu'à la largeur de la marge, longe chaque section
-// [data-ribbon-side="left|right"] et finit sous [data-ribbon-end].
+// [data-ribbon-side="left|right"]. Jusque-là il est posé à plat ; à la fin, il se plie en accordéon
+// et se déplie vers nous, en perspective : le papier de [data-ribbon-end] en est le dernier
+// panneau, dessiné lui aussi par ce SVG (classe is-attached).
 ---
 
 <svg class="ribbon" aria-hidden="true" focusable="false">
@@ -13,6 +15,10 @@
     <mask id="ribbon-mask" maskUnits="userSpaceOnUse">
       <path class="ribbon-reveal" fill="none" stroke="#fff" stroke-linecap="butt" stroke-linejoin="round"></path>
     </mask>
+    <!-- Ombres des plis : face éclairée, face dans l'ombre, dernier panneau près de sa pliure. -->
+    <linearGradient id="fold-lit"><stop offset="0" stop-color="#e9dfcb"></stop><stop offset="1" stop-color="#fffdf6"></stop></linearGradient>
+    <linearGradient id="fold-dark"><stop offset="0" stop-color="#dccfb5"></stop><stop offset="1" stop-color="#c3b392"></stop></linearGradient>
+    <linearGradient id="fold-end"><stop offset="0" stop-color="#efe6d5"></stop><stop offset="0.1" stop-color="#fffdf6"></stop></linearGradient>
   </defs>
   <path class="ribbon-center" fill="none" stroke="none"></path>
   <g class="ribbon-band">
@@ -20,6 +26,12 @@
     <path class="ribbon-shadow" transform="translate(2 4)"></path>
     <path class="ribbon-paper"></path>
     <path class="ribbon-rules" fill="none"></path>
+  </g>
+  <g class="ribbon-folds">
+    <path class="ribbon-shadow ribbon-shadow-soft"></path>
+    <path class="ribbon-shadow"></path>
+    <g class="ribbon-faces"></g>
+    <path class="ribbon-rules" fill="none" stroke-width="1.5"></path>
   </g>
   <g class="ribbon-tip">
     <rect class="ribbon-roll"></rect>
@@ -37,8 +49,13 @@
     const center = svg.querySelector<SVGPathElement>('.ribbon-center')!;
     const reveal = svg.querySelector<SVGPathElement>('.ribbon-reveal')!;
     const paper = svg.querySelector<SVGPathElement>('.ribbon-paper')!;
-    const shadows = svg.querySelectorAll<SVGPathElement>('.ribbon-shadow');
-    const rules = svg.querySelector<SVGPathElement>('.ribbon-rules')!;
+    const shadows = svg.querySelectorAll<SVGPathElement>('.ribbon-band .ribbon-shadow');
+    const rules = svg.querySelector<SVGPathElement>('.ribbon-band .ribbon-rules')!;
+    const folds = svg.querySelector<SVGGElement>('.ribbon-folds')!;
+    const foldShadows = folds.querySelectorAll<SVGPathElement>('.ribbon-shadow');
+    const foldFaces = folds.querySelector<SVGGElement>('.ribbon-faces')!;
+    const foldRules = folds.querySelector<SVGPathElement>('.ribbon-rules')!;
+    const gradients = svg.querySelectorAll<SVGLinearGradientElement>('linearGradient');
     const mask = svg.querySelector<SVGMaskElement>('mask')!;
     const band = svg.querySelector<SVGGElement>('.ribbon-band')!;
     const tip = svg.querySelector<SVGGElement>('.ribbon-tip')!;
@@ -66,10 +83,36 @@
     let innerTo = 0;
     let outerFrom = 0;
     let outerTo = 0;
-    let sampleStep = STEP;
+    // Échantillons du ruban : longueur parcourue, hauteur atteinte, points des deux bords.
+    let lengths: number[] = [];
     let samples: number[] = [];
-    let centers: Point[] = [];
+    let edgesA: Point[] = [];
+    let edgesB: Point[] = [];
     let start: HTMLElement | null = null;
+    const end = root.querySelector<HTMLElement>('[data-ribbon-end]');
+    // L'accordéon de la fin. Chaque pliure a une place le long du papier et une demi-largeur : plus
+    // elle est large, plus elle est près de nous.
+    interface FoldLine {
+      at: number;
+      half: number;
+      shift: number;
+    }
+    interface Accordion {
+      vertical: boolean;
+      middle: number;
+      size: number;
+      length: number;
+      lines: FoldLine[];
+    }
+    let accordion: Accordion | null = null;
+    // Place et avancée vers nous de chaque pliure (creux, bosse, creux…, dernière pliure). Le papier
+    // est vu un peu de biais : les bosses, plus près, sont aussi décalées d'un côté.
+    const FOLD_AT = [0, 0.13, 0.24, 0.39, 0.51, 0.68, 0.8, 1];
+    const FOLD_NEAR = [0, 0.17, 0.16, 0.36, 0.34, 0.6, 0.58, 1];
+    const FOLD_SHIFT = [0, 0.07, -0.06, 0.09, -0.08, 0.11, -0.1, 0];
+    const FOLD_TIME = 1500;
+    let opened = 0;
+    let openedFrom = 0;
 
     const f = (n: number) => n.toFixed(1);
 
@@ -106,10 +149,6 @@
       const half = startWidth / 2;
       const change = (startWidth - ribbonWidth) / 2;
       return [half - change * ease(length, innerFrom, innerTo), half - change * ease(length, outerFrom, outerTo)];
-    };
-    const widthAt = (length: number) => {
-      const [inner, outer] = sides(length);
-      return inner + outer;
     };
 
     // Distance entre le bord du papier et le milieu d'un liseré : 6,75 px sur le papier du
@@ -203,14 +242,44 @@
         side = next;
       });
 
-      // Fin : le ruban passe sous le bloc de contact.
-      const end = root.querySelector('[data-ribbon-end]');
-      const last = sections[sections.length - 1];
-      if (end && last) {
-        const e = box(end);
-        const above = content(last);
-        cross(e.x + e.w / 2, above.y + above.h, e.y);
-        d += ` L${f(x)} ${f(Math.max(y + 1, e.y + 28))}`;
+      // Fin : le ruban arrive par la gauche et se plie en accordéon, vers la droite ; sur téléphone,
+      // il rejoint le milieu de la section et se plie vers le bas.
+      accordion = null;
+      if (end) {
+        const e = layoutBox(end);
+        const last = sections[sections.length - 1];
+        const vertical = e.x - leftX < 200;
+        const middle = vertical ? e.x + e.w / 2 : e.y + e.h / 2;
+        const size = vertical ? e.w : e.h;
+        const hinge = vertical ? e.y : e.x;
+        if (side !== 'left' && last) {
+          const above = content(last);
+          cross(leftX, above.y + above.h, e.y);
+        }
+        let from: number;
+        if (vertical) {
+          from = e.y - 158;
+          cross(middle, box(end.closest('section') ?? end).y, from - 6);
+          d += ` L${f(x)} ${f(from)}`;
+        } else {
+          const bend = Math.max(half + 10, Math.min(96, (hinge - x) * 0.34));
+          down(Math.max(y + 1, middle - bend));
+          d += ` C${f(x)} ${f(y + (middle - y) * K)} ${f(x + bend * (1 - K))} ${f(middle)} ${f(x + bend)} ${f(middle)}`;
+          from = Math.max(x + bend + 12, hinge - 260);
+          d += ` L${f(from)} ${f(middle)}`;
+        }
+        accordion = {
+          vertical,
+          middle,
+          size,
+          length: vertical ? e.h : e.w,
+          lines: FOLD_AT.map((at, i) => ({
+            at: from + (hinge - from) * at,
+            half: (ribbonWidth + (size - ribbonWidth) * FOLD_NEAR[i]) / 2,
+            // Moins de biais sur téléphone, où les pliures sont plus larges.
+            shift: size * FOLD_SHIFT[i] * (vertical ? 0.6 : 1),
+          })),
+        };
       }
       return d;
     };
@@ -219,74 +288,160 @@
     // de la ligne centrale. Retient aussi, pour le défilement, la hauteur atteinte à chaque pas.
     const shape = () => {
       total = center.getTotalLength();
+      lengths = [];
       const count = Math.max(2, Math.ceil(total / STEP));
-      sampleStep = total / count;
-      const points: Point[] = [];
-      for (let i = 0; i <= count; i += 1) {
-        const p = center.getPointAtLength(i * sampleStep);
-        points.push([p.x, p.y]);
-      }
-      // Milieu réel du ruban à chaque pas (ses deux bords ne s'affinent pas en même temps).
-      centers = [];
+      for (let i = 0; i <= count; i += 1) lengths.push((total * i) / count);
 
-      const left: string[] = [];
-      const right: string[] = [];
-      const ruleA: string[] = [];
-      const ruleB: string[] = [];
+      const points = lengths.map((along): Point => {
+        const p = center.getPointAtLength(along);
+        return [p.x, p.y];
+      });
+      const tangent = (list: Point[], i: number): Point => {
+        const a = list[Math.max(0, i - 1)];
+        const b = list[Math.min(list.length - 1, i + 1)];
+        const length = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
+        return [(b[0] - a[0]) / length, (b[1] - a[1]) / length];
+      };
+
+      // Les deux bords : A du côté intérieur du premier virage, B de l'autre.
       samples = [];
+      edgesA = [];
+      edgesB = [];
       let maxY = -Infinity;
       points.forEach(([x, y], i) => {
-        const a = points[Math.max(0, i - 1)];
-        const b = points[Math.min(points.length - 1, i + 1)];
-        const length = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
-        const nx = -(b[1] - a[1]) / length;
-        const ny = (b[0] - a[0]) / length;
-        const along = i * sampleStep;
+        const along = lengths[i];
+        const [ux, uy] = tangent(points, i);
         const [inner, outer] = sides(along);
-        const inset = ruleInset(inner + outer);
-        left.push(`${f(x + nx * inner)} ${f(y + ny * inner)}`);
-        right.push(`${f(x - nx * outer)} ${f(y - ny * outer)}`);
-        centers.push([x + (nx * (inner - outer)) / 2, y + (ny * (inner - outer)) / 2]);
-        // Les liserés commencent à 10 px du bout du papier, comme dans le jeu.
-        if (along >= RULE_MARGIN || i === count) {
-          const ruleIn = inner - inset;
-          const ruleOut = outer - inset;
-          if (!ruleA.length && along > RULE_MARGIN) {
-            // Premier point exactement à 10 px du bout (le premier tronçon est droit).
-            const back = along - RULE_MARGIN;
-            const ux = (b[0] - a[0]) / length;
-            const uy = (b[1] - a[1]) / length;
-            ruleA.push(`${f(x - ux * back + nx * ruleIn)} ${f(y - uy * back + ny * ruleIn)}`);
-            ruleB.push(`${f(x - ux * back - nx * ruleOut)} ${f(y - uy * back - ny * ruleOut)}`);
-          }
-          ruleA.push(`${f(x + nx * ruleIn)} ${f(y + ny * ruleIn)}`);
-          ruleB.push(`${f(x - nx * ruleOut)} ${f(y - ny * ruleOut)}`);
-        }
+        edgesB.push([x + uy * outer, y - ux * outer]);
+        edgesA.push([x - uy * inner, y + ux * inner]);
         maxY = Math.max(maxY, y);
         samples.push(maxY);
       });
 
-      const outline = `M${left.join('L')}L${right.reverse().join('L')}Z`;
+      // Les liserés commencent à 10 px du bout du papier, comme dans le jeu (le bout est droit), et
+      // se poursuivent sur l'accordéon.
+      const ruleA: string[] = [];
+      const ruleB: string[] = [];
+      const last = lengths.length - 1;
+      const addRule = (i: number, shift: number) => {
+        const width = Math.hypot(edgesA[i][0] - edgesB[i][0], edgesA[i][1] - edgesB[i][1]);
+        const inset = ruleInset(width);
+        const [ax, ay] = tangent(edgesA, i);
+        const [bx, by] = tangent(edgesB, i);
+        ruleA.push(`${f(edgesA[i][0] + ay * inset + ax * shift)} ${f(edgesA[i][1] - ax * inset + ay * shift)}`);
+        ruleB.push(`${f(edgesB[i][0] - by * inset + bx * shift)} ${f(edgesB[i][1] + bx * inset + by * shift)}`);
+      };
+      addRule(0, RULE_MARGIN);
+      lengths.forEach((along, i) => {
+        if (along > RULE_MARGIN && i < last) addRule(i, 0);
+      });
+      addRule(last, accordion ? 0 : -RULE_MARGIN);
+
+      const list = (edgePoints: Point[]) => edgePoints.map(([x, y]) => `${f(x)} ${f(y)}`);
+      const outline = `M${list(edgesA).join('L')}L${list(edgesB).reverse().join('L')}Z`;
       paper.setAttribute('d', outline);
       shadows.forEach((path) => path.setAttribute('d', outline));
       rules.setAttribute('d', `M${ruleA.join('L')}M${ruleB.join('L')}`);
       rules.setAttribute('stroke-width', ribbonWidth >= 20 ? '1.5' : '1.2');
     };
 
-    // Longueur de ruban à dérouler pour atteindre une hauteur donnée.
-    const lengthAtY = (y: number) => {
-      const last = samples.length - 1;
-      if (last < 0) return 0;
-      if (y >= samples[last]) return total;
+    // Dernier rang d'une liste croissante dont la valeur ne dépasse pas la limite.
+    const rank = (list: number[], limit: number) => {
       let lo = 0;
-      let hi = last;
+      let hi = list.length - 1;
       while (lo < hi) {
         const mid = (lo + hi + 1) >> 1;
-        if (samples[mid] <= y) lo = mid;
+        if (list[mid] <= limit) lo = mid;
         else hi = mid - 1;
       }
-      return Math.min(total, lo * sampleStep);
+      return lo;
     };
+
+    // Longueur de ruban à dérouler pour atteindre une hauteur donnée.
+    const lengthAtY = (y: number) => lengths[rank(samples, y)] ?? 0;
+
+    // Les deux bords du ruban à une longueur donnée, entre deux échantillons.
+    const frontAt = (length: number): [Point, Point] => {
+      const k = Math.min(lengths.length - 2, rank(lengths, length));
+      const t = (length - lengths[k]) / (lengths[k + 1] - lengths[k] || 1);
+      const mix = (a: Point, b: Point): Point => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+      return [mix(edgesA[k], edgesA[k + 1]), mix(edgesB[k], edgesB[k + 1])];
+    };
+
+    // L'accordéon, plus ou moins déplié (de 0 à 1) : les plis s'écartent et avancent vers nous, puis le
+    // dernier panneau pivote autour de sa pliure jusqu'à nous faire face, avec son texte.
+    const renderFolds = () => {
+      const shown = Boolean(active && accordion && opened > 0);
+      folds.style.display = shown ? '' : 'none';
+      if (!end || !accordion) return;
+      if (!shown) {
+        end.style.opacity = active ? '0' : '';
+        end.style.transform = '';
+        return;
+      }
+      const { vertical, middle, size, length } = accordion;
+      const rest = 1 - Math.min(1, opened / 0.62);
+      const spread = 1 - rest * rest * rest;
+      const first = accordion.lines[0];
+      const lines = accordion.lines.map(({ at, half, shift }) => ({
+        at: first.at + (at - first.at) * (0.1 + 0.9 * spread),
+        half: first.half + (half - first.half) * spread,
+        shift: shift * spread,
+      }));
+      const hinge = lines[lines.length - 1];
+      const scale = (hinge.half * 2) / size;
+      // Pivot du dernier panneau ; il dépasse un peu avant de se poser.
+      const turn = Math.max(0, Math.min(1, (opened - 0.2) / 0.8)) - 1;
+      const angle = -(2.1 * turn + 1.1) * turn * turn * 1.45 * (turn < 0 ? 1 : 0);
+      const depth = Math.max(900, length * 2.4);
+      const panel = length * scale;
+      const near = depth / (depth - panel * Math.sin(angle));
+      const far = { at: hinge.at + panel * Math.cos(angle) * near, half: hinge.half * near, shift: 0 };
+
+      const all = [...lines, far];
+      const point = (at: number, offset: number): Point => (vertical ? [middle + offset, at] : [at, middle + offset]);
+      const corner = (line: FoldLine, sign: number, inset = 0) => point(line.at, line.shift + sign * (line.half - inset));
+      const text = ([x, y]: Point) => `${f(x)} ${f(y)}`;
+      while (foldFaces.childElementCount < lines.length) foldFaces.append(document.createElementNS(svg.namespaceURI, 'path'));
+      [...foldFaces.children].forEach((face, i) => {
+        const [a, b] = [all[i], all[i + 1]];
+        const kind = i === lines.length - 1 ? 'end' : i % 2 ? 'dark' : 'lit';
+        face.setAttribute('fill', `url(#fold-${kind})`);
+        face.setAttribute('d', b ? `M${[corner(a, -1), corner(b, -1), corner(b, 1), corner(a, 1)].map(text).join('L')}Z` : '');
+      });
+
+      // Ombre portée : elle s'éloigne du papier quand il avance vers nous.
+      foldShadows.forEach((path, layer) => {
+        const cast = (line: FoldLine, sign: number): Point => {
+          const lift = Math.min(1, (line.half * 2 - first.half * 2) / Math.max(1, size - first.half * 2));
+          const [x, y] = corner(line, sign);
+          const amount = layer === 0 ? 2 : 1;
+          return [x + (2 + 6 * lift) * amount, y + (4 + 9 * lift) * amount];
+        };
+        path.setAttribute('d', `M${[...all.map((line) => cast(line, -1)), ...[...all].reverse().map((line) => cast(line, 1))].map(text).join('L')}Z`);
+      });
+
+      const ruleEnd = { ...far, at: far.at - RULE_MARGIN };
+      const inset = (half: number) => ruleInset(first.half * 2) + (8 - ruleInset(first.half * 2)) * Math.min(1, (half - first.half) / Math.max(1, size / 2 - first.half));
+      const rule = (sign: number) => [...lines, ruleEnd].map((line) => text(corner(line, sign, inset(line.half)))).join('L');
+      foldRules.setAttribute('d', `M${rule(-1)}M${rule(1)}`);
+
+      const moved = hinge.at - accordion.lines[accordion.lines.length - 1].at;
+      end.style.opacity = opened > 0.25 ? '1' : '0';
+      end.style.transformOrigin = vertical ? '50% 0' : '0 50%';
+      end.style.transform =
+        opened < 1
+          ? `${vertical ? 'translateY' : 'translateX'}(${f(moved)}px) perspective(${f(depth)}px) ${vertical ? 'rotateX' : 'rotateY'}(${((vertical ? 1 : -1) * angle).toFixed(4)}rad) scale(${scale.toFixed(4)})`
+          : '';
+    };
+
+    const unfold = (now: number) => {
+      openedFrom ||= now;
+      opened = Math.min(1, Math.max(0.001, (now - openedFrom) / FOLD_TIME));
+      renderFolds();
+      if (opened < 1) requestAnimationFrame(unfold);
+    };
+    let unfolding = false;
 
     const scrollTarget = () => {
       if (!active) return 0;
@@ -299,20 +454,22 @@
     const render = () => {
       const visible = active ? Math.max(drawn, lead) : 0;
       reveal.setAttribute('stroke-dashoffset', String(total - visible));
+      // Tout le ruban est déroulé : l'accordéon se déplie.
+      if (active && !unfolding && total && visible > total - 1) {
+        unfolding = true;
+        if (motion.matches) requestAnimationFrame(unfold);
+        else opened = 1;
+      }
+      if (!unfolding || opened === 1) renderFolds();
       // Entièrement déroulé : plus de masque (Chrome pouvait en garder une version périmée, qui
       // rognait le ruban après un changement de mise en page).
       const masked = visible < total - 0.5;
       if (masked) band.setAttribute('mask', `url(#${mask.id})`);
       else band.removeAttribute('mask');
-      if (active && drawn > lead + 2 && drawn < total - 2 && centers.length > 1) {
-        // Position sur la ligne centrale réelle (celle du contour), entre deux échantillons.
-        const k = Math.min(centers.length - 2, Math.floor(drawn / sampleStep));
-        const t = drawn / sampleStep - k;
-        const [ax, ay] = centers[k];
-        const [bx, by] = centers[k + 1];
-        const p = { x: ax + (bx - ax) * t, y: ay + (by - ay) * t };
-        const angle = (Math.atan2(by - ay, bx - ax) * 180) / Math.PI + 90;
-        const width = widthAt(drawn) + 4;
+      if (active && drawn > lead + 2 && drawn < total - 2 && lengths.length > 1) {
+        const [p, q] = frontAt(drawn);
+        const angle = (Math.atan2(p[1] - q[1], p[0] - q[0]) * 180) / Math.PI;
+        const width = Math.hypot(p[0] - q[0], p[1] - q[1]) + 4;
         const thickness = Math.min(18, Math.max(7, width * 0.34));
         roll.setAttribute('x', f(-width / 2));
         roll.setAttribute('y', f(-thickness / 2));
@@ -320,7 +477,7 @@
         roll.setAttribute('height', f(thickness));
         roll.setAttribute('rx', f(thickness / 2));
         rollLine.setAttribute('d', `M${f(-width / 2 + thickness / 2)} 0H${f(width / 2 - thickness / 2)}`);
-        tip.setAttribute('transform', `translate(${f(p.x)} ${f(p.y)}) rotate(${f(angle)})`);
+        tip.setAttribute('transform', `translate(${f((p[0] + q[0]) / 2)} ${f((p[1] + q[1]) / 2)}) rotate(${f(angle)})`);
         tip.style.opacity = '1';
       } else {
         tip.style.opacity = '0';
@@ -354,6 +511,10 @@
       if (!d) {
         svg.classList.remove('is-ready');
         start?.classList.remove('is-attached');
+        if (end) {
+          end.classList.remove('is-attached');
+          end.style.opacity = end.style.transform = '';
+        }
         return;
       }
       const progress = total ? drawn / total : 0;
@@ -381,9 +542,15 @@
         drawn = target = total;
       }
       svg.classList.add('is-ready');
-      // Le papier du cookie ne garde que son texte : le SVG dessine le papier dessous.
+      // Les papiers des deux bouts ne gardent que leur texte : le SVG dessine le papier dessous.
       start?.classList.toggle('is-attached', active);
+      end?.classList.toggle('is-attached', active);
+      gradients.forEach((gradient) => {
+        gradient.setAttribute('x2', accordion?.vertical ? '0' : '1');
+        gradient.setAttribute('y2', accordion?.vertical ? '1' : '0');
+      });
       render();
+      if (unfolding) renderFolds();
       update();
     };
 
@@ -436,6 +603,12 @@
 
   .ribbon.is-ready {
     visibility: visible;
+  }
+
+  /* Le tracé (d) est mesuré juste après son changement : il ne doit jamais être animé, même par la
+     règle générale des animations réduites. */
+  .ribbon path {
+    transition: none !important;
   }
 
   .ribbon-shadow {
