@@ -94,7 +94,7 @@ const items = await Promise.all(
   .shot-link {
     display: block;
     overflow: hidden;
-    border: 1px solid var(--line);
+    border-radius: 18px;
     cursor: zoom-in;
   }
 
@@ -108,6 +108,8 @@ const items = await Promise.all(
   figcaption {
     margin-top: 0.5rem;
     color: var(--ink-soft);
+    font-size: 1rem;
+    line-height: 1.45;
   }
 
   .lightbox {
@@ -115,12 +117,13 @@ const items = await Promise.all(
     max-height: calc(100vh - 24px);
     padding: 0;
     border: 0;
-    background: var(--paper);
+    border-radius: var(--round);
+    background: var(--bg);
     color: var(--ink);
   }
 
   .lightbox::backdrop {
-    background: rgba(21, 27, 32, 0.85);
+    background: rgba(20, 12, 16, 0.85);
   }
 
   .lightbox-inner {
@@ -137,8 +140,9 @@ const items = await Promise.all(
     min-height: 44px;
     padding: 0.45rem 0.9rem;
     border: 0;
-    background: var(--label);
-    color: var(--label-ink);
+    border-radius: 12px;
+    background: var(--hue-ink);
+    color: var(--hue);
     font: inherit;
     cursor: pointer;
   }
@@ -146,8 +150,8 @@ const items = await Promise.all(
   .lightbox :global(.lightbox-img) {
     width: 100%;
     max-height: calc(100vh - 170px);
+    border-radius: 14px;
     object-fit: contain;
-    background: var(--bg-alt);
   }
 
   .lightbox-caption {

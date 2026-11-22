@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHeader from '../components/PageHeader.astro';
 import Icon from '../components/Icon.astro';
+import Objet from '../components/Objet.astro';
 import { profile } from '../data/profile';
 import { fr } from '../lib/format';
 import type { IconName } from '../lib/icons';
@@ -48,12 +49,13 @@ const qualities = [
 
 <BaseLayout
   title="À propos"
+  hue="soleil"
   description="Maxime Miguet, étudiant en 3e année de BUT Informatique à Belfort : parcours, projet de Studio Fortune Cookies, qualités et centres d’intérêt."
 >
-  <div class="container page layout">
-    <div class="sheet">
-      <PageHeader title="À propos de moi" fortune="Ton signe astrologique est : biscuit." />
+  <PageHeader title="À propos de moi" fortune="Ton signe astrologique est : biscuit." objet="pigeon" />
 
+  <div class="container page">
+    <div class="intro">
       <div class="text">
         <p>
           {
@@ -77,87 +79,8 @@ const qualities = [
           }
         </p>
       </div>
-
-      <section class="section text" aria-labelledby="goal-title">
-        <h2 id="goal-title">Mon projet de studio</h2>
-        <p>
-          {
-            fr(
-              'Cette année, je prépare la création de mon studio de jeux vidéo, Fortune Cookies. Je souhaite obtenir le statut national d’étudiant-entrepreneur. S’il m’est accordé, ce projet remplacera mon stage de fin d’études.',
-            )
-          }
-        </p>
-        <p>
-          {
-            fr(
-              'Le premier jeu, Fortune Cookie, est bien avancé. Pour le suivant, un RPG roguelite en 2D jouable à plusieurs, je n’en suis qu’à la phase de recherche.',
-            )
-          }
-        </p>
-        <p>
-          {
-            fr(
-              'Je reste quand même ouvert aux propositions de stage. Travailler dans une équipe expérimentée m’apprendrait beaucoup avant de me lancer.',
-            )
-          }
-          <a href="/contact/">M’écrire</a>
-        </p>
-      </section>
-
-      <section class="section" aria-labelledby="path-title">
-        <h2 id="path-title">Formation et parcours</h2>
-        <ol class="path" role="list">
-          {
-            timeline.map((step) => (
-              <li>
-                <p class="when">{step.when}</p>
-                <div>
-                  <h3><Icon name={step.icon} /> {step.title}</h3>
-                  <p>
-                    {fr(step.text)} {step.href && <a href={step.href}>{step.linkLabel}</a>}
-                  </p>
-                </div>
-              </li>
-            ))
-          }
-        </ol>
-      </section>
-
-      <section class="section text" aria-labelledby="qualities-title">
-        <h2 id="qualities-title">Qualités</h2>
-        <dl class="run-in">
-          {
-            qualities.map((quality) => (
-              <div>
-                <dt>{quality.name}.</dt>
-                <dd>{fr(quality.text)}</dd>
-              </div>
-            ))
-          }
-        </dl>
-      </section>
-
-      <section class="section text" aria-labelledby="hobbies-title">
-        <h2 id="hobbies-title">Centres d’intérêt</h2>
-        <p>
-          <strong><Icon name="sports_esports" /> Les jeux vidéo.</strong>
-          {fr('J’y joue beaucoup. Depuis que je développe les miens, je fais plus attention à ce qui donne envie de relancer une partie.')}
-        </p>
-        <p>
-          <strong><Icon name="music_note" /> La musique.</strong>
-          {fr('J’écoute un peu de tout. C’est pour jouer entre amis que j’ai créé mon')}
-          <a href="/projets/blindtest-generator/">BlindTest Generator</a>.
-        </p>
-        <p class="last">
-          <strong><Icon name="newspaper" /> La veille.</strong>
-          {fr('Je fais une veille régulière, surtout en anglais : daily.dev, dev.to, le blog de Godot et des newsletters sur le jeu indépendant.')}
-        </p>
-      </section>
-    </div>
-
-    <aside class="receipt-wrap" aria-labelledby="facts-title">
-      <div class="receipt">
-        <h2 class="receipt-title" id="facts-title">En bref</h2>
+    <aside class="note on-hue" aria-labelledby="facts-title">
+        <h2 id="facts-title">En bref</h2>
         <dl>
           <div>
             <dt><Icon name="menu_book" />Formation</dt>
@@ -184,49 +107,182 @@ const qualities = [
             <dd><a href={profile.cvPdf} download={profile.cvFileName}>à télécharger en PDF</a></dd>
           </div>
         </dl>
-      </div>
     </aside>
+    </div>
+
+      <section class="section studio on-hue" data-hue="corail" aria-labelledby="goal-title">
+        <div class="studio-text">
+        <h2 id="goal-title">Mon projet de studio</h2>
+        <p>
+          {
+            fr(
+              'Cette année, je prépare la création de mon studio de jeux vidéo, Fortune Cookies. Je souhaite obtenir le statut national d’étudiant-entrepreneur. S’il m’est accordé, ce projet remplacera mon stage de fin d’études.',
+            )
+          }
+        </p>
+        <p>
+          {
+            fr(
+              'Le premier jeu, Fortune Cookie, est bien avancé. Pour le suivant, un RPG roguelite en 2D jouable à plusieurs, je n’en suis qu’à la phase de recherche.',
+            )
+          }
+        </p>
+        <p>
+          {
+            fr(
+              'Je reste quand même ouvert aux propositions de stage. Travailler dans une équipe expérimentée m’apprendrait beaucoup avant de me lancer.',
+            )
+          }
+          <a href="/contact/">M’écrire</a>
+        </p>
+        </div>
+        <Objet name="doigt-nuage" class="studio-objet" />
+      </section>
+
+      <section class="section" aria-labelledby="path-title">
+        <h2 id="path-title">Formation et parcours</h2>
+        <ol class="path" role="list">
+          {
+            timeline.map((step) => (
+              <li>
+                <Icon name={step.icon} />
+                <p class="when">{step.when}</p>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>
+                    {fr(step.text)} {step.href && <a href={step.href}>{step.linkLabel}</a>}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section class="section" aria-labelledby="qualities-title">
+        <h2 id="qualities-title">Qualités</h2>
+        <dl class="qualities">
+          {
+            qualities.map((quality) => (
+              <div>
+                <dt>{quality.name}</dt>
+                <dd>{fr(quality.text)}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </section>
+
+      <section class="section" aria-labelledby="hobbies-title">
+        <h2 id="hobbies-title">Centres d’intérêt</h2>
+        <div class="hobbies">
+          <div class="hobby on-hue" data-hue="rose">
+            <Icon name="sports_esports" />
+            <h3>Les jeux vidéo</h3>
+            <p>{fr('J’y joue beaucoup. Depuis que je développe les miens, je fais plus attention à ce qui donne envie de relancer une partie.')}</p>
+          </div>
+          <div class="hobby on-hue" data-hue="ciel">
+            <Icon name="music_note" />
+            <h3>La musique</h3>
+            <p>
+              {fr('J’écoute un peu de tout. C’est pour jouer entre amis que j’ai créé mon')}
+              <a href="/projets/blindtest-generator/">BlindTest Generator</a>.
+            </p>
+          </div>
+          <div class="hobby on-hue" data-hue="menthe">
+            <Icon name="newspaper" />
+            <h3>La veille</h3>
+            <p>{fr('Je fais une veille régulière, surtout en anglais : daily.dev, dev.to, le blog de Godot et des newsletters sur le jeu indépendant.')}</p>
+          </div>
+        </div>
+      </section>
   </div>
 </BaseLayout>
 
 <style>
-  .layout {
+  .intro {
     display: grid;
-    gap: 2rem;
+    gap: 2.5rem;
     align-items: start;
   }
 
+  .text p:first-child {
+    font-size: clamp(1.2rem, 1.9vw, 1.4rem);
+    line-height: 1.45;
+  }
+
+  .text p:last-child {
+    margin: 0;
+  }
+
   @media (min-width: 1000px) {
-    .layout {
-      grid-template-columns: minmax(0, 1fr) 270px;
+    .page {
+      padding-top: 11rem;
     }
 
-    aside {
-      margin-top: 5rem;
+    .intro {
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 4.5rem;
     }
   }
 
-  .text p,
-  .text dl {
-    max-width: 66ch;
+  .section h2 {
+    margin-bottom: 0.6em;
+    font-size: clamp(2.3rem, 6vw, 4.2rem);
+  }
+
+  .studio {
+    display: grid;
+    overflow: hidden;
+    border-radius: var(--round);
+    background: var(--hue);
+    color: var(--hue-ink);
+  }
+
+  .studio-text {
+    max-width: 44rem;
+    padding: clamp(1.75rem, 4vw, 3.5rem);
+  }
+
+  .studio-text > :last-child {
+    margin: 0;
+  }
+
+  .studio :global(.studio-objet) {
+    width: min(60%, 260px);
+    margin: -1rem auto -4rem;
+  }
+
+  @media (min-width: 900px) {
+    .studio {
+      grid-template-columns: minmax(0, 1fr) 34%;
+      align-items: end;
+    }
+
+    .studio :global(.studio-objet) {
+      width: 88%;
+      margin: 2rem 0 -6rem;
+    }
   }
 
   .path {
+    display: grid;
+    gap: 2.25rem;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .path li {
-    padding-block: 0.8rem;
-    border-top: 2px dashed var(--line);
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    gap: 0.4rem 1.1rem;
   }
 
-  @media (min-width: 640px) {
-    .path li {
-      display: grid;
-      grid-template-columns: 9.5rem minmax(0, 1fr);
-    }
+  .path li > :global(.icon) {
+    grid-row: 1 / span 2;
+    width: 1em;
+    font-size: 2.5rem;
   }
 
   .path p {
@@ -235,36 +291,89 @@ const qualities = [
 
   .when {
     color: var(--ink-soft);
+    font-weight: 600;
   }
 
   .path h3 {
-    margin-bottom: 0.2rem;
-    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
   }
 
-  .path h3 :global(.icon) {
-    margin-right: 0.2rem;
+  @media (min-width: 800px) {
+    .path li {
+      grid-template-columns: 3.25rem 11rem minmax(0, 1fr);
+      column-gap: 1.5rem;
+    }
+
+    .path li > :global(.icon) {
+      grid-row: auto;
+      font-size: 3.25rem;
+    }
+
+    .when {
+      padding-top: 0.2rem;
+    }
   }
 
-  .run-in {
+  .qualities {
+    display: grid;
+    gap: 2rem 3rem;
     margin: 0;
   }
 
-  .run-in > div {
-    margin-bottom: 0.6rem;
+  .qualities dt {
+    font-family: var(--font-title);
+    font-size: 1.6rem;
+    line-height: 1.1;
   }
 
-  .run-in dt,
-  .run-in dd {
-    display: inline;
+  .qualities dd {
+    margin: 0.4rem 0 0;
+  }
+
+  @media (min-width: 700px) {
+    .qualities {
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    .qualities > div {
+      grid-column: span 2;
+    }
+
+    .qualities > div:nth-child(n + 4) {
+      grid-column: span 3;
+    }
+  }
+
+  .hobbies {
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .hobby {
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: var(--round);
+    background: var(--hue);
+    color: var(--hue-ink);
+  }
+
+  .hobby > :global(.icon) {
+    width: 1em;
+    margin-bottom: 1.25rem;
+    font-size: 4rem;
+  }
+
+  .hobby h3 {
+    font-size: 1.8rem;
+  }
+
+  .hobby p {
     margin: 0;
+    line-height: 1.5;
   }
 
-  .run-in dt {
-    font-weight: 700;
-  }
-
-  .last {
-    margin: 0;
+  @media (min-width: 900px) {
+    .hobbies {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 </style>

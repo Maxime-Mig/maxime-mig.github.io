@@ -79,7 +79,7 @@ async function headless(args) {
     await run(
       browser,
       [
-        '--headless',
+        '--headless=new',
         '--disable-gpu',
         '--no-first-run',
         '--no-default-browser-check',
@@ -146,13 +146,14 @@ async function cv() {
 async function og() {
   const fonts = path.join(root, 'node_modules');
   const dataUri = async (file, type) => `data:${type};base64,${(await readFile(file)).toString('base64')}`;
-  const cookie = (name) => dataUri(path.join(root, 'src/assets/cookie', name), 'image/webp');
+  const image = (name) => dataUri(path.join(root, 'src/assets', name), 'image/webp');
 
   const replacements = {
-    SOURCE_SANS: await dataUri(path.join(fonts, '@fontsource-variable/source-sans-3/files/source-sans-3-latin-wght-normal.woff2'), 'font/woff2'),
-    SPECIAL_ELITE: await dataUri(path.join(fonts, '@fontsource/special-elite/files/special-elite-latin-400-normal.woff2'), 'font/woff2'),
-    COOKIE_LEFT: await cookie('cookie-gauche.webp'),
-    COOKIE_RIGHT: await cookie('cookie-droite.webp'),
+    BAGEL: await dataUri(path.join(fonts, '@fontsource/bagel-fat-one/files/bagel-fat-one-latin-400-normal.woff2'), 'font/woff2'),
+    FIGTREE: await dataUri(path.join(fonts, '@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2'), 'font/woff2'),
+    COOKIE: await image('cookie/cookie-ferme.webp'),
+    ARM: await image('objets/doigt.webp'),
+    PIGEON: await image('objets/pigeon-droite.webp'),
   };
   let html = await readFile(path.join(root, 'scripts/og-template.html'), 'utf8');
   html = html.replace(/\{\{(\w+)\}\}/g, (match, key) => replacements[key] ?? match);

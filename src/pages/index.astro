@@ -2,12 +2,15 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CookieHero from '../components/CookieHero.astro';
 import Icon from '../components/Icon.astro';
+import Objet from '../components/Objet.astro';
 import PaperRibbon from '../components/PaperRibbon.astro';
-import ProjectRow from '../components/ProjectRow.astro';
+import ProjectPanel from '../components/ProjectPanel.astro';
 import { featuredProjects, projects } from '../data/projects';
 import { skillGroups, levelLabels } from '../data/skills';
 import { profile } from '../data/profile';
 import { fr } from '../lib/format';
+
+const layouts = ['wide', 'half', 'half', 'flip'] as const;
 
 const toolbox = ['jeu-video', 'web', 'donnees', 'devops']
   .map((id) => skillGroups.find((group) => group.id === id))
@@ -38,11 +41,11 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'M
   <div class="home">
     <PaperRibbon />
 
-    <section class="section hero" data-ribbon-side="right" aria-labelledby="hero-title">
+    <section class="hero band on-hue" data-ribbon-side="right" aria-labelledby="hero-title">
       <div class="container hero-grid">
-        <div class="sheet hero-text">
+        <div class="hero-text">
           <h1 id="hero-title">
-            <span class="hero-name">Maxime Miguet</span>
+            <span class="hero-name">Maxime <br />Miguet</span>
             <span class="hero-role">Développeur jeux vidéo et web</span>
           </h1>
           <p>
@@ -63,73 +66,81 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'M
           <CookieHero />
           <p class="visually-hidden" id="cookie-hint">{fr('Les messages du papier viennent de mon jeu. Cliquez sur le cookie pour en ouvrir un autre.')}</p>
         </div>
-
-        <div class="sheet about">
-          <h2 id="about-title">À propos</h2>
-          <p>
-            {
-              fr(
-                'Je suis entré en BUT en 2024, après un bac avec les spécialités maths et NSI. Je joue beaucoup aux jeux vidéo et j’écoute énormément de musique, et c’est en grande partie ce qui m’a donné envie de développer.',
-              )
-            }
-          </p>
-          <p>
-            {
-              fr(
-                'Pendant la formation, j’ai surtout travaillé en équipe, par exemple à cinq sur une application pour un événement médiéval. Mon stage de deuxième année chez Good Geek m’a ensuite appris à réaliser seul un site complet, des maquettes jusqu’aux dernières corrections.',
-              )
-            }
-          </p>
-          <p class="last">
-            {
-              fr(
-                'En 2027, j’aimerais créer mon studio de jeux, Fortune Cookies, avec le statut national d’étudiant-entrepreneur. Je reste ouvert aux propositions de stage.',
-              )
-            }{' '}
-            <a href="/a-propos/">Mon parcours</a>
-          </p>
-        </div>
       </div>
     </section>
 
     <section class="section projects" data-ribbon-side="left" aria-labelledby="projects-title">
       <div class="container">
-        <div class="sheet">
-          <h2 id="projects-title">Projets</h2>
-          {featuredProjects.map((project, index) => <ProjectRow project={project} big={index === 0} />)}
-          <p class="more"><a href="/projets/">Les {projects.length} projets</a></p>
+        <h2 class="big" id="projects-title">Projets</h2>
+        <div class="panels">
+          {featuredProjects.map((project, index) => <ProjectPanel project={project} layout={layouts[index % layouts.length]} />)}
         </div>
+        <p class="more"><a class="btn" href="/projets/">Les {projects.length} projets</a></p>
       </div>
     </section>
 
     <section class="section skills" data-ribbon-side="right" aria-labelledby="skills-title">
       <div class="container">
-        <div class="sheet">
-          <h2 id="skills-title">Compétences</h2>
-          <div class="skill-columns">
-            {
-              toolbox.map((group) => (
-                <div class="skill-group">
-                  <h3>{group.title}</h3>
-                  <ul>
-                    {group.skills.map((skill) => (
-                      <li class="leader">
-                        <span class="skill-name"><Icon name={skill.icon} /><span>{skill.name.replace(/ \(.*\)/, '')}</span></span>
-                        <span class="level">{levelLabels[skill.level].toLowerCase()}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))
-            }
+        <h2 class="big" id="skills-title">Compétences</h2>
+        <div class="skill-columns">
+          {
+            toolbox.map((group) => (
+              <div>
+                <h3>{group.title}</h3>
+                <ul>
+                  {group.skills.map((skill) => (
+                    <li>
+                      <Icon name={skill.icon} />
+                      <span>
+                        <strong>{skill.name.replace(/ \(.*\)/, '')}</strong>
+                        <span class="level">{levelLabels[skill.level]}</span>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </div>
+        <p class="more"><a class="btn" href="/competences/">Toutes mes compétences</a></p>
+      </div>
+    </section>
+
+    <section class="section about" data-ribbon-side="left" aria-labelledby="about-title">
+      <div class="container">
+        <div class="about-panel on-hue" data-hue="soleil">
+          <div class="about-text">
+            <h2 class="big" id="about-title">À propos</h2>
+            <p>
+              {
+                fr(
+                  'Je suis entré en BUT en 2024, après un bac avec les spécialités maths et NSI. Je joue beaucoup aux jeux vidéo et j’écoute énormément de musique, et c’est en grande partie ce qui m’a donné envie de développer.',
+                )
+              }
+            </p>
+            <p>
+              {
+                fr(
+                  'Pendant la formation, j’ai surtout travaillé en équipe, par exemple à cinq sur une application pour un événement médiéval. Mon stage de deuxième année chez Good Geek m’a ensuite appris à réaliser seul un site complet, des maquettes jusqu’aux dernières corrections.',
+                )
+              }
+            </p>
+            <p>
+              {
+                fr(
+                  'En 2027, j’aimerais créer mon studio de jeux, Fortune Cookies, avec le statut national d’étudiant-entrepreneur. Je reste ouvert aux propositions de stage.',
+                )
+              }
+            </p>
+            <p class="more"><a class="btn" href="/a-propos/">Mon parcours</a></p>
           </div>
-          <p class="more"><a href="/competences/">Toutes mes compétences, avec les projets où je m’en suis servi</a></p>
+          <Objet name="cookie-chat" class="about-cat" sizes="(min-width: 900px) 440px, 70vw" />
         </div>
       </div>
     </section>
 
-    <section class="section contact" aria-labelledby="contact-title">
-      <div class="container">
+    <section class="contact band on-hue" data-hue="ciel" aria-labelledby="contact-title">
+      <div class="container contact-grid">
         <div class="slip end" data-ribbon-end>
           <h2 id="contact-title">Me contacter</h2>
           <p>
@@ -137,6 +148,7 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'M
             <a class="icon-link" href="/contact/"><Icon name="send" /><span>Formulaire de contact</span></a>
           </p>
         </div>
+        <Objet name="baleine" class="whale" sizes="(min-width: 900px) 620px, 90vw" />
       </div>
     </section>
   </div>
@@ -145,55 +157,34 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'M
 <style>
   .home {
     position: relative;
+    isolation: isolate;
   }
 
-  .hero {
-    padding-top: clamp(1.5rem, 4vw, 3rem);
+  /* Aplat pleine largeur, peint sous le ruban. */
+  .band {
+    position: relative;
+    color: var(--hue-ink);
+  }
+
+  .band::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--hue);
+  }
+
+  .band > .container {
+    position: relative;
+    z-index: 1;
   }
 
   .hero-grid {
-    display: grid;
-    gap: 2rem;
-    align-items: start;
-  }
-
-  /* Sur grand écran, la présentation et « À propos » forment une seule feuille. */
-  @media (min-width: 960px) {
-    .hero-grid {
-      grid-template-columns: minmax(0, 620px) minmax(0, 1fr);
-      grid-template-rows: auto 1fr;
-      gap: 0 1rem;
-    }
-
-    .hero-text,
-    .about {
-      grid-column: 1;
-    }
-
-    .hero-text {
-      padding-bottom: 0;
-      box-shadow: 3px 3px 0 var(--shade);
-    }
-
-    .about {
-      margin-top: -1px;
-    }
-
-    .hero-cookie {
-      grid-column: 2;
-      grid-row: 1 / span 2;
-    }
-  }
-
-  /* Place pour que le papier du cookie s'affine avant de longer la feuille. */
-  @media (max-width: 959.98px) {
-    .about {
-      margin-top: 8rem;
-    }
+    padding-block: 1.5rem 2rem;
   }
 
   h1 {
-    margin-bottom: 1.25rem;
+    margin: 0;
   }
 
   .hero-name,
@@ -201,93 +192,164 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'M
     display: block;
   }
 
+  .hero-name {
+    font-size: clamp(4rem, 23vw, 10rem);
+    padding-bottom: 0.27em;
+    line-height: 0.84;
+    letter-spacing: -0.015em;
+  }
+
   .hero-role {
-    font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+    margin: 0 0 0.6rem;
+    font-family: var(--font-sans);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 750;
+    line-height: 1.2;
+    letter-spacing: 0;
   }
 
   .hero-text .btn-row {
-    margin-block: 1.5rem 0;
-  }
-
-  .last {
-    margin: 0;
-  }
-
-  .projects {
-    margin-top: 10rem;
-  }
-
-  .skills {
-    margin-top: 11rem;
-  }
-
-  @media (min-width: 960px) {
-    .skills .sheet {
-      width: 940px;
-      margin-left: auto;
-    }
-  }
-
-  .more {
     margin: 1.5rem 0 0;
   }
 
-  .projects .more {
-    margin: 0;
-    padding-top: 1.25rem;
-    border-top: 2px dashed var(--line-strong);
+  .hero-cookie {
+    width: min(100%, 520px);
+    margin: 2.5rem auto 0;
+  }
+
+  .big {
+    margin-bottom: 0.45em;
+    font-size: clamp(3rem, 9vw, 7rem);
+    line-height: 0.95;
+  }
+
+  .projects {
+    margin-top: 14rem;
+  }
+
+  .skills,
+  .about {
+    margin-top: 10rem;
+  }
+
+  .contact {
+    margin-top: 10rem;
+  }
+
+  /* Le papier du cookie est bien plus large que le ruban : il lui faut de la place pour
+     s'affiner avant de traverser. */
+  @media (min-width: 1500px) {
+    .projects {
+      margin-top: 16rem;
+    }
+  }
+
+  .panels {
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  .more {
+    margin: 2rem 0 0;
+  }
+
+  @media (min-width: 860px) {
+    .panels {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .panels > :global(.panel-wide),
+    .panels > :global(.panel-flip) {
+      grid-column: 1 / -1;
+    }
   }
 
   .skill-columns {
-    columns: 2 22rem;
-    column-gap: 3.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 235px), 1fr));
+    gap: 2.5rem 2rem;
   }
 
-  .skill-group {
-    break-inside: avoid;
-    padding-bottom: 1.5rem;
-  }
-
-  .skill-group h3 {
-    margin-bottom: 0.35rem;
-  }
-
-  .skill-group ul {
+  .skill-columns ul {
+    display: grid;
+    gap: 1.1rem;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .skill-group li {
-    padding-block: 0.15rem;
-  }
-
-  .skill-name {
+  .skill-columns li {
     display: flex;
-    align-items: baseline;
-    gap: 0.55rem;
+    align-items: center;
+    gap: 0.9rem;
+    line-height: 1.25;
   }
 
-  .skill-name :global(.icon) {
-    position: relative;
-    top: 0.18em;
+  .skill-columns li :global(.icon) {
+    width: 1em;
+    font-size: 2.3rem;
+  }
+
+  .skill-columns strong,
+  .level {
+    display: block;
   }
 
   .level {
     color: var(--ink-soft);
+    font-size: 1rem;
   }
 
-  .contact {
-    margin-top: 10rem;
-    padding-bottom: clamp(3rem, 7vw, 6rem);
+  .about-panel {
+    display: grid;
+    overflow: hidden;
+    border-radius: var(--round);
+    background: var(--hue);
+    color: var(--hue-ink);
+  }
+
+  .about-text {
+    max-width: 44rem;
+    padding: clamp(1.75rem, 4vw, 3.5rem);
+  }
+
+  .about-panel :global(.about-cat) {
+    width: min(80%, 380px);
+    margin: 0 auto -3rem;
+  }
+
+  @media (min-width: 900px) {
+    .about-panel {
+      grid-template-columns: minmax(0, 1fr) 38%;
+      align-items: end;
+    }
+
+    .about-panel :global(.about-cat) {
+      width: 118%;
+      max-width: none;
+      margin: 0 0 -3.5rem -6%;
+    }
+  }
+
+  .contact-grid {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+    padding-block: clamp(3.5rem, 8vw, 7rem);
   }
 
   .end {
+    position: relative;
     width: fit-content;
     max-width: 100%;
-    margin-left: 12%;
-    padding: 2rem 2.5rem 1.6rem;
-    position: relative;
+    padding: 2.25rem clamp(1.5rem, 4vw, 3rem) 1.9rem;
+    transform: rotate(-1.5deg);
+  }
+
+  .end h2 {
+    margin-bottom: 0.4em;
+    font-size: clamp(2.4rem, 6vw, 4.2rem);
+    white-space: nowrap;
   }
 
   .end p {
@@ -296,9 +358,53 @@ const website = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'M
     overflow-wrap: anywhere;
   }
 
-  @media (max-width: 700px) {
-    .end {
-      margin-inline: auto;
+  .end a {
+    font-weight: 400;
+  }
+
+  .contact-grid :global(.whale) {
+    width: 100%;
+  }
+
+  @media (min-width: 900px) {
+    .contact-grid {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .contact-grid :global(.whale) {
+      width: calc(100% + 4rem);
+      max-width: none;
+    }
+
+    /* La scène occupe la moitié droite de l'écran, calée sur le bord droit. */
+    .hero-grid {
+      display: flex;
+      align-items: center;
+      min-height: clamp(600px, min(100svh - var(--header-height), 68vw), 900px);
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 2;
+      max-width: min(31rem, 40vw);
+      pointer-events: none;
+    }
+
+    .hero-text a {
+      pointer-events: auto;
+    }
+
+    .hero-name {
+      font-size: clamp(6rem, min(13.2vw, 26svh), 13.5rem);
+      white-space: nowrap;
+    }
+
+    .hero-cookie {
+      position: absolute;
+      right: calc((100% - 100vw) / 2 + 3.2vw);
+      bottom: 1.5rem;
+      width: min(44vw, 98svh - var(--header-height), 780px);
+      margin: 0;
     }
   }
 </style>

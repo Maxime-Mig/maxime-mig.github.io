@@ -3,16 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHeader from '../../components/PageHeader.astro';
 ---
 
-<BaseLayout title="Message envoyé" description="Confirmation d’envoi du formulaire de contact du portfolio de Maxime Miguet, développeur jeux vidéo et web." noindex>
-  <div class="container page">
-    <div class="sheet">
-      <PageHeader
-        title="Message envoyé"
-        lead="Merci pour votre message. Je vous répondrai à l’adresse e-mail que vous avez indiquée."
-        fortune="Message reçu de l’espace : « vous avez des cookies, là-bas ? »"
-      >
-        <p><a href="/">Retour à l’accueil</a></p>
-      </PageHeader>
-    </div>
-  </div>
+<BaseLayout title="Message envoyé" hue="lilas" description="Confirmation d’envoi du formulaire de contact du portfolio de Maxime Miguet, développeur jeux vidéo et web." noindex>
+  <PageHeader
+    title="Message envoyé"
+    lead="Merci pour votre message. Je vous répondrai à l’adresse e-mail que vous avez indiquée."
+    fortune="Message reçu de l’espace : « vous avez des cookies, là-bas ? »"
+    objet="cookie-cosmique"
+    full
+  >
+    <p><a class="btn" href="/">Retour à l’accueil</a></p>
+  </PageHeader>
 </BaseLayout>

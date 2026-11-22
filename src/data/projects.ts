@@ -1,4 +1,5 @@
 import type { ImageMetadata } from 'astro';
+import type { Hue } from './hues';
 
 import fcBoutique from '../assets/projects/fortune-cookie/boutique.png';
 import fcCarnet from '../assets/projects/fortune-cookie/carnet.png';
@@ -61,7 +62,11 @@ export interface Project {
   technical?: string[];
   links?: { label: string; href: string }[];
   linkNote?: string;
+  /** Couleur du projet, sur sa page et dans les listes. */
+  hue: Hue;
   cover?: Shot;
+  /** Objet du jeu montré à la place de la capture (src/assets/objets). */
+  objet?: string;
   gallery?: Shot[];
   tracks?: Track[];
   /** Extrait de code réel, affiché dans « Détails techniques ». */
@@ -76,6 +81,7 @@ export interface Project {
 const allProjects: Project[] = [
   {
     slug: 'fortune-cookie',
+    hue: 'corail',
     title: 'Fortune Cookie',
     kind: 'Projet personnel, Studio Fortune Cookies',
     categories: ['jeu'],
@@ -174,6 +180,7 @@ const allProjects: Project[] = [
   },
   {
     slug: 'stage-good-geek',
+    hue: 'soleil',
     title: 'Stage chez Good Geek',
     kind: 'Stage de 2e année',
     categories: ['web'],
@@ -263,6 +270,7 @@ const allProjects: Project[] = [
   },
   {
     slug: 'terres-du-lion',
+    hue: 'menthe',
     title: 'Terres du Lion',
     kind: 'SAÉ de 2e année',
     categories: ['web', 'donnees'],
@@ -344,6 +352,7 @@ const allProjects: Project[] = [
   },
   {
     slug: 'forme-comtoise',
+    hue: 'ciel',
     title: 'Forme Comtoise',
     kind: 'Projet de module, BUT3',
     categories: ['donnees', 'devops'],
@@ -407,6 +416,8 @@ const allProjects: Project[] = [
   },
   {
     slug: 'pipeline-ci-cd',
+    hue: 'lilas',
+    objet: 'bras-robot',
     title: 'Pipeline CI/CD GitLab',
     kind: 'TP de module, BUT3',
     categories: ['devops'],
@@ -471,6 +482,7 @@ const allProjects: Project[] = [
   },
   {
     slug: 'blindtest-generator',
+    hue: 'rose',
     title: 'BlindTest Generator',
     kind: 'Projet personnel',
     categories: ['web', 'jeu'],
@@ -538,6 +550,7 @@ const allProjects: Project[] = [
   },
   {
     slug: 'puissancex',
+    hue: 'soleil',
     archived: true,
     title: 'PuissanceX',
     kind: 'SAÉ de 1re année',
@@ -575,6 +588,7 @@ const allProjects: Project[] = [
   },
   {
     slug: 'boutique-skins',
+    hue: 'menthe',
     archived: true,
     title: 'Boutique de skins',
     kind: 'SAÉ de 1re année',
@@ -617,6 +631,7 @@ const allProjects: Project[] = [
   },
   {
     slug: 'audio-java',
+    hue: 'ciel',
     archived: true,
     title: 'Audio en Java : Pauvocodeur et synthétiseur',
     kind: 'SAÉ de 1re année et TD de 3e année',

@@ -2,13 +2,13 @@
 
 Portfolio de présentation : [maxime-mig.github.io](https://maxime-mig.github.io/).
 
-Le thème reprend l'univers de **Fortune Cookie**, mon jeu en cours de développement. Sur l'accueil, le cookie du jeu (rendu depuis son modèle 3D) se casse. Le papier qu'il contenait se déroule ensuite le long de la page au fil du défilement.
+Le thème reprend l'univers de **Fortune Cookie**, mon jeu en cours de développement. Chaque page a sa couleur, son objet du jeu et son papier de fortune. Sur l'accueil, le doigt du jeu casse le cookie (rendus depuis leurs modèles 3D). Le papier qu'il contenait se déroule ensuite le long de la page au fil du défilement.
 
 ## Technologies
 
 - [Astro](https://astro.build/) 5 en site statique : HTML généré à la construction, très peu de JavaScript côté navigateur.
 - CSS écrit à la main (`src/styles/global.css`), avec un thème clair et un thème sombre : celui du navigateur par défaut, ou celui choisi avec le bouton de l'en-tête.
-- Polices auto-hébergées via Fontsource : Source Sans 3 et Special Elite (la police du jeu).
+- Polices auto-hébergées via Fontsource : Bagel Fat One (titres), Figtree (textes) et Special Elite (papiers, la police du jeu).
 - Icônes en police, réduites aux seuls caractères utilisés : Material Symbols (Google Fonts), Devicon et Font Awesome pour les logos. La liste est dans `src/data/icons.json` ; pour en ajouter une, voir `scripts/icones.mjs`.
 - Images optimisées en WebP par `astro:assets` (sharp).
 - Formulaire de contact envoyé par [FormSubmit](https://formsubmit.co/), sans serveur à maintenir.
@@ -44,12 +44,13 @@ Le PDF généré est enregistré dans `public/` et doit être commité : GitHub 
 
 ```text
 src/
-  assets/            Rendus du fortune cookie du jeu et captures des projets (optimisés à la construction)
-  components/        Cookie animé, ruban de papier, en-tête, liste des projets, formulaire…
+  assets/            Rendus du cookie (`cookie/`) et des objets du jeu (`objets/`), captures des projets (optimisés à la construction)
+  components/        Cookie animé, ruban de papier, en-tête, objets, panneaux de projet, formulaire…
   data/
     profile.ts       Identité, liens et menu
     projects.ts      Tous les projets (textes, technologies, captures)
     skills.ts        Compétences techniques et humaines
+    hues.ts          Couleurs des pages et des projets
     fortunes.ts      Phrases des papiers, reprises du jeu
   layouts/           Gabarit commun (SEO, Open Graph, thème)
   lib/               Mise en forme (typographie française)
@@ -63,7 +64,7 @@ scripts/             Génération du CV PDF, de l'image de partage et des police
 
 ### Modifier ou ajouter un projet
 
-Les projets sont décrits dans `src/data/projects.ts`. Le type `Project`, en haut du fichier, liste les champs disponibles. `featured: true` place le projet sur l'accueil. Les captures vont dans `src/assets/projects/<slug>/` et sont importées en haut du fichier.
+Les projets sont décrits dans `src/data/projects.ts`. Le type `Project`, en haut du fichier, liste les champs disponibles. `featured: true` place le projet sur l'accueil et `hue` choisit sa couleur. Les captures vont dans `src/assets/projects/<slug>/` et sont importées en haut du fichier.
 
 ## Déploiement
 

@@ -1,0 +1,29 @@
+---
+// Objet ou personnage du jeu Fortune Cookie : rendu de son modèle 3D sur fond transparent.
+// Décoratif, donc sans texte de remplacement.
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/objets/*.webp', { eager: true });
+
+interface Props {
+  name: string;
+  sizes?: string;
+  class?: string;
+  eager?: boolean;
+}
+
+const { name, sizes = '(min-width: 900px) 420px, 60vw', class: className, eager = false } = Astro.props;
+const src = files[`../assets/objets/${name}.webp`]?.default;
+if (!src) throw new Error(`Objet inconnu : ${name}`);
+const widths = [320, 640, 960].filter((width) => width < src.width).concat(src.width);
+---
+
+<Image class={['objet', className].filter(Boolean).join(' ')} src={src} alt="" widths={widths} sizes={sizes} loading={eager ? 'eager' : 'lazy'} draggable="false" />
+
+<style>
+  .objet {
+    pointer-events: none;
+    user-select: none;
+  }
+</style>

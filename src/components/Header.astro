@@ -1,6 +1,7 @@
 ---
-// Le menu reprend l'interface du jeu : des mots posés directement sur le sol, au-dessus de la table.
+// Menu toujours visible, de la couleur de la page.
 import { navLinks, profile } from '../data/profile';
+import CookieMark from './CookieMark.astro';
 import Icon from './Icon.astro';
 import { icon } from '../lib/icons';
 
@@ -10,7 +11,7 @@ const current = (href: string) => (path === href ? 'page' : path.startsWith(href
 
 <header class="site-header">
   <nav class="nav" aria-label="Menu principal">
-    <a class="brand" href="/" aria-current={path === '/' ? 'page' : undefined}>Maxime Miguet</a>
+    <a class="brand" href="/" aria-current={path === '/' ? 'page' : undefined}><CookieMark size={36} /><span>Maxime Miguet</span></a>
     <ul class="nav-links">
       {
         navLinks.map((link) => (
@@ -22,12 +23,12 @@ const current = (href: string) => (path === href ? 'page' : path.startsWith(href
         ))
       }
       <li>
-        <a href={profile.cvPdf} download={profile.cvFileName}><Icon name="download" class="cv-icon" />CV<span class="visually-hidden"> en PDF</span></a>
+        <a href={profile.cvPdf} download={profile.cvFileName}>CV<span class="visually-hidden"> en PDF</span></a>
       </li>
     </ul>
     <button class="theme-toggle" type="button" data-theme-toggle>
       <Icon name="dark_mode" data-light={icon('light_mode').char} data-dark={icon('dark_mode').char} />
-      <span>Thème <span data-theme-name>sombre</span></span>
+      <span class="visually-hidden">Passer au thème <span data-theme-name>sombre</span></span>
     </button>
   </nav>
 </header>
@@ -43,8 +44,9 @@ const current = (href: string) => (path === href ? 'page' : path.startsWith(href
   if (themeButton && themeName) {
     const root = document.documentElement;
     const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
-    const colors = { light: '#46535d', dark: '#151b20' };
-    type Theme = keyof typeof colors;
+    const metas = [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')];
+    type Theme = 'light' | 'dark';
+    const color = (theme: Theme) => metas.find((meta) => meta.media.includes(theme))?.dataset.color ?? '';
 
     const systemTheme = (): Theme => (systemDark.matches ? 'dark' : 'light');
     const currentTheme = (): Theme => (root.dataset.theme === 'dark' || root.dataset.theme === 'light' ? root.dataset.theme : systemTheme());
@@ -66,9 +68,7 @@ const current = (href: string) => (path === href ? 'page' : path.startsWith(href
       }
       if (followSystem) delete root.dataset.theme;
       else root.dataset.theme = theme;
-      for (const meta of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')) {
-        meta.content = followSystem ? colors[meta.media.includes('dark') ? 'dark' : 'light'] : colors[theme];
-      }
+      for (const meta of metas) meta.content = followSystem ? (meta.dataset.color ?? '') : color(theme);
       sync();
     };
 
@@ -83,106 +83,123 @@ const current = (href: string) => (path === href ? 'page' : path.startsWith(href
     position: sticky;
     top: 0;
     z-index: 50;
-    background: var(--floor);
-    /* Le bord de la table. */
-    border-bottom: 10px solid var(--wood);
-    color: var(--floor-ink);
+    background: var(--hue);
+    /* Évite un liseré d'un pixel entre le menu et l'aplat de la page. */
+    box-shadow: 0 1px 0 var(--hue);
+    color: var(--hue-ink);
   }
 
   .nav {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    column-gap: 1.75rem;
+    column-gap: 0.75rem;
     width: min(100% - 2 * var(--gutter), var(--container));
-    min-height: 56px;
+    min-height: 72px;
     margin-inline: auto;
   }
 
-  .nav a,
-  .theme-toggle {
+  .nav a {
     display: flex;
     align-items: center;
     min-height: 44px;
-    padding: 0.2rem 0 0;
-    border: 0;
-    background: none;
-    color: var(--floor-ink);
-    font-family: var(--font-title);
-    font-size: 1.05rem;
+    padding: 0 0.85rem;
+    border-radius: 12px;
+    font-weight: 600;
     text-decoration: none;
-    cursor: pointer;
+    white-space: nowrap;
   }
 
   .nav a:hover,
   .theme-toggle:hover {
-    color: var(--label);
-  }
-
-  .nav :focus-visible {
-    outline-color: var(--label);
+    background: color-mix(in srgb, var(--hue-ink) 12%, transparent);
+    color: var(--hue-ink);
   }
 
   .nav .brand {
-    margin-right: auto;
-    font-size: 1.3rem;
+    gap: 0.55rem;
+    margin: 0 auto 0 -0.5rem;
+    padding: 0 0.5rem;
+    font-family: var(--font-title);
+    font-size: 1.4rem;
+    font-weight: 400;
   }
 
   .nav-links {
     display: flex;
-    gap: 1.5rem;
+    gap: 0.15rem;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .nav-links a[aria-current] {
-    color: var(--label);
+    background: var(--hue-ink);
+    color: var(--hue);
   }
 
-  .nav a,
   .theme-toggle {
-    gap: 0.4rem;
-  }
-
-  /* Special Elite est posée un peu bas : l'icône est remontée d'autant. */
-  .nav :global(.icon) {
-    position: relative;
-    top: -0.1em;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 12px;
+    background: none;
+    color: var(--hue-ink);
+    font-size: 1.15rem;
+    cursor: pointer;
   }
 
   /* Sur téléphone, les liens passent sur une deuxième ligne : pas de menu à déplier. */
   @media (max-width: 820px) {
     .nav {
-      column-gap: 0.5rem;
+      min-height: 100px;
+      align-content: center;
     }
 
     .nav-links {
       order: 3;
       width: 100%;
       justify-content: space-between;
-      gap: 0.5rem;
+      gap: 0;
     }
 
     .nav-links a {
-      font-family: var(--font-sans);
+      min-height: 40px;
+      padding: 0 0.55rem;
       font-size: 1rem;
-      padding: 0;
     }
 
-    /* Pas la place pour une icône sur cette ligne. */
-    .nav :global(.cv-icon) {
-      display: none;
+    .nav-links li:first-child a {
+      margin-left: -0.55rem;
     }
 
-    .theme-toggle {
+    .nav-links li:last-child a {
+      margin-right: -0.55rem;
+    }
+  }
+
+  @media (max-width: 430px) {
+    .nav-links a {
+      padding: 0 0.35rem;
       font-size: 0.95rem;
+    }
+
+    .nav-links li:first-child a {
+      margin-left: -0.35rem;
+    }
+
+    .nav-links li:last-child a {
+      margin-right: -0.35rem;
     }
   }
 
   @media (max-width: 350px) {
-    .theme-toggle :global(.icon) {
-      display: none;
+    .nav-links a {
+      padding: 0 0.2rem;
+      font-size: 0.85rem;
     }
   }
 </style>

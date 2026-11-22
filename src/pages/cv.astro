@@ -16,7 +16,7 @@ const qr = await QRCode.toString(portfolioUrl, {
   type: 'svg',
   margin: 0,
   errorCorrectionLevel: 'M',
-  color: { dark: '#212429', light: '#00000000' },
+  color: { dark: '#33121f', light: '#00000000' },
 });
 
 const skills = [
@@ -220,9 +220,6 @@ const projects = [
     gap: 0.75rem 1.5rem;
     width: min(210mm, 100% - 2 * var(--gutter));
     margin: 0 auto 1.25rem;
-    padding: 0.75rem 1rem;
-    background: var(--paper);
-    box-shadow: 3px 4px 0 var(--shade);
   }
 
   .cv-toolbar p {
@@ -232,11 +229,11 @@ const projects = [
   /* La feuille reste claire dans les deux thèmes, comme du papier. */
   .cv-sheet {
     --ink: #212429;
-    --ink-soft: #53575d;
-    --link: #1c4f8c;
-    --line: #d3d6d8;
-    --line-strong: #868c92;
-    --side: #e9eff5;
+    --ink-soft: #584f54;
+    --line-strong: #8b7d84;
+    --side: #fff0f5;
+    --hue: #ffb8cf;
+    --hue-ink: #33121f;
     width: min(210mm, 100% - 2 * var(--gutter));
     margin-inline: auto;
     overflow: hidden;
@@ -244,7 +241,7 @@ const projects = [
     color: var(--ink);
     font-size: 14px;
     line-height: 1.4;
-    box-shadow: 3px 4px 0 var(--shade);
+    border-radius: var(--round);
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
@@ -268,9 +265,8 @@ const projects = [
     align-items: center;
     gap: 0.5rem 1rem;
     padding: 1.5rem 1.5rem 1.25rem;
-    background: #46535d;
-    border-bottom: 8px solid #d3c5aa;
-    color: #f7f6f1;
+    background: var(--hue);
+    color: var(--hue-ink);
   }
 
   .cv-head :global(.cv-mark) {
@@ -280,15 +276,15 @@ const projects = [
 
   .cv-name {
     margin: 0;
-    font-size: 2.1rem;
-    line-height: 1.05;
+    font-size: 2.5rem;
+    line-height: 1;
     color: inherit;
   }
 
   .cv-role {
-    margin-top: 0.2rem !important;
-    font-family: var(--font-title);
+    margin-top: 0.25rem !important;
     font-size: 1.1rem;
+    font-weight: 700;
   }
 
   .cv-tagline {
@@ -315,9 +311,7 @@ const projects = [
 
   .cv-sheet h2 {
     margin: 0 0 0.45rem;
-    padding-bottom: 0.2rem;
-    border-bottom: 1.5px dashed var(--line-strong);
-    font-size: 1.1rem;
+    font-size: 1.3rem;
   }
 
   .cv-contact {
@@ -401,7 +395,9 @@ const projects = [
     gap: 1rem;
     margin-top: 0.4rem;
     padding: 0.8rem 1rem;
-    border: 1.5px dashed var(--line-strong);
+    border-radius: 14px;
+    background: var(--hue);
+    color: var(--hue-ink);
   }
 
   .cv-qr {
@@ -415,7 +411,8 @@ const projects = [
     height: 100%;
   }
 
-  .cv-fortune-title {
+  .cv-fortune-link a {
+    font-weight: 400;
   }
 
   .cv-fortune-link {
@@ -486,7 +483,7 @@ const projects = [
       height: 297mm;
       margin: 0;
       font-size: 9.3pt;
-      box-shadow: none;
+      border-radius: 0;
     }
 
     .cv-body {

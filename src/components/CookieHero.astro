@@ -1,9 +1,11 @@
 ---
 // Le fortune cookie de l'accueil : le modèle 3D du jeu Fortune Cookie, rendu avec la lumière
 // et la caméra de son écran titre (cookie entier, sans papier visible, puis ses deux moitiés,
-// dans le même cadre). Il se casse au chargement, puis à chaque clic. Le papier, au style des papiers
-// du jeu, se prolonge par le ruban qui descend le long de la page (PaperRibbon).
+// dans le même cadre), avec le doigt (premier outil du jeu) et le pigeon. Le doigt casse le cookie au
+// chargement, puis à chaque clic. Le papier, au style des papiers du jeu, se prolonge par le ruban
+// qui descend le long de la page (PaperRibbon).
 import { getImage } from 'astro:assets';
+import Objet from './Objet.astro';
 import cookieWhole from '../assets/cookie/cookie-ferme.webp';
 import cookieLeft from '../assets/cookie/cookie-gauche.webp';
 import cookieRight from '../assets/cookie/cookie-droite.webp';
@@ -13,9 +15,9 @@ import { fr } from '../lib/format';
 const first = fortunes[0];
 const payload = JSON.stringify(fortunes.map((text) => fr(text)));
 
-const sizes = '(min-width: 960px) 340px, 64vw';
+const sizes = '(min-width: 900px) 38vw, 70vw';
 const [whole, left, right] = await Promise.all(
-  [cookieWhole, cookieLeft, cookieRight].map((src) => getImage({ src, widths: [340, 680, 900], sizes, format: 'webp' })),
+  [cookieWhole, cookieLeft, cookieRight].map((src) => getImage({ src, widths: [340, 620, 900], sizes, format: 'webp' })),
 );
 
 // Miettes projetées à la cassure : décalage (px), rotation, taille.
@@ -45,6 +47,9 @@ const crumbs = [
         {crumbs.map(([dx, dy, r, s]) => <span class="crumb" style={`--dx:${dx}px;--dy:${dy}px;--r:${r}deg;--s:${s}`} />)}
       </span>
     </button>
+
+    <div class="arm" aria-hidden="true"><Objet name="doigt" sizes="(min-width: 900px) 56vw, 90vw" eager /></div>
+    <div class="pigeon" aria-hidden="true"><Objet name="pigeon-droite" sizes="(min-width: 900px) 20vw, 30vw" eager /></div>
 
     <div class="fortune" data-ribbon-start>
       <p class="fortune-text" aria-live="polite">{fr(first)}</p>
@@ -148,47 +153,44 @@ const crumbs = [
 
 <style>
   .cookie-hero {
-    --open-left: translate(-12%, 2%) rotate(-9deg);
-    --open-right: translate(12%, 2%) rotate(8deg);
+    --open-left: translate(-11%, 2%) rotate(-9deg);
+    --open-right: translate(11%, 2%) rotate(8deg);
     position: relative;
   }
 
   .cookie-scene {
     position: relative;
-    width: min(100%, 520px);
-    margin-inline: auto;
-    aspect-ratio: 520 / 400;
+    aspect-ratio: 620 / 560;
   }
 
   .cookie-shadow {
     position: absolute;
-    left: 24%;
-    right: 24%;
-    top: 63%;
-    height: 11%;
+    left: 15%;
+    right: 15%;
+    top: 74%;
+    height: 9%;
     border-radius: 50%;
-    background: radial-gradient(closest-side, rgba(40, 55, 70, 0.4), transparent);
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--h-ink) 45%, transparent), transparent);
   }
 
   .cookie-stage {
     position: absolute;
-    left: 50%;
+    left: 9%;
     top: 0;
     z-index: 2;
-    width: 64%;
+    width: 78%;
     aspect-ratio: 900 / 854;
     padding: 0;
     border: 0;
     border-radius: 50%;
     background: none;
-    transform: translateX(-50%);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
   }
 
   .cookie-stage:focus-visible {
-    outline: 3px solid var(--link);
-    outline-offset: 8px;
+    outline: 4px solid var(--hue-ink);
+    outline-offset: -8px;
   }
 
   .cookie-img {
@@ -221,26 +223,50 @@ const crumbs = [
     transform: var(--open-right);
   }
 
+  /* Le bras entre par la droite de l'écran et pointe vers le haut du cookie. */
+  .arm {
+    position: absolute;
+    left: 64%;
+    bottom: 58%;
+    z-index: 3;
+    width: 125%;
+    transform: translate(3%, -4%);
+    transform-origin: 100% 0;
+    pointer-events: none;
+  }
+
+  .arm :global(img),
+  .pigeon :global(img) {
+    width: 100%;
+    max-width: none;
+  }
+
+  .pigeon {
+    position: absolute;
+    left: -12%;
+    bottom: 3%;
+    z-index: 4;
+    width: 34%;
+    transform-origin: 55% 100%;
+    pointer-events: none;
+  }
+
   /* Le papier, comme ceux du jeu : blanc cassé, liserés rouges, ombre nette. Une fois le
      cookie ouvert, le ruban de la page (PaperRibbon) dessine ce papier sous le texte et le
      prolonge depuis son bout droit : papier et ruban ne forment qu'une seule bande. */
-  /* Sous les moitiés : le papier est dessiné derrière le cookie, son texte ne doit pas
-     passer sur les moitiés. */
   /* Centré sans transform : le ruban mesure la place du papier sans ses transformations,
      même si l'animation de sortie n'est pas finie (onglet en arrière-plan). */
   .fortune {
     position: absolute;
-    left: 0;
-    right: 0;
-    top: 80%;
-    margin-inline: auto;
-    z-index: 3;
+    left: 22%;
+    top: 83%;
+    z-index: 5;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: min(360px, 94%);
-    min-height: 58px;
-    padding: 11px 18px;
+    width: min(400px, 62%);
+    min-height: 72px;
+    padding: 14px 24px 12px;
     background:
       linear-gradient(var(--slip-rule), var(--slip-rule)) 10px 6px / calc(100% - 20px) 1.5px no-repeat,
       linear-gradient(var(--slip-rule), var(--slip-rule)) 10px calc(100% - 6px) / calc(100% - 20px) 1.5px no-repeat,
@@ -261,8 +287,8 @@ const crumbs = [
   .fortune-text {
     margin: 0;
     color: var(--slip-ink);
-    font-family: var(--font-title);
-    font-size: 14px;
+    font-family: var(--font-paper);
+    font-size: 17px;
     line-height: 1.25;
     text-align: center;
     transition: opacity 0.3s ease 0.3s;
@@ -277,8 +303,8 @@ const crumbs = [
 
   .crumb {
     position: absolute;
-    width: calc(9px * var(--s));
-    height: calc(7px * var(--s));
+    width: calc(13px * var(--s));
+    height: calc(10px * var(--s));
     border-radius: 45% 55% 40% 60%;
     background: #e9a95a;
     opacity: 0;
@@ -307,11 +333,19 @@ const crumbs = [
         transform 0s linear 0.2s;
     }
 
-    /* Avant la première cassure, le papier est encore dans le cookie. */
+    /* Avant la première cassure, le papier est encore dans le cookie et le pigeon n'est pas là. */
     :global(.js) .cookie-hero:not(.has-paper) .fortune {
       opacity: 0;
       transform: translateY(-150%) scale(0.15) rotate(-20deg);
       transition: none;
+    }
+
+    :global(.js) .cookie-hero:not(.has-paper) .pigeon {
+      opacity: 0;
+    }
+
+    .cookie-hero.has-paper .pigeon {
+      animation: pigeon-in 0.9s 0.25s cubic-bezier(0.3, 0.7, 0.4, 1) backwards;
     }
 
     .cookie-hero.is-changing .fortune-text {
@@ -321,6 +355,18 @@ const crumbs = [
 
     :global(.js) .cookie-hero.is-shaking:not(.is-open) .cookie-whole {
       animation: cookie-shake 0.44s ease-in-out;
+    }
+
+    .arm {
+      transition: transform 0.6s cubic-bezier(0.3, 0.9, 0.3, 1.1);
+    }
+
+    .cookie-hero.is-shaking .arm {
+      animation: arm-tap 0.44s ease-in;
+    }
+
+    .cookie-stage:hover ~ .arm {
+      transform: translate(5%, -6.5%);
     }
 
     .cookie-hero.is-open .crumb {
@@ -359,6 +405,37 @@ const crumbs = [
     }
   }
 
+  @keyframes arm-tap {
+    45% {
+      transform: translate(7%, -9%);
+    }
+    100% {
+      transform: translate(-4%, 5%);
+    }
+  }
+
+  @keyframes pigeon-in {
+    0% {
+      opacity: 0;
+      transform: translate(-70%, 0) rotate(0);
+    }
+    15% {
+      opacity: 1;
+    }
+    25% {
+      transform: translate(-50%, -14%) rotate(4deg);
+    }
+    50% {
+      transform: translate(-32%, 0) rotate(0);
+    }
+    72% {
+      transform: translate(-14%, -12%) rotate(4deg);
+    }
+    100% {
+      transform: none;
+    }
+  }
+
   @keyframes crumb-fly {
     0% {
       opacity: 1;
@@ -366,21 +443,45 @@ const crumbs = [
     }
     100% {
       opacity: 0;
-      transform: translate(var(--dx), calc(var(--dy) + 30px)) rotate(var(--r));
+      transform: translate(calc(var(--dx) * 1.5), calc(var(--dy) * 1.5 + 30px)) rotate(var(--r));
     }
   }
 
-  /* Sur téléphone, le papier laisse de la place à droite pour que le ruban tourne vers le bord. */
+  /* Sur téléphone, le papier est plus large et le pigeon reste à côté du cookie. Une place est
+     gardée à droite pour que le ruban tourne vers le bord. */
   @media (max-width: 560px) {
-    /* Centre à 45 % de la largeur. */
+    .cookie-scene {
+      aspect-ratio: 620 / 640;
+    }
+
+    .cookie-stage {
+      left: 14%;
+    }
+
+    .cookie-shadow {
+      top: 63%;
+    }
+
+    .arm {
+      bottom: 63%;
+    }
+
+    .pigeon {
+      left: -3%;
+      bottom: 24%;
+      width: 33%;
+    }
+
     .fortune {
-      left: -10%;
-      width: 82%;
-      padding-inline: 12px;
+      left: 3%;
+      top: 79%;
+      width: 80%;
+      min-height: 62px;
+      padding-inline: 14px;
     }
 
     .fortune-text {
-      font-size: 13px;
+      font-size: 15px;
     }
   }
 </style>

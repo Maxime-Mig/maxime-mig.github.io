@@ -1,18 +1,43 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHeader from '../../components/PageHeader.astro';
-import ProjectRow from '../../components/ProjectRow.astro';
+import ProjectPanel from '../../components/ProjectPanel.astro';
 import { projects } from '../../data/projects';
+
+const layouts = ['wide', 'half', 'half', 'flip', 'half', 'half'] as const;
 ---
 
 <BaseLayout
   title="Projets"
+  hue="lilas"
   description="Projets de Maxime Miguet : jeu Godot en route vers Steam, stage WordPress, application web à cinq, API MongoDB et Redis, CI/CD et blind test en temps réel."
 >
-  <div class="container page">
-    <div class="sheet">
-      <PageHeader title="Projets" lead="Un jeu, un stage, une SAÉ, deux projets de module et un blind test." fortune="Ce cookie vaut double. Il a fait des études." />
-      {projects.map((project, index) => <ProjectRow project={project} headingLevel="h2" big={index === 0} />)}
-    </div>
+  <PageHeader
+    title="Projets"
+    lead="Un jeu, un stage, une SAÉ, deux projets de module et un blind test."
+    fortune="Ce cookie vaut double. Il a fait des études."
+    objet="cookie-chat"
+  />
+  <div class="container page panels">
+    {projects.map((project, index) => <ProjectPanel project={project} headingLevel="h2" layout={layouts[index % layouts.length]} eager={index === 0} />)}
   </div>
 </BaseLayout>
+
+<style>
+  .panels {
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.5rem);
+  }
+
+  @media (min-width: 860px) {
+    .panels {
+      grid-template-columns: 1fr 1fr;
+      padding-top: 8rem;
+    }
+
+    .panels > :global(.panel-wide),
+    .panels > :global(.panel-flip) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

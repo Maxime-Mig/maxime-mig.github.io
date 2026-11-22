@@ -5,9 +5,9 @@ import Icon from './Icon.astro';
 const year = new Date().getFullYear();
 ---
 
-<footer class="site-footer">
+<footer class="site-footer on-hue">
   <ul class="container">
-    <li>Maxime Miguet, {year}</li>
+    <li class="who">Maxime Miguet, {year}</li>
     <li><a class="icon-link" href={`mailto:${profile.email}`}><Icon name="mail" /><span>{profile.email}</span></a></li>
     <li><a class="icon-link" href={profile.github} rel="me"><Icon name="github" /><span>GitHub</span></a></li>
     <li><a class="icon-link" href="/cv/"><Icon name="description" /><span>CV en ligne</span></a></li>
@@ -16,46 +16,34 @@ const year = new Date().getFullYear();
 </footer>
 
 <style>
-  /* Le bord de la table vu de face, puis le sol. */
   .site-footer {
-    border-top: 10px solid var(--wood);
-    box-shadow: inset 0 14px 0 var(--wood-dark);
-    padding: calc(14px + 1.5rem) 0 2rem;
-    background: var(--floor);
-    color: var(--floor-ink);
+    padding: 2.25rem 0;
+    background: var(--hue);
+    color: var(--hue-ink);
   }
 
   ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem 2rem;
+    align-items: center;
+    gap: 0.25rem 1.75rem;
     padding: 0;
     list-style: none;
+    font-size: 1rem;
   }
 
-  li:first-child {
+  .who {
     margin-right: auto;
+    font-family: var(--font-title);
+    font-size: 1.2rem;
+  }
+
+  a {
+    padding-block: 0.4rem;
+    overflow-wrap: anywhere;
   }
 
   a:not(.icon-link) {
     display: inline-block;
-  }
-
-  a {
-    padding-block: 0.35rem;
-    color: inherit;
-    overflow-wrap: anywhere;
-  }
-
-  li:first-child {
-    padding-block: 0.35rem;
-  }
-
-  a:hover {
-    color: var(--label);
-  }
-
-  a:focus-visible {
-    outline-color: var(--label);
   }
 </style>

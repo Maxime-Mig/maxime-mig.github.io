@@ -1,0 +1,178 @@
+---
+// Un projet dans une liste : un grand aplat de sa couleur, une vraie capture qui sort du cadre
+// (ou un objet du jeu quand le projet n'a pas d'image), et un seul bouton. Tout l'aplat est cliquable.
+import { Image } from 'astro:assets';
+import type { Project } from '../data/projects';
+import Icon from './Icon.astro';
+import Objet from './Objet.astro';
+import { fr } from '../lib/format';
+import { techIcon } from '../lib/icons';
+
+interface Props {
+  project: Project;
+  headingLevel?: 'h2' | 'h3';
+  layout?: 'wide' | 'half' | 'flip';
+  eager?: boolean;
+}
+
+const { project, headingLevel = 'h3', layout = 'half', eager = false } = Astro.props;
+const Heading = headingLevel;
+const years = [...new Set(project.period.match(/\d{4}/g) ?? [])].join(' – ');
+const logos = project.stack.filter((tech) => techIcon(tech)).slice(0, 5);
+---
+
+<article class:list={['panel', 'on-hue', `panel-${layout}`]} data-hue={project.hue}>
+  <div class="panel-text">
+    <p class="panel-meta">{fr(project.kind.split(',')[0])}, {years}</p>
+    <Heading class="panel-title">{project.title}</Heading>
+    <p class="panel-summary">{fr(project.summary)}</p>
+    <ul class="stack" role="list">
+      {
+        logos.map((tech) => (
+          <li>
+            <Icon name={techIcon(tech)!} />
+            {tech}
+          </li>
+        ))
+      }
+    </ul>
+    <a class="btn" href={`/projets/${project.slug}/`}>Voir le projet<span class="visually-hidden"> {project.title}</span></a>
+  </div>
+  <div class="panel-shot">
+    {
+      project.cover ? (
+        <Image
+          src={project.cover.src}
+          alt={project.cover.alt}
+          widths={[480, 760, 1000]}
+          sizes={layout === 'half' ? '(min-width: 860px) 520px, 88vw' : '(min-width: 860px) 660px, 88vw'}
+          loading={eager ? 'eager' : 'lazy'}
+        />
+      ) : (
+        project.objet && <Objet name={project.objet} class="panel-objet" />
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .panel {
+    position: relative;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+    border-radius: var(--round);
+    background: var(--hue);
+    color: var(--hue-ink);
+  }
+
+  .panel-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: clamp(1.5rem, 3.2vw, 2.75rem);
+  }
+
+  .panel-meta {
+    margin: 0 0 0.5rem;
+    font-weight: 600;
+  }
+
+  .panel-title {
+    margin-bottom: 0.4em;
+    font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+  }
+
+  .panel-summary {
+    max-width: 32em;
+    line-height: 1.5;
+  }
+
+  .stack {
+    margin-bottom: 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .btn {
+    margin-top: auto;
+  }
+
+  /* Le lien couvre tout l'aplat. */
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .panel-shot {
+    min-width: 0;
+    margin-left: clamp(1.5rem, 3.2vw, 2.75rem);
+    overflow: hidden;
+    border-radius: 18px 0 0 0;
+  }
+
+  .panel-shot :global(img:not(.objet)) {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    object-position: top left;
+  }
+
+  .panel-shot :global(.panel-objet) {
+    width: auto;
+    max-height: 300px;
+    margin: 0 auto;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .panel-shot {
+      transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    }
+
+    .panel:hover .panel-shot {
+      transform: translate(-6px, -6px);
+    }
+  }
+
+  @media (min-width: 860px) {
+    .panel-wide,
+    .panel-flip {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      grid-template-rows: auto;
+      min-height: 480px;
+    }
+
+    .panel-wide .panel-shot,
+    .panel-flip .panel-shot {
+      position: relative;
+      margin-top: 3rem;
+      margin-left: 0;
+    }
+
+    .panel-wide .panel-shot :global(img:not(.objet)),
+    .panel-flip .panel-shot :global(img:not(.objet)) {
+      position: absolute;
+      inset: 0;
+    }
+
+    .panel-flip {
+      grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+    }
+
+    .panel-flip .panel-text {
+      order: 1;
+    }
+
+    .panel-flip .panel-shot {
+      border-radius: 0 18px 0 0;
+    }
+
+    .panel-half .panel-shot :global(img:not(.objet)) {
+      height: 300px;
+      aspect-ratio: auto;
+    }
+  }
+</style>

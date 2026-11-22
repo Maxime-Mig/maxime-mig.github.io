@@ -1,50 +1,36 @@
 ---
-// En-tête des pages intérieures : titre, introduction et petit fortune cookie cassé (les deux
-// moitiés du modèle du jeu), avec un papier choisi selon le sujet de la page. Les phrases viennent
-// du jeu Fortune Cookie, sauf celle de la page de confidentialité, écrite pour elle.
-import { getImage } from 'astro:assets';
-import cookieLeft from '../assets/cookie/cookie-gauche.webp';
-import cookieRight from '../assets/cookie/cookie-droite.webp';
+// En-tête des pages intérieures : un aplat de la couleur de la page, un grand titre, un objet du
+// jeu et un papier de fortune choisi selon le sujet. Les phrases viennent du jeu Fortune Cookie,
+// sauf celle de la page de confidentialité, écrite pour elle.
+import Objet from './Objet.astro';
 import { fr } from '../lib/format';
 
 interface Props {
   title: string;
   lead?: string;
   fortune?: string;
+  objet?: string;
+  /** L'aplat occupe toute la hauteur de l'écran (pages sans autre contenu). */
+  full?: boolean;
 }
 
-const { title, lead, fortune } = Astro.props;
-const sizes = '210px';
-const halves = fortune
-  ? await Promise.all([cookieLeft, cookieRight].map((src) => getImage({ src, widths: [210, 420], sizes, format: 'webp' })))
-  : [];
+const { title, lead, fortune, objet, full = false } = Astro.props;
 ---
 
-<header class="page-header">
-  <div class="page-header-grid">
-    <div class="page-header-text">
+<header class:list={['page-header', 'on-hue', { full }]}>
+  <div class="container grid">
+    <div class="text">
       <slot name="before" />
-      <h1>{fr(title)}</h1>
+      <h1 class:list={[{ long: title.length > 24 }]}>{fr(title)}</h1>
       {lead && <p class="lead">{fr(lead)}</p>}
       <slot />
     </div>
     {
-      fortune && (
-        <div class="mini-cookie" aria-hidden="true">
-          {halves.map((half, index) => (
-            <img
-              class:list={['mini-half', index === 0 ? 'mini-left' : 'mini-right']}
-              src={half.src}
-              srcset={half.srcSet.attribute}
-              sizes={sizes}
-              width={cookieLeft.width}
-              height={cookieLeft.height}
-              alt=""
-              loading="lazy"
-              decoding="async"
-            />
-          ))}
-          <p class="mini-slip slip">{fr(fortune)}</p>
+      (objet || Astro.slots.has('scene')) && (
+        <div class:list={['scene', objet && `scene-${objet}`]} aria-hidden="true">
+          {objet && <Objet name={objet} class="art" sizes="(min-width: 900px) 400px, 260px" eager />}
+          <slot name="scene" />
+          {fortune && <p class="paper slip">{fr(fortune)}</p>}
         </div>
       )
     }
@@ -53,65 +39,139 @@ const halves = fortune
 
 <style>
   .page-header {
-    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 2;
+    background: var(--hue);
+    color: var(--hue-ink);
   }
 
-  .page-header-grid {
+  .grid {
     display: grid;
     gap: 2rem;
+    padding-block: clamp(1.5rem, 4vw, 3.5rem) 2.5rem;
   }
 
-  @media (min-width: 900px) {
-    .page-header-grid {
-      grid-template-columns: minmax(0, 1fr) 260px;
-    }
-  }
-
-  .page-header-text > :last-child {
+  .text > :global(:last-child) {
     margin-bottom: 0;
   }
 
-  .mini-cookie {
+  h1 {
+    margin-bottom: 0.35em;
+    font-size: clamp(2.5rem, 12.4vw, 6rem);
+  }
+
+  h1.long {
+    font-size: clamp(2.1rem, 9vw, 4.5rem);
+  }
+
+  .scene {
     position: relative;
-    display: none;
-    height: 216px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: 190px;
+    padding-bottom: 3.25rem;
+  }
+
+  .scene :global(.art) {
+    width: auto;
+    max-width: 72%;
+    max-height: 220px;
+  }
+
+  .scene-baleine {
+    padding-bottom: 5rem;
+  }
+
+  .scene-baleine :global(.art) {
+    max-width: 100%;
+    margin-right: -14%;
+    max-height: none;
+  }
+
+  .paper {
+    position: absolute;
+    right: 0;
+    bottom: -0.75rem;
+    width: min(19rem, 82%);
+    margin: 0;
+    padding: 18px 22px 15px;
+    font-size: 1.05rem;
+    line-height: 1.3;
+    text-align: center;
+    transform: rotate(-3deg);
+  }
+
+  .full {
+    display: grid;
+    min-height: calc(100svh - var(--header-height) - 6rem);
+  }
+
+  .full .grid {
+    align-content: center;
   }
 
   @media (min-width: 900px) {
-    .mini-cookie {
-      display: block;
+    .grid {
+      grid-template-columns: minmax(0, 1fr) min(400px, 33vw);
+      align-items: center;
+      min-height: 400px;
+      padding-block: 2rem 2.5rem;
     }
-  }
 
-  /* Les deux moitiés partagent le même cadre : côte à côte, elles reforment le cookie. */
-  .mini-half {
-    position: absolute;
-    left: 50%;
-    top: 0;
-    width: 210px;
-    height: auto;
-    transform-origin: 50% 90%;
-  }
+    h1 {
+      font-size: min(7.6vw, 6.75rem);
+    }
 
-  .mini-left {
-    transform: translateX(-62%) rotate(-9deg);
-  }
+    h1.long {
+      font-size: min(5.4vw, 4.75rem);
+    }
 
-  .mini-right {
-    transform: translateX(-38%) rotate(8deg);
-  }
+    /* L'objet déborde un peu sous l'aplat. */
+    .scene {
+      align-self: end;
+      min-height: 320px;
+      padding-bottom: 0;
+      margin-bottom: -5.5rem;
+    }
 
-  .mini-slip {
-    position: absolute;
-    left: 50%;
-    top: 160px;
-    z-index: 1;
-    width: 260px;
-    margin: 0;
-    padding: 14px 18px;
-    font-size: 0.8rem;
-    line-height: 1.3;
-    text-align: center;
-    transform: translateX(-50%) rotate(-2deg);
+    .scene :global(.art) {
+      max-width: 100%;
+      max-height: 350px;
+    }
+
+    .paper {
+      right: -1.25rem;
+      bottom: 0.25rem;
+    }
+
+    /* Pour laisser voir les pattes du pigeon et la tête de la baleine. */
+    .scene-baleine {
+      padding-bottom: 0;
+    }
+
+    .scene-pigeon .paper {
+      bottom: -3.5rem;
+    }
+
+    .scene-baleine .paper {
+      bottom: -3rem;
+    }
+
+    .scene-baleine :global(.art) {
+      flex: none;
+      width: 128%;
+      max-width: none;
+      margin-right: -10%;
+    }
+
+    .full .scene {
+      align-self: center;
+      margin-bottom: 0;
+    }
+
+    .full .scene :global(.art) {
+      max-height: 440px;
+    }
   }
 </style>

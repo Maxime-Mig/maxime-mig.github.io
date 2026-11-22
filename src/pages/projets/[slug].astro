@@ -4,6 +4,7 @@ import { Code } from 'astro:components';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Gallery from '../../components/Gallery.astro';
 import Icon from '../../components/Icon.astro';
+import Objet from '../../components/Objet.astro';
 import { projects, type Project } from '../../data/projects';
 import { profile } from '../../data/profile';
 import { fr, rich } from '../../lib/format';
@@ -53,48 +54,54 @@ const jsonLd = [
 ];
 ---
 
-<BaseLayout title={project.title} description={project.summary} jsonLd={jsonLd}>
-  <article class="container page">
+<BaseLayout title={project.title} hue={project.hue} description={project.summary} jsonLd={jsonLd}>
+  <article>
+    <header class:list={['project-hero', 'on-hue', { 'has-cover': project.cover }]}>
+      <div class="container">
+        <div>
+          <nav class="breadcrumbs" aria-label="Fil d’Ariane">
+            <ol>
+              <li><a href="/">Accueil</a></li>
+              <li><a href="/projets/">Projets</a></li>
+              <li aria-current="page">{project.title}</li>
+            </ol>
+          </nav>
+          <h1>{project.title}</h1>
+          <p class="lead">{fr(project.tagline)}</p>
+        </div>
+        {project.objet && <Objet name={project.objet} class="project-objet" eager />}
+      </div>
+    </header>
+
     <!--
       Ordre de lecture (consigne, figure 11) : d'abord l'image et un texte clair pour tous,
       puis la fiche (contexte, technologies, lien vers le code), puis le détail technique.
       Sur grand écran, la fiche passe dans la colonne de droite.
     -->
+    <div class="container project-body">
+      {
+        project.cover && (
+          <figure class:list={['project-cover', { tall: project.cover.src.height > project.cover.src.width }]}>
+            <Image
+              src={project.cover.src}
+              alt={project.cover.alt}
+              widths={[480, 720, 960, 1280, 1600].filter((width) => width <= project.cover!.src.width)}
+              sizes="(min-width: 1260px) 1180px, 92vw"
+              loading="eager"
+            />
+            <figcaption>{fr(project.cover.caption)}</figcaption>
+          </figure>
+        )
+      }
     <div class="project-layout">
-      <div class="sheet project-intro">
-        <nav class="breadcrumbs" aria-label="Fil d’Ariane">
-          <ol>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/projets/">Projets</a></li>
-            <li aria-current="page">{project.title}</li>
-          </ol>
-        </nav>
-        <h1>{project.title}</h1>
-        <p class="lead">{fr(project.tagline)}</p>
-        {
-          project.cover && (
-            <figure class="project-cover">
-              <Image
-                src={project.cover.src}
-                alt={project.cover.alt}
-                widths={[480, 720, 960, 1280]}
-                sizes="(min-width: 1120px) 720px, (min-width: 900px) 62vw, 92vw"
-                loading="eager"
-              />
-              <figcaption>{fr(project.cover.caption)}</figcaption>
-            </figure>
-          )
-        }
-        <section aria-labelledby="brief-title">
-          <h2 id="brief-title">Présentation</h2>
-          {project.description.map((paragraph) => <p set:html={rich(paragraph)} />)}
-        </section>
-      </div>
+      <section class="project-intro" aria-labelledby="brief-title">
+        <h2 id="brief-title">Présentation</h2>
+        {project.description.map((paragraph) => <p set:html={rich(paragraph)} />)}
+      </section>
 
       <aside class="project-aside" aria-labelledby="sheet-title">
-        <div class="receipt-wrap">
-          <div class="receipt">
-            <h2 class="receipt-title" id="sheet-title">Fiche du projet</h2>
+        <div class="note on-hue">
+            <h2 id="sheet-title">Fiche du projet</h2>
             <dl>
               <div>
                 <dt><Icon name="category" />Type</dt>
@@ -141,11 +148,10 @@ const jsonLd = [
                 </dd>
               </div>
             </dl>
-          </div>
         </div>
       </aside>
 
-      <div class="sheet project-main">
+      <div class="project-main">
         <section class="block" aria-labelledby="features-title">
           <h2 id="features-title">Fonctionnalités</h2>
           <ul class="list">
@@ -263,41 +269,102 @@ const jsonLd = [
           )
         }
 
-        <nav class="pager" aria-label="Autres projets">
-          <span>Projet précédent&#8239;: <a href={`/projets/${prev.slug}/`} rel="prev">{prev.title}</a></span>
-          <span>Projet suivant&#8239;: <a href={`/projets/${next.slug}/`} rel="next">{next.title}</a></span>
-        </nav>
       </div>
+    </div>
+
+    <nav class="pager" aria-label="Autres projets">
+      {
+        [
+          { label: 'Projet précédent', rel: 'prev', project: prev },
+          { label: 'Projet suivant', rel: 'next', project: next },
+        ].map((link) => (
+          <a class="pager-link" href={`/projets/${link.project.slug}/`} rel={link.rel} data-hue={link.project.hue}>
+            <span>{link.label}</span>
+            <strong>{link.project.title}</strong>
+          </a>
+        ))
+      }
+    </nav>
     </div>
   </article>
 </BaseLayout>
 
 <style>
+  .project-hero {
+    background: var(--hue);
+    color: var(--hue-ink);
+  }
+
+  .project-hero .container {
+    padding-block: clamp(1.5rem, 4vw, 3rem) clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .project-hero .lead {
+    margin: 0;
+  }
+
+  /* La capture chevauche le bas de l'aplat. */
+  .has-cover .container {
+    padding-bottom: clamp(9rem, 24vw, 19rem);
+  }
+
+  .project-hero :global(.project-objet) {
+    width: min(70%, 300px);
+    margin: 2rem auto -5rem;
+  }
+
+  @media (min-width: 900px) {
+    .project-hero:not(.has-cover) .container {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 2rem;
+      align-items: end;
+      min-height: 400px;
+    }
+
+    .project-hero :global(.project-objet) {
+      width: 340px;
+      margin: 0 0 -9rem;
+    }
+  }
+
+  .project-body {
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+
+  .project-cover {
+    margin: calc(-1 * clamp(7rem, 20vw, 16rem)) 0 0;
+  }
+
+  .project-cover :global(img) {
+    width: 100%;
+    border-radius: var(--round);
+  }
+
+  .project-cover.tall {
+    width: min(100%, 640px);
+  }
+
+  figcaption {
+    margin-top: 0.75rem;
+    color: var(--ink-soft);
+    font-size: 1rem;
+  }
+
   .project-layout {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 2rem;
+    gap: 2.5rem;
+    margin-top: clamp(2.5rem, 6vw, 4.5rem);
   }
 
   @media (min-width: 1000px) {
     .project-layout {
-      grid-template-columns: minmax(0, 1fr) 270px;
-      column-gap: 2rem;
-      row-gap: 0;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-rows: auto 1fr;
+      column-gap: 4.5rem;
+      row-gap: 3.5rem;
       align-items: start;
-    }
-
-    .project-intro {
-      grid-column: 1;
-      grid-row: 1;
-      padding-bottom: 0;
-      box-shadow: 3px 3px 0 var(--shade);
-    }
-
-    .project-main {
-      grid-column: 1;
-      grid-row: 2;
-      margin-top: -1px;
     }
 
     .project-aside {
@@ -305,31 +372,24 @@ const jsonLd = [
       grid-row: 1 / span 2;
       position: sticky;
       top: calc(var(--header-height) + 1.5rem);
-      margin-top: 4rem;
+    }
+
+    .project-main {
+      grid-column: 1;
     }
   }
 
-  .project-intro > section > :last-child {
+  .project-intro > :last-child {
     margin-bottom: 0;
   }
 
-  .project-intro p {
-    max-width: 68ch;
+  .project-intro p:first-of-type {
+    font-size: clamp(1.15rem, 1.8vw, 1.3rem);
+    line-height: 1.5;
   }
 
-  .stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.1rem 0.9rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .stack li {
-    display: flex;
-    align-items: center;
-    gap: 0.35rem;
+  .project-aside .stack {
+    gap: 0.15rem 0.9rem;
   }
 
   .sheet-link {
@@ -337,27 +397,8 @@ const jsonLd = [
     padding-block: 0.3rem;
   }
 
-  .project-cover {
-    margin: 1.5rem 0 2.25rem;
-  }
-
-  .project-cover :global(img) {
-    width: 100%;
-    border: 1px solid var(--line);
-  }
-
-  figcaption {
-    margin-top: 0.5rem;
-    color: var(--ink-soft);
-  }
-
   .block {
-    margin-bottom: 2.25rem;
-  }
-
-  .block > p,
-  .list {
-    max-width: 68ch;
+    margin-bottom: 3.5rem;
   }
 
   .list {
@@ -365,11 +406,12 @@ const jsonLd = [
   }
 
   .list li {
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.45rem;
   }
 
   .challenges {
-    max-width: 68ch;
+    display: grid;
+    gap: 1.5rem;
     margin: 0;
   }
 
@@ -378,16 +420,17 @@ const jsonLd = [
   }
 
   .challenges dd {
-    margin: 0.2rem 0 1.1rem;
+    margin: 0.2rem 0 0;
   }
 
   .code-sample {
-    margin: 1.25rem 0 0;
+    margin: 1.5rem 0 0;
   }
 
   .code-sample :global(pre) {
     margin: 0;
-    padding: 1rem 1.1rem;
+    padding: 1.25rem 1.4rem;
+    border-radius: 18px;
     font-size: 0.9rem;
     line-height: 1.55;
   }
@@ -415,11 +458,42 @@ const jsonLd = [
   }
 
   .pager {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.5rem 2rem;
-    padding-top: 1.25rem;
-    border-top: 2px dashed var(--line-strong);
+    display: grid;
+    gap: clamp(1rem, 2vw, 1.5rem);
+    margin-top: 2rem;
+  }
+
+  .pager-link {
+    display: grid;
+    align-content: end;
+    gap: 0.3rem;
+    min-height: 11rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-radius: var(--round);
+    background: var(--hue);
+    color: var(--hue-ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .pager-link strong {
+    font-family: var(--font-title);
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+    font-weight: 400;
+    line-height: 1.05;
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.16em;
+  }
+
+  .pager-link:hover {
+    background: var(--hue-ink);
+    color: var(--hue);
+  }
+
+  @media (min-width: 700px) {
+    .pager {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 </style>

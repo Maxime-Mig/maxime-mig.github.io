@@ -127,7 +127,7 @@
       const wide = gutter >= 70;
       ribbonWidth = wide ? Math.min(56, gutter - 20) : Math.max(10, Math.min(40, gutter - 8));
       const half = ribbonWidth / 2;
-      const leftX = wide ? gutter / 2 : half + 3;
+      const leftX = wide ? Math.min(gutter / 2, 110) : half + 3;
       const rightX = width - leftX;
       const turnRadius = wide ? Math.min(120, Math.max(64, gutter - leftX)) : Math.max(28, ribbonWidth * 1.6);
       const K = 0.5523; // quart de cercle en courbe de Bézier
@@ -138,7 +138,7 @@
       let y = s.y + s.h / 2;
       startWidth = s.h;
       const room = rightX - s.x - s.w;
-      const radius = Math.max(24, Math.min(160, room - Math.max(8, Math.min(20, room * 0.2))));
+      const radius = Math.max(24, Math.min(wide ? 160 : 95, room - Math.max(8, Math.min(20, room * 0.2))));
       const run = Math.max(8, room - radius);
       let x = s.x + s.w + run + radius;
       let d = `M${f(s.x)} ${f(y)} L${f(x - radius)} ${f(y)}`;
@@ -154,7 +154,7 @@
       outerFrom = turnStart;
       outerTo = turnEnd;
       innerFrom = radius > startWidth / 2 + 8 ? turnEnd : turnStart;
-      innerTo = innerFrom + Math.max(60, gap * 2.5);
+      innerTo = innerFrom + Math.max(60, gap * 2.2);
 
       // Descente dans la marge, avec une légère ondulation quand la marge est large.
       const wave = wide ? Math.max(0, Math.min(10, leftX - half - 4)) : 0;
@@ -414,9 +414,9 @@
     new ResizeObserver(scheduleBuild).observe(root);
     document.fonts?.ready.then(scheduleBuild);
     window.addEventListener('load', scheduleBuild);
-    // Une feuille peut changer de hauteur sans que la zone entière change de taille.
-    const sheets = new ResizeObserver(scheduleBuild);
-    root.querySelectorAll('.sheet, [data-ribbon-end]').forEach((sheet) => sheets.observe(sheet));
+    // Une section peut changer de hauteur sans que la zone entière change de taille.
+    const sections = new ResizeObserver(scheduleBuild);
+    root.querySelectorAll('[data-ribbon-start], [data-ribbon-side], [data-ribbon-end]').forEach((section) => sections.observe(section));
     build();
   }
 </script>

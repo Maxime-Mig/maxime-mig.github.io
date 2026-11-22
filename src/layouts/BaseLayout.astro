@@ -2,10 +2,13 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { hues, type Hue } from '../data/hues';
 
 interface Props {
   title: string;
   description: string;
+  /** Couleur de la page. */
+  hue?: Hue;
   image?: string;
   imageAlt?: string;
   type?: 'website' | 'article' | 'profile';
@@ -17,8 +20,9 @@ interface Props {
 const {
   title,
   description,
+  hue = 'rose',
   image = '/og-image.png',
-  imageAlt = 'Fortune cookie cassé en deux, papier de fortune et nom de Maxime Miguet',
+  imageAlt = 'Nom de Maxime Miguet à côté d’un fortune cookie, d’un doigt qui va le casser et d’un pigeon',
   type = 'website',
   noindex = false,
   jsonLd,
@@ -37,7 +41,7 @@ const keywords =
 ---
 
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-hue={hue}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -46,8 +50,8 @@ const keywords =
     <meta name="author" content="Maxime Miguet" />
     <meta name="keywords" content={keywords} />
     {noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={canonical} />}
-    <meta name="theme-color" content="#46535d" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#151b20" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content={hues[hue].light} data-color={hues[hue].light} media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content={hues[hue].dark} data-color={hues[hue].dark} media="(prefers-color-scheme: dark)" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap.xml" />
@@ -77,9 +81,9 @@ const keywords =
         } catch {}
         if (theme !== 'light' && theme !== 'dark') return;
         root.dataset.theme = theme;
-        for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
-          meta.content = theme === 'dark' ? '#151b20' : '#46535d';
-        }
+        const metas = [...document.querySelectorAll('meta[name="theme-color"]')];
+        const { color } = metas.find((meta) => meta.media.includes(theme)).dataset;
+        for (const meta of metas) meta.content = color;
       })();
     </script>
   </head>

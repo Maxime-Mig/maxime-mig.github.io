@@ -1,4 +1,5 @@
-@import '@fontsource-variable/source-sans-3/wght.css';
+@import '@fontsource-variable/figtree/wght.css';
+@import '@fontsource/bagel-fat-one/latin-400.css';
 @import '@fontsource/special-elite/latin-400.css';
 
 /* Polices d'icônes, réduites aux seules icônes du site (scripts/icones.mjs). */
@@ -20,56 +21,98 @@
   font-display: block;
 }
 
-/* ------------------------------------------------------------------ thème */
+/* ------------------------------------------------------------------ couleurs */
 
-/* Les couleurs sont celles de la cuisine du jeu (data/places.json) : sol ardoise, table en
-   chêne, nappe vichy bleue, tickets blancs et étiquettes de prix jaunes. */
+/* Chaque page et chaque projet a sa couleur (data-hue) : un fond franc et une encre, en clair
+   (--h-bg, --h-ink) puis en sombre (--h-dbg, --h-dink). */
+[data-hue='rose'] {
+  --h-bg: #ffb8cf;
+  --h-ink: #33121f;
+  --h-dbg: #4a1830;
+  --h-dink: #ffcadb;
+}
+
+[data-hue='ciel'] {
+  --h-bg: #a9d6ff;
+  --h-ink: #0c2747;
+  --h-dbg: #12345a;
+  --h-dink: #c3e2ff;
+}
+
+[data-hue='menthe'] {
+  --h-bg: #9fdcc6;
+  --h-ink: #0f3128;
+  --h-dbg: #143f33;
+  --h-dink: #b6ead7;
+}
+
+[data-hue='soleil'] {
+  --h-bg: #ffd45c;
+  --h-ink: #2e2005;
+  --h-dbg: #4a370c;
+  --h-dink: #ffe08a;
+}
+
+[data-hue='corail'] {
+  --h-bg: #ff9478;
+  --h-ink: #3a1008;
+  --h-dbg: #592212;
+  --h-dink: #ffb8a3;
+}
+
+[data-hue='lilas'] {
+  --h-bg: #d3c2ff;
+  --h-ink: #251547;
+  --h-dbg: #352563;
+  --h-dink: #ddd0ff;
+}
+
+[data-hue='nuit'] {
+  --h-bg: #1b1840;
+  --h-ink: #f4efff;
+  --h-dbg: #1b1840;
+  --h-dink: #f4efff;
+}
+
 :root {
   color-scheme: light;
-  --cloth: #f3f4f2;
-  --cloth-stripe: rgba(138, 165, 196, 0.3);
-  --floor: #46535d;
-  --floor-ink: #f7f6f1;
-  --wood: #d3c5aa;
-  --wood-dark: #a99878;
-  --paper: #fdfdfb;
-  --bg: #fdfdfb;
-  --bg-alt: #eef0f1;
-  --ink: #212429;
-  --ink-soft: #53575d;
-  --line: #d3d6d8;
-  --line-strong: #868c92;
-  --link: #1c4f8c;
-  --link-hover: #0c3363;
-  --red: #a52a36;
-  --label: #fbe08a;
-  --label-hover: #f3cd55;
-  --label-ink: #212429;
-  --code-bg: #eceef0;
-  --shade: rgba(40, 55, 70, 0.28);
+  --bg: color-mix(in srgb, var(--h-bg) 13%, #ffffff);
+  --ink: #211a1d;
+  --ink-soft: #5b5257;
+  --line: rgba(33, 26, 29, 0.14);
+  --line-strong: #857a80;
+  --red: #b3202f;
+  --field: #ffffff;
+  --code-bg: rgba(33, 26, 29, 0.08);
 
-  /* Papier de fortune, avec les couleurs du jeu (FortuneBox) : blanc cassé, liserés rouges,
-     ombre courte et nette. Il reste clair dans les deux thèmes. */
-  --slip: #fbf9f2;
+  /* Papier de fortune, avec les couleurs du jeu (FortuneBox). Il reste clair dans les deux thèmes. */
+  --slip: #fffdf6;
   --slip-ink: #212429;
-  --slip-red: #b0303a;
   --slip-rule: rgba(176, 48, 59, 0.75);
-  --slip-shadow: rgba(40, 55, 70, 0.26);
-  --slip-shadow-soft: rgba(40, 55, 70, 0.1);
+  --slip-shadow: rgba(60, 25, 40, 0.18);
+  --slip-shadow-soft: rgba(60, 25, 40, 0.07);
 
-  --font-title: 'Special Elite', 'Courier New', Courier, monospace;
-  --font-sans: 'Source Sans 3 Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-title: 'Bagel Fat One', 'Arial Rounded MT Bold', 'Trebuchet MS', sans-serif;
+  --font-paper: 'Special Elite', 'Courier New', Courier, monospace;
+  --font-sans: 'Figtree Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', Consolas, 'Liberation Mono', monospace;
 
-  --container: 1120px;
-  --gutter: clamp(16px, 4vw, 32px);
-  --header-height: 66px;
+  --container: 1180px;
+  --gutter: clamp(16px, 4vw, 40px);
+  --header-height: 72px;
+  --round: 28px;
+}
+
+[data-hue] {
+  --hue: var(--h-bg);
+  --hue-ink: var(--h-ink);
 }
 
 /* Sur téléphone, le menu tient sur deux lignes. */
 @media (max-width: 820px) {
   :root {
-    --header-height: 98px;
+    --header-height: 100px;
+    --round: 22px;
   }
 }
 
@@ -79,55 +122,43 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --cloth: #232b33;
-    --cloth-stripe: rgba(122, 152, 184, 0.1);
-    --floor: #151b20;
-    --floor-ink: #eeede8;
-    --wood: #5f5545;
-    --wood-dark: #3d362b;
-    --paper: #303941;
-    --bg: #303941;
-    --bg-alt: #283038;
-    --ink: #f0efea;
-    --ink-soft: #c0c6cb;
-    --line: #4c5760;
-    --line-strong: #84909a;
-    --link: #a5cbf2;
-    --link-hover: #d0e4fa;
-    --red: #f5a5a3;
-    --label: #efcf6a;
-    --label-hover: #ffe08a;
-    --code-bg: #262e35;
-    --shade: rgba(0, 0, 0, 0.35);
-    --slip-shadow: rgba(0, 0, 0, 0.4);
-    --slip-shadow-soft: rgba(0, 0, 0, 0.18);
+    --bg: color-mix(in srgb, var(--h-dbg) 34%, #100d10);
+    --ink: #f6f1f3;
+    --ink-soft: #cbc2c8;
+    --line: rgba(255, 255, 255, 0.16);
+    --line-strong: #948a91;
+    --red: #ffaaa8;
+    --field: rgba(255, 255, 255, 0.07);
+    --code-bg: rgba(255, 255, 255, 0.12);
+    --slip-shadow: rgba(0, 0, 0, 0.35);
+    --slip-shadow-soft: rgba(0, 0, 0, 0.16);
+  }
+
+  :root:not([data-theme='light'])[data-hue],
+  :root:not([data-theme='light']) [data-hue] {
+    --hue: var(--h-dbg);
+    --hue-ink: var(--h-dink);
   }
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --cloth: #232b33;
-  --cloth-stripe: rgba(122, 152, 184, 0.1);
-  --floor: #151b20;
-  --floor-ink: #eeede8;
-  --wood: #5f5545;
-  --wood-dark: #3d362b;
-  --paper: #303941;
-  --bg: #303941;
-  --bg-alt: #283038;
-  --ink: #f0efea;
-  --ink-soft: #c0c6cb;
-  --line: #4c5760;
-  --line-strong: #84909a;
-  --link: #a5cbf2;
-  --link-hover: #d0e4fa;
-  --red: #f5a5a3;
-  --label: #efcf6a;
-  --label-hover: #ffe08a;
-  --code-bg: #262e35;
-  --shade: rgba(0, 0, 0, 0.35);
-  --slip-shadow: rgba(0, 0, 0, 0.4);
-  --slip-shadow-soft: rgba(0, 0, 0, 0.18);
+  --bg: color-mix(in srgb, var(--h-dbg) 34%, #100d10);
+  --ink: #f6f1f3;
+  --ink-soft: #cbc2c8;
+  --line: rgba(255, 255, 255, 0.16);
+  --line-strong: #948a91;
+  --red: #ffaaa8;
+  --field: rgba(255, 255, 255, 0.07);
+  --code-bg: rgba(255, 255, 255, 0.12);
+  --slip-shadow: rgba(0, 0, 0, 0.35);
+  --slip-shadow-soft: rgba(0, 0, 0, 0.16);
+}
+
+:root[data-theme='dark'][data-hue],
+:root[data-theme='dark'] [data-hue] {
+  --hue: var(--h-dbg);
+  --hue-ink: var(--h-dink);
 }
 
 /* ------------------------------------------------------------------ base */
@@ -141,7 +172,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--header-height) + 16px);
+  scroll-padding-top: calc(var(--header-height) + 20px);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -155,67 +186,61 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--floor);
+  background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 1.0625rem;
-  line-height: 1.55;
+  font-size: 1.125rem;
+  line-height: 1.6;
 }
 
-/* La nappe : deux rayures qui se croisent, comme le shader « checker » du jeu. */
 main {
   flex: 1;
   position: relative;
   overflow-x: clip;
   outline: none;
-  background:
-    linear-gradient(90deg, var(--cloth-stripe) 50%, transparent 50%) 50% 0 / 96px 96px,
-    linear-gradient(var(--cloth-stripe) 50%, transparent 50%) 50% 0 / 96px 96px,
-    var(--cloth);
-}
-
-/* Bords de la table, quand l'écran est assez large. */
-@media (min-width: 1240px) {
-  main {
-    border-inline: 14px solid var(--wood);
-  }
 }
 
 h1,
 h2,
 h3,
 h4 {
+  margin: 0 0 0.5em;
+  color: inherit;
   font-family: var(--font-title);
   font-weight: 400;
-  line-height: 1.2;
-  color: var(--ink);
-  margin: 0 0 0.5em;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 h1 {
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(3rem, 8.5vw, 6.75rem);
+  line-height: 0.95;
 }
 
 h2 {
-  font-size: clamp(1.45rem, 3vw, 1.8rem);
+  font-size: clamp(2rem, 4.4vw, 3.1rem);
 }
 
 h3 {
-  font-size: 1.2rem;
+  font-size: clamp(1.35rem, 2.4vw, 1.65rem);
 }
 
 p {
   margin: 0 0 1em;
+  text-wrap: pretty;
 }
 
 a {
-  color: var(--link);
-  text-underline-offset: 0.18em;
+  color: inherit;
+  font-weight: 600;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
 }
 
 a:hover {
-  color: var(--link-hover);
-  text-decoration-thickness: 2px;
+  background: var(--hue);
+  color: var(--hue-ink);
 }
 
 img,
@@ -234,16 +259,21 @@ ol {
   padding-left: 1.2em;
 }
 
+li::marker {
+  color: var(--ink-soft);
+}
+
 strong {
   font-weight: 700;
 }
 
 code,
 kbd {
+  padding: 0.12em 0.36em;
+  border-radius: 6px;
+  background: var(--code-bg);
   font-family: var(--font-mono);
   font-size: 0.88em;
-  background: var(--code-bg);
-  padding: 0.12em 0.36em;
 }
 
 /* Dans un extrait de code, c'est le bloc entier qui a un fond. */
@@ -253,13 +283,17 @@ pre code {
 }
 
 :focus-visible {
-  outline: 3px solid var(--link);
+  outline: 3px solid var(--hue-ink);
   outline-offset: 3px;
 }
 
+.slip :focus-visible {
+  outline-color: var(--slip-ink);
+}
+
 ::selection {
-  background: var(--label);
-  color: var(--label-ink);
+  background: var(--h-ink);
+  color: var(--h-bg);
 }
 
 /* ------------------------------------------------------------------ utilitaires */
@@ -292,19 +326,18 @@ pre code {
   top: -120px;
   z-index: 200;
   padding: 0.75rem 1.1rem;
-  background: var(--label);
-  color: var(--label-ink);
-  font-weight: 700;
+  background: var(--hue-ink);
+  color: var(--hue);
 }
 
 .skip-link:focus {
   top: 1rem;
-  color: var(--label-ink);
 }
 
 .lead {
-  max-width: 60ch;
-  font-size: 1.15rem;
+  max-width: 34em;
+  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+  line-height: 1.45;
 }
 
 .section {
@@ -312,42 +345,35 @@ pre code {
   z-index: 1;
 }
 
-/* Feuille posée sur la nappe. */
-.sheet {
-  position: relative;
-  z-index: 1;
-  padding: clamp(1.25rem, 4vw, 3rem);
-  background: var(--paper);
-  box-shadow: 3px 4px 0 var(--shade);
-}
-
-.sheet > .section {
-  margin-top: 2.75rem;
-}
-
-/* Pages intérieures : une feuille, avec un peu de nappe autour. */
 .page {
-  padding-block: clamp(1.5rem, 4vw, 3rem) clamp(2.5rem, 6vw, 5rem);
+  padding-block: clamp(2.5rem, 6vw, 5rem) clamp(4rem, 9vw, 8rem);
 }
 
-/* Boutons : les étiquettes de prix de la boutique du jeu. */
+.page > * + .section {
+  margin-top: clamp(3.5rem, 7vw, 6rem);
+}
+
+/* Bouton : un aplat d'encre. */
 .btn {
-  display: inline-block;
-  min-height: 44px;
-  padding: 0.7rem 1rem 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding: 0.7rem 1.35rem;
   border: 0;
-  background: var(--label);
-  color: var(--label-ink);
-  font-family: var(--font-title);
-  font-size: 1.05rem;
-  line-height: 1.3;
+  border-radius: 14px;
+  background: var(--hue-ink);
+  color: var(--hue);
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.2;
   text-decoration: none;
   cursor: pointer;
 }
 
 .btn:hover {
-  background: var(--label-hover);
-  color: var(--label-ink);
+  background: color-mix(in srgb, var(--hue-ink) 82%, var(--hue));
+  color: var(--hue);
 }
 
 .btn:disabled {
@@ -360,6 +386,46 @@ pre code {
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem 1.5rem;
+}
+
+/* Sur un aplat de couleur, un lien survolé s'inverse. */
+.on-hue a:not(.btn):hover {
+  background: var(--hue-ink);
+  color: var(--hue);
+}
+
+/* Encadré de couleur, à côté d'un texte. */
+.note {
+  padding: 1.75rem;
+  border-radius: var(--round);
+  background: var(--hue);
+  color: var(--hue-ink);
+  font-size: 1.0625rem;
+  line-height: 1.45;
+}
+
+.note h2 {
+  margin-bottom: 1rem;
+  font-size: 1.6rem;
+}
+
+.note dl {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.note dt {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.note dd {
+  margin: 0;
+  overflow-wrap: anywhere;
 }
 
 /* Icônes (composant Icon). */
@@ -400,52 +466,35 @@ pre code {
 .icon-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   text-decoration: none;
 }
 
 .icon-link > span:not(.icon) {
   text-decoration: underline;
-  text-underline-offset: 0.18em;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
 }
 
-/* Ligne de la boutique du jeu : un nom, des pointillés, une valeur. */
-.leader {
+/* Liste de technologies, avec leur logo quand il existe. */
+.stack {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.leader::before {
-  content: '';
-  order: 1;
-  flex: 1;
-  min-width: 0.75rem;
-  border-bottom: 2px dotted var(--line-strong);
-}
-
-.leader > :last-child {
-  order: 2;
-  flex: none;
-}
-
-.label {
-  padding: 0.3rem 0.55rem 0.15rem;
-  background: var(--label);
-  color: var(--label-ink);
-  font-family: var(--font-title);
-  font-size: 0.95rem;
-  line-height: 1.2;
+.stack li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 /* Papier de fortune, comme dans le jeu : un liseré rouge en haut et en bas (à 6 px du bord,
-   10 px en retrait sur les côtés) et une ombre nette en deux passes. Il reste clair dans les
-   deux thèmes, avec ses propres couleurs. */
+   10 px en retrait sur les côtés) et une ombre nette en deux passes. */
 .slip {
-  --ink: var(--slip-ink);
-  --ink-soft: #5c5f66;
-  --link: #1c4f8c;
-  --link-hover: #0c3363;
   --rule-inset: 6px;
   --rule-margin: 10px;
   background:
@@ -453,70 +502,20 @@ pre code {
     linear-gradient(var(--slip-rule), var(--slip-rule)) var(--rule-margin) calc(100% - var(--rule-inset)) / calc(100% - 2 * var(--rule-margin)) 1.5px no-repeat,
     var(--slip);
   color: var(--slip-ink);
-  font-family: var(--font-title);
+  font-family: var(--font-paper);
   box-shadow:
     2px 4px 0 var(--slip-shadow),
     4px 8px 0 var(--slip-shadow-soft);
 }
 
-/* Ticket de caisse, dentelé en haut et en bas comme ceux du jeu. */
-.receipt-wrap {
-  filter: drop-shadow(3px 4px 0 var(--shade));
-}
-
-.receipt {
-  --zig: 7px;
-  --tooth: calc(2 * var(--zig)) 51%;
-  --edges:
-    conic-gradient(from 135deg at top, #0000, #000 1deg 89deg, #0000 90deg) top / var(--tooth) repeat-x,
-    conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / var(--tooth) repeat-x;
-  padding: calc(1.2rem + var(--zig)) 1.2rem;
-  background: var(--paper);
-  -webkit-mask: var(--edges);
-  mask: var(--edges);
-}
-
-.receipt-title {
-  margin: 0 0 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px dashed var(--line-strong);
-  font-size: 1.25rem;
-  text-align: center;
-}
-
-.receipt dl {
-  margin: 0;
-}
-
-.receipt dt {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.93rem;
-  color: var(--ink-soft);
-}
-
-.receipt dd {
-  margin: 0 0 0.75rem;
-  overflow-wrap: anywhere;
-}
-
-.receipt dl > div:last-child dd {
-  margin-bottom: 0;
-}
-
 /* Texte long (pages) */
 .prose {
-  max-width: 70ch;
+  max-width: 44rem;
 }
 
 .prose h2 {
-  margin-top: 2em;
-  font-size: 1.4rem;
-}
-
-.prose h3 {
-  margin-top: 1.8em;
+  margin-top: 1.6em;
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
 }
 
 .prose li {
@@ -527,17 +526,16 @@ pre code {
 .breadcrumbs ol {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0 0 1rem;
+  gap: 0.4rem;
+  margin: 0 0 1.25rem;
   padding: 0;
   list-style: none;
-  font-size: 0.95rem;
-  color: var(--ink-soft);
+  font-size: 1rem;
 }
 
 .breadcrumbs li + li::before {
   content: '/';
-  margin-right: 0.35rem;
+  margin-right: 0.4rem;
 }
 
 /* Mouvement réduit : tout reste lisible, rien ne bouge. */
