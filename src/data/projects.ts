@@ -143,7 +143,7 @@ export const projects: Project[] = [
     ],
     next: [
       'Créer la page Steam, préparer une démo et faire tester le jeu à des joueurs.',
-      'Sortir le jeu avec le Studio Fortune Cookies, si j’obtiens le statut d’étudiant-entrepreneur.',
+      'Sortir le jeu avec le Studio Fortune Cookies, maintenant que j’ai le statut d’étudiant-entrepreneur.',
       'Commencer les recherches pour le deuxième jeu, un RPG roguelite en 2D jouable à plusieurs.',
     ],
     technical: [

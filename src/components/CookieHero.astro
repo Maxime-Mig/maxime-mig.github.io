@@ -84,7 +84,7 @@ const crumbs = [
 
     const breakCookie = async () => {
       hero.classList.add('is-shaking');
-      await wait(440);
+      await wait(300);
       hero.classList.remove('is-shaking');
       hero.classList.add('is-open', 'has-paper');
     };
@@ -98,14 +98,14 @@ const crumbs = [
       if (motion.matches) {
         hero.classList.add('is-changing');
         hero.classList.remove('is-open');
-        await wait(560);
+        await wait(380);
         // Le texte est caché pendant le changement : le ruban a le temps de s'adapter si le
         // papier change de hauteur.
         text.textContent = next;
         announceOpen();
         await breakCookie();
         hero.classList.remove('is-changing');
-        await wait(500);
+        await wait(300);
       } else {
         text.textContent = next;
         announceOpen();
@@ -140,9 +140,9 @@ const crumbs = [
       const images = [...hero.querySelectorAll('img')];
       await Promise.all(images.map((image) => image.decode().catch(() => undefined)));
       await whenVisible();
-      await wait(650);
+      await wait(250);
       await breakCookie();
-      await wait(700);
+      await wait(300);
       announceOpen();
       busy = false;
     };
@@ -291,7 +291,7 @@ const crumbs = [
     font-size: 17px;
     line-height: 1.25;
     text-align: center;
-    transition: opacity 0.3s ease 0.3s;
+    transition: opacity 0.25s ease 0.15s;
   }
 
   .crumbs {
@@ -354,7 +354,7 @@ const crumbs = [
     }
 
     :global(.js) .cookie-hero.is-shaking:not(.is-open) .cookie-whole {
-      animation: cookie-shake 0.44s ease-in-out;
+      animation: cookie-shake 0.3s ease-in-out;
     }
 
     .arm {
@@ -362,7 +362,7 @@ const crumbs = [
     }
 
     .cookie-hero.is-shaking .arm {
-      animation: arm-tap 0.44s ease-in;
+      animation: arm-tap 0.3s ease-in;
     }
 
     .cookie-stage:hover ~ .arm {
