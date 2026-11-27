@@ -7,8 +7,8 @@
 import { getImage } from 'astro:assets';
 import Objet from './Objet.astro';
 import cookieWhole from '../assets/cookie/cookie-ferme.webp';
-import cookieLeft from '../assets/cookie/cookie-gauche.webp';
-import cookieRight from '../assets/cookie/cookie-droite.webp';
+import cookieLeft from '../assets/cookie/cookie-casse-gauche.webp';
+import cookieRight from '../assets/cookie/cookie-casse-droite.webp';
 import { fortunes } from '../data/fortunes';
 import { fr } from '../lib/format';
 
@@ -20,19 +20,25 @@ const [whole, left, right] = await Promise.all(
   [cookieWhole, cookieLeft, cookieRight].map((src) => getImage({ src, widths: [340, 620, 900], sizes, format: 'webp' })),
 );
 
-// Miettes projetées à la cassure : décalage (px), rotation, taille.
+// Miettes qui sautent de la fissure. Unités en pour cent de la largeur du cookie : départ le
+// long de la fissure (x, y), distance parcourue (dx), hauteur du saut (up), rotation, taille,
+// forme et retard. Elles retombent toutes sur la table, à la hauteur de l'ombre.
 const crumbs = [
-  [-86, -40, 160, 1.1],
-  [-58, -78, -120, 0.8],
-  [-20, -96, 90, 0.7],
-  [30, -88, -60, 1],
-  [70, -62, 140, 0.8],
-  [96, -20, -150, 1.2],
-  [-104, 18, 70, 0.9],
-  [84, 36, 110, 0.7],
-  [-40, 60, -80, 1],
-  [44, 70, 30, 0.9],
-];
+  [2, -10, -38, -14, 220, 1.2, 'a', 0],
+  [3, -12, 30, -18, -260, 1, 'b', 10],
+  [-2, -2, -26, -10, 180, 0.8, 'c', 0],
+  [0, -6, 42, -12, 300, 1.3, 'a', 20],
+  [-5, 6, -48, -6, -200, 0.9, 'b', 0],
+  [-4, 4, 18, -16, 140, 0.6, 'c', 30],
+  [-8, 14, -30, -4, 260, 1.1, 'a', 10],
+  [-9, 18, 12, -8, -320, 0.7, 'b', 40],
+  [1, -8, 54, -6, 120, 0.8, 'c', 0],
+  [-6, 10, -58, -10, -150, 0.6, 'a', 20],
+  [-10, 22, -14, -2, 90, 1, 'c', 50],
+  [0, -4, 8, -22, -400, 0.5, 'b', 0],
+] as const;
+// La table est à 86 % de la largeur sous le haut du cookie ; la fissure part de 19 %.
+const table = 67;
 ---
 
 <div class="cookie-hero" data-fortunes={payload}>
@@ -44,7 +50,16 @@ const crumbs = [
       <img class="cookie-img cookie-half cookie-left" src={left.src} srcset={left.srcSet.attribute} sizes={sizes} width={cookieLeft.width} height={cookieLeft.height} alt="" draggable="false" />
       <img class="cookie-img cookie-half cookie-right" src={right.src} srcset={right.srcSet.attribute} sizes={sizes} width={cookieRight.width} height={cookieRight.height} alt="" draggable="false" />
       <span class="crumbs" aria-hidden="true">
-        {crumbs.map(([dx, dy, r, s]) => <span class="crumb" style={`--dx:${dx}px;--dy:${dy}px;--r:${r}deg;--s:${s}`} />)}
+        {
+          crumbs.map(([x, y, dx, up, r, size, shape, delay], index) => (
+            <span
+              class="crumb"
+              style={`--x:${x}cqw;--y:${y}cqw;--dx:${dx}cqw;--up:${up}cqw;--land:${table - y + ((index % 3) - 1) * 2}cqw;--r:${r}deg;--s:${size};--delay:${delay}ms`}
+            >
+              <span class:list={['crumb-bit', `crumb-${shape}`]} />
+            </span>
+          ))
+        }
       </span>
     </button>
 
@@ -82,10 +97,13 @@ const crumbs = [
       return fortunes[current] ?? '';
     };
 
+    // Le doigt appuie, le cookie s'écrase un peu, se fend, puis claque en deux.
     const breakCookie = async () => {
       hero.classList.add('is-shaking');
-      await wait(300);
-      hero.classList.remove('is-shaking');
+      await wait(240);
+      hero.classList.replace('is-shaking', 'is-cracking');
+      await wait(60);
+      hero.classList.remove('is-cracking');
       hero.classList.add('is-open', 'has-paper');
     };
 
@@ -165,6 +183,7 @@ const crumbs = [
 
   .cookie-shadow {
     position: absolute;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
     left: 15%;
     right: 15%;
     top: 74%;
@@ -186,6 +205,8 @@ const crumbs = [
     background: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    /* Les miettes se placent en pour cent de la largeur du cookie (cqw). */
+    container-type: inline-size;
   }
 
   .cookie-stage:focus-visible {
@@ -221,6 +242,11 @@ const crumbs = [
 
   .cookie-right {
     transform: var(--open-right);
+  }
+
+  /* Une fois ouvert, les deux moitiés prennent plus de place sur la table. */
+  .cookie-hero.is-open .cookie-shadow {
+    transform: scaleX(1.12);
   }
 
   /* Le bras entre par la droite de l'écran et pointe vers le haut du cookie. */
@@ -294,43 +320,81 @@ const crumbs = [
     transition: opacity 0.25s ease 0.15s;
   }
 
+  /* Les miettes partent de la fissure, en haut du cookie. */
   .crumbs {
     position: absolute;
-    left: 50%;
-    top: 50%;
+    left: 46%;
+    top: 19cqw;
     z-index: 4;
   }
 
   .crumb {
     position: absolute;
-    width: calc(13px * var(--s));
-    height: calc(10px * var(--s));
-    border-radius: 45% 55% 40% 60%;
-    background: #e9a95a;
+    left: var(--x);
+    top: var(--y);
     opacity: 0;
   }
 
-  .crumb:nth-child(3n) {
-    background: #c97a35;
+  /* Morceaux cassés : des éclats anguleux, dorés dehors et plus clairs dedans. */
+  .crumb-bit {
+    display: block;
+    width: calc(4cqw * var(--s));
+    height: calc(3cqw * var(--s));
+    margin: calc(-1.5cqw * var(--s)) 0 0 calc(-2cqw * var(--s));
+    background: linear-gradient(160deg, #f0c27a 0 45%, #d8964b 46%);
   }
 
-  .crumb:nth-child(3n + 1) {
-    background: #f7d48c;
+  .crumb-a {
+    clip-path: polygon(8% 30%, 55% 0, 100% 38%, 80% 100%, 20% 88%);
+  }
+
+  .crumb-b {
+    clip-path: polygon(0 55%, 35% 5%, 92% 18%, 70% 80%, 30% 100%);
+    background: linear-gradient(200deg, #f5dcaa 0 50%, #e2ad66 51%);
+  }
+
+  .crumb-c {
+    clip-path: polygon(18% 0, 100% 25%, 85% 70%, 40% 100%, 0 62%);
+    background: linear-gradient(120deg, #c98840 0 40%, #eab872 41%);
   }
 
   @media (prefers-reduced-motion: no-preference) {
     /* Avec JavaScript, le cookie arrive entier puis se casse. */
-    :global(.js) .cookie-hero:not(.is-open) .cookie-whole {
+    :global(.js) .cookie-hero:not(.is-open, .is-cracking) .cookie-whole {
       opacity: 1;
-      animation: cookie-in 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.25);
+      transform-origin: 50% 92%;
+      animation: cookie-in 0.38s linear;
     }
 
-    :global(.js) .cookie-hero:not(.is-open) .cookie-half {
+    :global(.js) .cookie-hero:not(.is-open, .is-cracking) .cookie-half {
       opacity: 0;
       transform: none;
       transition:
         opacity 0.2s ease,
         transform 0s linear 0.2s;
+    }
+
+    /* Juste avant de claquer, le cookie se fend : les deux moitiés s'écartent à peine. */
+    .cookie-hero.is-cracking .cookie-half {
+      opacity: 1;
+      transition: none;
+    }
+
+    .cookie-hero.is-cracking .cookie-left {
+      transform: translate(-0.8%, 0.6%) rotate(-1.2deg);
+    }
+
+    .cookie-hero.is-cracking .cookie-right {
+      transform: translate(0.8%, 0.6%) rotate(1deg);
+    }
+
+    /* Puis les moitiés partent d'un coup, sautent un peu et retombent sur la table. */
+    .cookie-hero.is-open .cookie-left {
+      animation: left-open 0.7s linear;
+    }
+
+    .cookie-hero.is-open .cookie-right {
+      animation: right-open 0.7s linear;
     }
 
     /* Avant la première cassure, le papier est encore dans le cookie et le pigeon n'est pas là. */
@@ -354,15 +418,22 @@ const crumbs = [
     }
 
     :global(.js) .cookie-hero.is-shaking:not(.is-open) .cookie-whole {
-      animation: cookie-shake 0.3s ease-in-out;
+      transform-origin: 50% 92%;
+      animation: cookie-press 0.24s ease-in forwards;
     }
 
     .arm {
       transition: transform 0.6s cubic-bezier(0.3, 0.9, 0.3, 1.1);
     }
 
-    .cookie-hero.is-shaking .arm {
-      animation: arm-tap 0.3s ease-in;
+    /* Même animation pendant la fissure : elle continue sans repartir de zéro. */
+    .cookie-hero.is-shaking .arm,
+    .cookie-hero.is-cracking .arm {
+      animation: arm-tap 0.3s ease-in forwards;
+    }
+
+    .cookie-hero.is-open .arm {
+      animation: arm-back 0.5s cubic-bezier(0.3, 0.9, 0.3, 1);
     }
 
     .cookie-stage:hover ~ .arm {
@@ -370,7 +441,11 @@ const crumbs = [
     }
 
     .cookie-hero.is-open .crumb {
-      animation: crumb-fly 0.95s cubic-bezier(0.15, 0.7, 0.35, 1) forwards;
+      animation: crumb-x 1.7s var(--delay) linear backwards;
+    }
+
+    .cookie-hero.is-open .crumb-bit {
+      animation: crumb-y 1.7s var(--delay) linear backwards;
     }
 
     .cookie-stage:hover .cookie-whole {
@@ -379,29 +454,41 @@ const crumbs = [
     }
   }
 
+  /* Un nouveau cookie tombe sur la table et s'aplatit un instant en arrivant. */
   @keyframes cookie-in {
-    from {
+    0% {
       opacity: 0;
-      transform: translateY(-14px) scale(0.7);
+      transform: translateY(-22%);
+      animation-timing-function: cubic-bezier(0.5, 0, 1, 0.6);
+    }
+    20% {
+      opacity: 1;
+    }
+    58% {
+      transform: none;
+      animation-timing-function: ease-out;
+    }
+    70% {
+      transform: scale(1.04, 0.95);
+      animation-timing-function: ease-in-out;
+    }
+    86% {
+      transform: scale(0.99, 1.02);
+      animation-timing-function: ease-in-out;
+    }
+    100% {
+      transform: none;
     }
   }
 
-  @keyframes cookie-shake {
+  /* Le doigt appuie sur le haut du cookie, qui s'écrase un peu et penche. */
+  @keyframes cookie-press {
     0%,
+    55% {
+      transform: none;
+    }
     100% {
-      transform: rotate(0) scale(1);
-    }
-    20% {
-      transform: rotate(-6deg) scale(1.03);
-    }
-    40% {
-      transform: rotate(5deg) scale(1.04);
-    }
-    60% {
-      transform: rotate(-4deg) scale(1.05);
-    }
-    80% {
-      transform: rotate(3deg) scale(1.06);
+      transform: rotate(-1.5deg) scale(1.03, 0.95);
     }
   }
 
@@ -409,8 +496,61 @@ const crumbs = [
     45% {
       transform: translate(3.8%, -6%);
     }
+    80% {
+      transform: translate(-1.4%, 2.2%);
+    }
     100% {
       transform: translate(-2.2%, 3.4%);
+    }
+  }
+
+  @keyframes arm-back {
+    from {
+      transform: translate(-2.2%, 3.4%);
+    }
+  }
+
+  @keyframes left-open {
+    0% {
+      transform: translate(-0.8%, 0.6%) rotate(-1.2deg);
+      animation-timing-function: cubic-bezier(0.15, 0.8, 0.4, 1);
+    }
+    32% {
+      transform: translate(-12%, -3.5%) rotate(-11deg);
+      animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5);
+    }
+    62% {
+      transform: translate(-11%, 2%) rotate(-8deg);
+      animation-timing-function: ease-out;
+    }
+    78% {
+      transform: translate(-11%, 1.2%) rotate(-9.6deg);
+      animation-timing-function: ease-in-out;
+    }
+    100% {
+      transform: var(--open-left);
+    }
+  }
+
+  @keyframes right-open {
+    0% {
+      transform: translate(0.8%, 0.6%) rotate(1deg);
+      animation-timing-function: cubic-bezier(0.15, 0.8, 0.4, 1);
+    }
+    30% {
+      transform: translate(12.5%, -3%) rotate(10deg);
+      animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5);
+    }
+    60% {
+      transform: translate(11%, 2%) rotate(7deg);
+      animation-timing-function: ease-out;
+    }
+    76% {
+      transform: translate(11%, 1.3%) rotate(8.6deg);
+      animation-timing-function: ease-in-out;
+    }
+    100% {
+      transform: var(--open-right);
     }
   }
 
@@ -436,14 +576,50 @@ const crumbs = [
     }
   }
 
-  @keyframes crumb-fly {
+  /* Les miettes avancent à vitesse presque constante, montent en ralentissant puis retombent
+     en accélérant, rebondissent un peu sur la table, y restent un moment et disparaissent. */
+  @keyframes crumb-x {
     0% {
       opacity: 1;
-      transform: translate(0, 0) rotate(0);
+      transform: none;
+      animation-timing-function: cubic-bezier(0.2, 0.5, 0.5, 1);
+    }
+    44% {
+      transform: translateX(var(--dx));
+      animation-timing-function: ease-out;
+    }
+    56% {
+      transform: translateX(calc(var(--dx) * 1.1));
+    }
+    80% {
+      opacity: 1;
     }
     100% {
       opacity: 0;
-      transform: translate(calc(var(--dx) * 1.5), calc(var(--dy) * 1.5 + 30px)) rotate(var(--r));
+      transform: translateX(calc(var(--dx) * 1.1));
+    }
+  }
+
+  @keyframes crumb-y {
+    0% {
+      transform: none;
+      animation-timing-function: cubic-bezier(0.3, 0.7, 0.6, 1);
+    }
+    16% {
+      transform: translateY(var(--up)) rotate(calc(var(--r) * 0.4));
+      animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6);
+    }
+    44% {
+      transform: translateY(var(--land)) rotate(var(--r));
+      animation-timing-function: cubic-bezier(0.2, 0.6, 0.5, 1);
+    }
+    50% {
+      transform: translateY(calc(var(--land) - 2cqw)) rotate(calc(var(--r) * 1.1));
+      animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.5);
+    }
+    56%,
+    100% {
+      transform: translateY(var(--land)) rotate(calc(var(--r) * 1.15));
     }
   }
 

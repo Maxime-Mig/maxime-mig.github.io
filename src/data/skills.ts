@@ -198,7 +198,7 @@ export const skillGroups: SkillGroup[] = [
   {
     id: 'langages',
     title: 'Langages',
-    intro: 'Les autres langages vus en BUT.',
+    intro: 'Les autres langages vus en cours de BUT.',
     skills: [
       {
         name: 'Java',
@@ -218,7 +218,37 @@ export const skillGroups: SkillGroup[] = [
         name: 'C',
         icon: 'c',
         level: 1,
-        proof: 'Bases de programmation et de mémoire en 1re année.',
+        proof: 'Pointeurs et mémoire en 1re année, puis processus (fork, signaux, threads) et serveurs avec sockets en 2e année.',
+      },
+      {
+        name: 'C++',
+        icon: 'cplusplus',
+        level: 1,
+        proof: 'Interfaces Qt en 2e année, avec une carte et des routes à dessiner, puis capteurs et LED sur ESP32 en 3e année.',
+      },
+      {
+        name: 'C# et Unity',
+        icon: 'csharp',
+        level: 1,
+        proof: 'En cours de 2e année : TD Unity et un jeu multijoueur en réseau avec FishNet (monstres, points d’apparition, serveur dédié).',
+      },
+      {
+        name: 'Kotlin',
+        icon: 'kotlin',
+        level: 1,
+        proof: 'Applications Android en Jetpack Compose en 2e année : ViewModel, appel d’API avec Retrofit, base locale Room.',
+      },
+      {
+        name: 'Swift',
+        icon: 'swift',
+        level: 1,
+        proof: 'Application iOS en SwiftUI en 2e année, pour suivre son temps de jeu par plateforme, avec des statistiques.',
+      },
+      {
+        name: 'Bash',
+        icon: 'bash',
+        level: 1,
+        proof: 'Scripts de lancement et d’installation de mes projets, et étapes de pipelines CI.',
       },
     ],
   },

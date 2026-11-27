@@ -59,6 +59,11 @@
     "maven": "eae2",
     "postman": "eb7b",
     "c": "ee07",
+    "cplusplus": "e99a",
+    "csharp": "e9a0",
+    "kotlin": "eab5",
+    "swift": "ec34",
+    "bash": "ed55",
     "vite": "ec89"
   },
   "fontawesome": {
